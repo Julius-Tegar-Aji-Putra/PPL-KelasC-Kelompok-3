@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -19,11 +19,11 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): Response
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'nama' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
             'nama_toko' => ['required', 'string', 'max:255'],
@@ -55,7 +55,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'nama' => $request->nama,
             'email' => $request->email,
-            'password' => Hash::make($request->string('password')),
+            'password' => Hash::make($request->password),
             'role' => 'penjual',
             'nama_toko' => $request->nama_toko,
             'deskripsi_singkat' => $request->deskripsi_singkat,
@@ -78,8 +78,11 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        $token = $user->createToken('auth-token')->plainTextToken;
 
-        return response()->noContent();
+        return response()->json([
+            'token' => $token,
+            'user' => $user
+        ], 201);
     }
 }
