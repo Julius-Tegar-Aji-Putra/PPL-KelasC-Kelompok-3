@@ -12,40 +12,41 @@ function Login() {
 
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
-    event.preventDefault(); 
-    setLoading(true);       
-    setError(null);         
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
-      await axios.get('/sanctum/csrf-cookie');
+        const response = await axios.post('/api/login', { // <-- Tambahkan /api
+            email: email,
+            password: password,
+        });
 
-      const response = await axios.post('/api/login', {
-        email: email,
-        password: password,
-      });
+        const { token, user } = response.data;
 
-      if (response.data.token) {
-        localStorage.setItem('auth_token', response.data.token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      }
+        localStorage.setItem('auth_token', token);
 
-      const user = response.data.user;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      if (user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else if (user.role === 'penjual') {
-        navigate('/penjual/dashboard');
-      } else {
-        navigate('/');
-      }
+        if (user.role === 'admin') {
+            navigate('/admin/dashboard');
+        } else if (user.role === 'penjual') {
+            navigate('/penjual/dashboard');
+        } else {
+            navigate('/');
+        }
 
     } catch (error) {
-      console.error("Login gagal:", error);
-      setError("Email atau Password yang Anda masukkan salah.");
+        console.error("Login gagal:", error);
+        if (error.response && error.response.status === 422) {
+            setError("Email atau Password yang Anda masukkan salah.");
+        } else {
+            setError("Terjadi kesalahan. Silakan coba lagi.");
+        }
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+    };
 
   return (
     <div style={{ padding: '20px', maxWidth: '400px', margin: '50px auto' }}>

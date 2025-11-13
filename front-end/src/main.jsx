@@ -15,9 +15,7 @@ import PenjualDashboard from './pages/penjual/PenjualDashboard.jsx'
 import './index.css' 
 
 axios.defaults.baseURL = 'http://localhost:8000';
-axios.defaults.withCredentials = true;
 
-// Load token dari localStorage jika ada
 const token = localStorage.getItem('auth_token');
 if (token) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -28,26 +26,11 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />, 
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/admin/dashboard",
-        element: <AdminDashboard />,
-      },
-      {
-        path: "/penjual/dashboard",
-        element: <PenjualDashboard />,
-      },
+      { path: "/", element: <Home /> },
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+      { path: "/admin/dashboard", element: <AdminDashboard /> },
+      { path: "/penjual/dashboard", element: <PenjualDashboard /> },
     ],
   },
 ]);

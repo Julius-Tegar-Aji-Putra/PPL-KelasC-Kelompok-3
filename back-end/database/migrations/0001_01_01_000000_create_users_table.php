@@ -1,5 +1,4 @@
 <?php
-// Path: database/migrations/0001_01_01_000000_create_users_table.php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -7,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -17,14 +19,14 @@ return new class extends Migration
             $table->enum('role', ['admin', 'penjual'])->default('penjual');
             $table->string('nama_toko')->nullable();
             $table->text('deskripsi_singkat')->nullable();
-            $table->string('nama');
-            $table->string('no_handphone')->nullable();
-            $table->string('alamat')->nullable();
+            $table->string('nama'); 
+            $table->string('no_handphone')->nullable(); 
+            $table->string('alamat')->nullable(); 
             $table->string('rt', 3)->nullable();
             $table->string('rw', 3)->nullable();
-            $table->string('no_ktp', 16)->nullable();
-            $table->string('foto')->nullable();
-            $table->string('file_upload_ktp')->nullable();
+            $table->string('no_ktp', 16)->nullable(); 
+            $table->string('foto')->nullable(); 
+            $table->string('file_upload_ktp')->nullable(); 
             $table->string('province_id')->nullable();
             $table->string('province_name')->nullable();
             $table->string('regency_id')->nullable();
@@ -53,6 +55,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('users');
