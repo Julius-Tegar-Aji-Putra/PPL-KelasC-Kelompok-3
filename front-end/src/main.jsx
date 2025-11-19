@@ -12,7 +12,7 @@ import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import PenjualDashboard from './pages/penjual/PenjualDashboard.jsx'
-import './index.css' 
+import './index.css'
 
 axios.defaults.baseURL = 'http://localhost:8000';
 
@@ -27,10 +27,10 @@ const router = createBrowserRouter([
     element: <App />, 
     children: [
       { path: "/", element: <Home /> },
-      { path: "/login", element: <Login /> },
-      { path: "/register", element: <Register /> },
       { path: "/admin/dashboard", element: <AdminDashboard /> },
       { path: "/penjual/dashboard", element: <PenjualDashboard /> },
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
     ],
   },
 ]);
