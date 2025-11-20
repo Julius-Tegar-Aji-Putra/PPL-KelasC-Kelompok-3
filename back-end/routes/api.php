@@ -57,13 +57,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // --- 4. Rute Admin (Pengelolaan Penjual) ---
 // Catatan: Idealnya nanti dibungkus middleware 'admin', tapi untuk tes bisa ditaruh disini
 // atau di dalam group auth:sanctum jika adminnya login dulu.
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    
+    // Route untuk Admin Verifikasi Penjual
+    Route::get('/admin/sellers/pending', [AdminSellerController::class, 'getPendingSellers']);
+    Route::post('/admin/sellers/{id}/approve', [AdminSellerController::class, 'approveSeller']);
+    Route::post('/admin/sellers/{id}/reject', [AdminSellerController::class, 'rejectSeller']);
 
-// List Penjual yang butuh verifikasi (Status: inactive)
-Route::get('/admin/sellers/pending', [AdminSellerController::class, 'index']);
-
-// Action Approve (Terima) & Reject (Tolak)
-Route::post('/admin/sellers/{id}/approve', [AdminSellerController::class, 'approve']);
-Route::post('/admin/sellers/{id}/reject', [AdminSellerController::class, 'reject']);
+});
 
 // Load route auth default (register, login, logout)
 require __DIR__.'/auth.php';

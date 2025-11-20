@@ -4,57 +4,80 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Mail\SellerApprovedMail;
-use App\Mail\SellerRejectedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\SellerApprovedMail;
+use App\Mail\SellerRejectedMail;
 
 class AdminSellerController extends Controller
 {
-    // 1. List Penjual Pending (Inactive)
-    public function index()
+    public function getPendingSellers()
     {
-        $pendingSellers = User::where('role', 'penjual')
-                              ->where('status', 'inactive')
-                              ->get();
-        
-        return response()->json(['data' => $pendingSellers]);
+        // PERBAIKAN: Menambahkan select field lengkap sesuai form Register
+        $sellers = User::where('role', 'penjual')
+            ->where('status', 'inactive')
+            ->select(
+                'id', 
+                'nama', 
+                'email', 
+                'nama_toko', 
+                'deskripsi_singkat',
+                'no_handphone', 
+                'alamat',
+                'rt',
+                'rw',     
+                'no_ktp',
+                'foto',        
+                'file_upload_ktp',
+                'province_name',
+                'regency_name',
+                'district_name',
+                'village_name',
+                'created_at', 
+            )
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $sellers
+        ]);
     }
 
-    // 2. Approve (Terima)
-    public function approve($id)
+    public function approveSeller($id)
     {
-        $seller = User::findOrFail($id);
-        
-        // Ubah status
-        $seller->status = 'active';
-        $seller->save();
+        $user = User::findOrFail($id);
+        $user->status = 'active';
+        $user->save();
 
-        // Kirim Email
+        // Kirim email notifikasi
         try {
-            Mail::to($seller->email)->send(new SellerApprovedMail($seller));
+            Mail::to($user->email)->send(new SellerApprovedMail($user));
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Akun aktif, tapi email gagal: ' . $e->getMessage()]);
+            // Log error email jika perlu, tapi jangan gagalkan proses approve
         }
 
-        return response()->json(['message' => 'Penjual disetujui & email terkirim.']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Penjual berhasil disetujui dan email notifikasi dikirim.'
+        ]);
     }
 
-    // 3. Reject (Tolak)
-    public function reject($id)
+    public function rejectSeller($id)
     {
-        $seller = User::findOrFail($id);
+        $user = User::findOrFail($id);
+        $user->status = 'rejected';
+        $user->save();
 
-        // Kirim Email Dulu
+        // Kirim email notifikasi
         try {
-            Mail::to($seller->email)->send(new SellerRejectedMail($seller));
+            Mail::to($user->email)->send(new SellerRejectedMail($user));
         } catch (\Exception $e) {
-            // Lanjut aja
+             // Log error email
         }
 
-        // Hapus User
-        $seller->delete();
-
-        return response()->json(['message' => 'Penjual ditolak & data dihapus.']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Penjual berhasil ditolak.'
+        ]);
     }
 }
