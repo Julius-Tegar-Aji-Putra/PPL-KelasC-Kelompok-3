@@ -13,16 +13,29 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        // Mengambil produk dengan relasi yang diperlukan untuk frontend
-        $products = Product::with(['seller', 'category'])->get()->map(function ($product) {
+        // Mulai Query Builder
+        $query = Product::with(['seller', 'category']);
+
+        // --- LOGIKA FILTER KATEGORI ---
+        // Jika ada parameter 'category' di URL (contoh: /api/products?category=phones)
+        if ($request->has('category') && $request->category != null) {
+            $slug = $request->category;
+            // Filter produk yang punya relasi kategori dengan slug tersebut
+            $query->whereHas('category', function($q) use ($slug) {
+                $q->where('slug', $slug);
+            });
+        }
+
+        // Eksekusi Query & Mapping Data
+        $products = $query->get()->map(function ($product) {
             return [
                 'id' => $product->id,
                 'name' => $product->name,
-                'price' => 0, // Harga belum didefinisikan di PDF, bisa ditambahkan jika perlu
+                'price' => $product->price,
+                'condition' => $product->condition,
                 'main_image' => asset('storage/' . $product->main_image),
-                'seller_name' => $product->seller->nama_toko, // Placeholder nama penjual
-                'seller_location' => $product->seller->regency_name ?? 'Lokasi Tidak Diketahui', // Placeholder lokasi
-                'total_sold' => $product->total_sold . ' Terjual', // Placeholder tulisan
+                'seller_location' => $product->seller->regency_name ?? 'Lokasi Tidak Diketahui',
+                'total_sold' => $product->total_sold,
                 'rating' => $product->reviews()->avg('rating') ?? 0,
             ];
         });
@@ -39,6 +52,7 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
+            'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:product_categories,id',
             'brand' => 'required|string',
             'warranty_type' => 'required|string',
@@ -60,6 +74,7 @@ class ProductController extends Controller
             'user_id' => Auth::id(),
             'category_id' => $request->category_id,
             'name' => $request->name,
+            'price' => $request->price,
             'brand' => $request->brand,
             'warranty_type' => $request->warranty_type,
             'condition' => $request->condition,
@@ -91,11 +106,13 @@ public function show($id)
         $data = [
             'id' => $product->id,
             'name' => $product->name,
+            'price' => $product->price,
             'description' => $product->description,
             'stock' => $product->stock,
             'brand' => $product->brand,
             'condition' => $product->condition,
             'warranty_type' => $product->warranty_type,
+            'total_sold' => $product->total_sold . ' Terjual',
             'main_image' => asset('storage/' . $product->main_image),
             'detail_images' => $product->images->map(fn($img) => asset('storage/' . $img->image_path)),
             'seller' => [

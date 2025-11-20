@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'role',
         'nama_toko',
+        'status',
         'deskripsi_singkat',
         'no_handphone',
         'alamat',
@@ -39,8 +40,7 @@ class User extends Authenticatable
         'district_id',
         'district_name',
         'village_id',
-        'village_name',
-        'status'
+        'village_name'
     ];
 
     /**

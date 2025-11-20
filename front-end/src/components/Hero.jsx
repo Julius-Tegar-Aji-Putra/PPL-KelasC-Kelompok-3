@@ -8,7 +8,7 @@ function Hero() {
       <div className="flex justify-between items-center h-full px-12">
         <div className="space-y-6 text-left w-[380px]">
           <h1 className="text-5xl font-inter font-bold leading-tight">
-            Welcome to<br/>CampusMarket
+            Welcome to<br/>MartPlace
           </h1>
           
           <p className="text-base font-poppins text-gray-300">
@@ -26,7 +26,7 @@ function Hero() {
         <div className="hidden md:block"> 
           <img 
             src={BannerIllustration} 
-            alt="CampusMarket Illustration" 
+            alt="MartPlace Illustration" 
             className="rounded-lg w-[420px] h-[280px] object-contain"
           />
         </div>

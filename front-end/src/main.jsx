@@ -8,6 +8,8 @@ import axios from 'axios'
 
 import App from './App.jsx'
 import Home from './pages/Home.jsx'
+import Products from './pages/Products.jsx'
+import ProductDetail from './pages/ProductDetail.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
@@ -27,6 +29,8 @@ const router = createBrowserRouter([
     element: <App />, 
     children: [
       { path: "/", element: <Home /> },
+      { path: "/products", element: <Products /> },
+      { path: "/products/:id", element: <ProductDetail /> },
       { path: "/admin/dashboard", element: <AdminDashboard /> },
       { path: "/penjual/dashboard", element: <PenjualDashboard /> },
       { path: "/login", element: <Login /> },

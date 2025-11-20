@@ -26,7 +26,7 @@ function Navbar() {
         <div className={`flex items-center h-full ${isAuthPage ? 'justify-center' : 'justify-between'}`}>
           
           <Link to="/" className="text-2xl font-bold font-inter text-text-2">
-            CampusMarket
+            MartPlace
           </Link>
 
           {!isAuthPage && (
