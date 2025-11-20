@@ -49,8 +49,8 @@ class RegisteredUserController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $path_foto = $request->file('foto')->store('public/foto_penjual');
-        $path_file_ktp = $request->file('file_upload_ktp')->store('public/ktp_penjual');
+        $path_foto = $request->file('foto')->store('foto_penjual', 'public');
+        $path_file_ktp = $request->file('file_upload_ktp')->store('ktp_penjual', 'public');
 
         $user = User::create([
             'nama' => $request->nama,
