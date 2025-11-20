@@ -103,7 +103,7 @@ function Register() {
     }
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrors({});
@@ -117,14 +117,18 @@ function Register() {
       const response = await axios.post('/api/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      const { token } = response.data;
-      localStorage.setItem('auth_token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      navigate('/penjual/dashboard');
+      
+      // 1. Tampilkan Pesan Sukses (Ambil message dari backend)
+      alert(response.data.message || "Registrasi berhasil! Mohon cek email secara berkala untuk info aktivasi.");
+
+      // 2. Lempar ke Home (Bukan Dashboard)
+      navigate('/'); 
+
     } catch (error) {
       if (error.response && error.response.status === 422) {
         setErrors(error.response.data.errors || {});
       } else {
+        console.error(error);
         alert('❌ Terjadi kesalahan pada server.');
       }
     } finally {

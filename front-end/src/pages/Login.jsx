@@ -9,7 +9,6 @@ function Login() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -22,9 +21,19 @@ function Login() {
         });
 
         const { token, user } = response.data;
+        
+        // ✅ CEK STATUS INACTIVE DI LOGIN (SEBELUM SIMPAN TOKEN)
+        if (user.role === 'penjual' && user.status !== 'active') {
+            setError("Akun Anda masih dalam peninjauan (Inactive). Silakan tunggu verifikasi dari Admin.");
+            setLoading(false);
+            return; // ❌ STOP, jangan simpan token & redirect
+        }
+
+        // ✅ Jika lolos, baru simpan token
         localStorage.setItem('auth_token', token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
+        // ✅ Redirect sesuai role
         if (user.role === 'admin') {
             navigate('/admin/dashboard');
         } else if (user.role === 'penjual') {

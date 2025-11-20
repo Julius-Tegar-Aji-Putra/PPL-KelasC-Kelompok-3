@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\WilayahController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\AdminSellerController;
 
 /*
 |--------------------------------------------------------------------------

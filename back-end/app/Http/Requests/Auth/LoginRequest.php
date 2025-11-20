@@ -41,23 +41,24 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // 1. Cek Email & Password (Bawaan Laravel)
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'email' => trans('auth.failed'),
             ]);
         }
 
+        // 2. [TAMBAHAN PENTING] Cek Status "Active"
         $user = Auth::user();
         if ($user->role === 'penjual' && $user->status !== 'active') {
-            Auth::logout(); 
+            Auth::logout(); // Tendang keluar
             
             throw ValidationException::withMessages([
-                'email' => 'Akun Anda belum aktif. Mohon tunggu verifikasi Admin.',
+                'email' => 'Akun Anda belum aktif. Mohon tunggu verifikasi Admin (Cek Email Berkala).',
             ]);
         }
-
         RateLimiter::clear($this->throttleKey());
     }
 
