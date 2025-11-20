@@ -22,9 +22,20 @@ function Login() {
         });
 
         const { token, user } = response.data;
-        localStorage.setItem('auth_token', token);
+
+        // ✅ CEK STATUS INACTIVE DI FRONTEND
+        if (user.role === 'penjual' && user.status !== 'active') {
+            setError("Akun Anda masih dalam peninjauan (Inactive). Silakan tunggu verifikasi dari Admin.");
+            setLoading(false);
+            return; 
+        }
+
+        // ✅ SIMPAN TOKEN & USER (KONSISTEN DENGAN PRIVATEROUTE)
+        localStorage.setItem('auth_token', token); // ← GANTI INI
+        localStorage.setItem('user', JSON.stringify(user));
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
+        // ✅ REDIRECT BERDASARKAN ROLE
         if (user.role === 'admin') {
             navigate('/admin/dashboard');
         } else if (user.role === 'penjual') {
@@ -56,7 +67,7 @@ function Login() {
         
         <div className="w-full md:w-1/2 p-10 md:p-12 flex flex-col justify-center">
           <h2 className="text-3xl font-bold font-inter text-text-2 mb-2">
-            Log in to MartPlace
+            Log in to CampusMarket
           </h2>
           <p className="text-gray-500 font-poppins mb-8">
             Enter your details below
