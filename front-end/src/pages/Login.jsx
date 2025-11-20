@@ -56,7 +56,7 @@ function Login() {
         
         <div className="w-full md:w-1/2 p-10 md:p-12 flex flex-col justify-center">
           <h2 className="text-3xl font-bold font-inter text-text-2 mb-2">
-            Log in to CampusMarket
+            Log in to MartPlace
           </h2>
           <p className="text-gray-500 font-poppins mb-8">
             Enter your details below

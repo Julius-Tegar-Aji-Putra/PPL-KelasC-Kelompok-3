@@ -158,7 +158,7 @@ function Register() {
             Create your Account
           </h2>
           <p className="text-gray-500 font-poppins mb-8">
-            Mulai berjualan dengan mudah di CampusMarket.
+            Mulai berjualan dengan mudah di MartPlace.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-2">

@@ -33,7 +33,7 @@ function Footer() {
                 Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, 
                 Kota Semarang, Jawa Tengah 50275
               </p>
-              <p>campusmarket@gmail.com</p>
+              <p>martplace@gmail.com</p>
               <p>+6285176909090</p>
             </div>
           </div>

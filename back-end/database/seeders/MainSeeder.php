@@ -30,6 +30,7 @@ class MainSeeder extends Seeder
                 'seller' => ['name' => 'Budi Komputer', 'email' => 'budi@store.com', 'phone' => '081111222333'],
                 'product' => [
                     'name' => 'Laptop Gaming ROG', 
+                    'price' => 15000000,
                     'brand' => 'Asus',
                     'desc' => 'Laptop gaming spesifikasi dewa, kondisi mulus like new.',
                     'cat_id' => $catElektronik->id,
@@ -40,6 +41,7 @@ class MainSeeder extends Seeder
                 'seller' => ['name' => 'Siti Shoes', 'email' => 'siti@store.com', 'phone' => '082222333444'],
                 'product' => [
                     'name' => 'Sepatu Running Nike', 
+                    'price' => 1200000,
                     'brand' => 'Nike',
                     'desc' => 'Sepatu lari nyaman, ukuran 42, original.',
                     'cat_id' => $catFashion->id,
@@ -50,6 +52,7 @@ class MainSeeder extends Seeder
                 'seller' => ['name' => 'Andi Kamera', 'email' => 'andi@store.com', 'phone' => '083333444555'],
                 'product' => [
                     'name' => 'Kamera DSLR Canon', 
+                    'price' => 8000000,
                     'brand' => 'Canon',
                     'desc' => 'Kamera untuk pemula dan profesional, bonus lensa kit.',
                     'cat_id' => $catElektronik->id,
@@ -60,6 +63,7 @@ class MainSeeder extends Seeder
                 'seller' => ['name' => 'Rina Watch', 'email' => 'rina@store.com', 'phone' => '084444555666'],
                 'product' => [
                     'name' => 'Jam Tangan G-Shock', 
+                    'price' => 2500000,
                     'brand' => 'Casio',
                     'desc' => 'Tahan air dan tahan banting, cocok untuk outdoor.',
                     'cat_id' => $catFashion->id,
@@ -111,6 +115,7 @@ class MainSeeder extends Seeder
                 'user_id' => $user->id,
                 'category_id' => $data['product']['cat_id'],
                 'name' => $data['product']['name'],
+                'price' => $data['product']['price'],
                 'brand' => $data['product']['brand'],
                 'warranty_type' => 'Resmi',
                 'condition' => 'baru',

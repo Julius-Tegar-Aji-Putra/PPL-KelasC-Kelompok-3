@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Relasi ke Penjual
             $table->foreignId('category_id')->constrained('product_categories');
             $table->string('name');
+            $table->bigInteger('price'); // Harga
             $table->string('brand'); // Merek
             $table->string('warranty_type'); // Tipe Garansi
             $table->enum('condition', ['baru', 'bekas']); // Kondisi barang

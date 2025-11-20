@@ -57,6 +57,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'penjual',
+            'status' => 'inactive',
             'nama_toko' => $request->nama_toko,
             'deskripsi_singkat' => $request->deskripsi_singkat,
             'no_handphone' => $request->no_handphone,
@@ -78,11 +79,12 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        // $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'token' => $token,
-            'user' => $user
+            'message' => 'Registrasi berhasil. Silakan tunggu verifikasi Admin untuk mengaktifkan akun Anda.',
+            // 'token' => $token,
+            // 'user' => $user
         ], 201);
     }
 }
