@@ -40,6 +40,7 @@ class User extends Authenticatable
         'district_name',
         'village_id',
         'village_name',
+        'status'
     ];
 
     /**
@@ -63,5 +64,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }
