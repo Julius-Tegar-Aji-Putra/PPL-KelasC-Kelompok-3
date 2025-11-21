@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
-{
+{   
+    // Index melihat produk di katalog
     public function index(Request $request)
     {
         // Mulai Query Builder
@@ -43,62 +44,94 @@ class ProductController extends Controller
         return response()->json(['data' => $products]);
     }
 
-    public function store(Request $request)
+    // Index List Produk Penjual
+    public function indexSeller(Request $request)
     {
-        // Pastikan user adalah penjual yang aktif
-        if (Auth::user()->status !== 'active') {
-            return response()->json(['message' => 'Akun Anda belum aktif.'], 403);
-        }
+        $products = Product::where('user_id', Auth::id())
+            ->with('category:id,name')
+            ->select('id', 'category_id', 'name', 'price', 'stock', 'brand', 'condition', 'main_image', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:product_categories,id',
-            'brand' => 'required|string',
-            'warranty_type' => 'required|string',
-            'condition' => 'required|in:baru,bekas',
-            'stock' => 'required|integer',
-            'description' => 'required|string',
-            'main_image' => 'required|image|max:2048',
-            'detail_images.*' => 'image|max:2048' // Array gambar tambahan
-        ]);
-
-        if ($validator->fails()) return response()->json($validator->errors(), 422);
-
-        // Upload Main Image
-        $mainImagePath = $request->file('main_image')->store('public/products');
-        $mainImagePath = str_replace('public/', '', $mainImagePath);
-
-        // Simpan Produk
-        $product = Product::create([
-            'user_id' => Auth::id(),
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'price' => $request->price,
-            'brand' => $request->brand,
-            'warranty_type' => $request->warranty_type,
-            'condition' => $request->condition,
-            'stock' => $request->stock,
-            'description' => $request->description,
-            'main_image' => $mainImagePath,
-            'total_sold' => 0
-        ]);
-
-        // Upload Detail Images (jika ada)
-        if ($request->hasFile('detail_images')) {
-            foreach ($request->file('detail_images') as $image) {
-                $path = $image->store('public/products/details');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_path' => str_replace('public/', '', $path)
-                ]);
-            }
-        }
-
-        return response()->json(['message' => 'Produk berhasil ditambahkan', 'data' => $product], 201);
+        return response()->json(['success' => true, 'data' => $products]);
     }
 
-public function show($id)
+    // Detail produk yang ditunjukan ke seller saja
+    public function showSeller($id)
+    {
+        $product = Product::where('user_id', Auth::id())
+            ->where('id', $id)
+            ->with(['category', 'images'])
+            ->first();
+
+        if (!$product) return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+
+        return response()->json(['success' => true, 'data' => $product]);
+    }    
+
+    // Upload produk untuk penjual
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'category_id'   => 'required|exists:product_categories,id',
+            'name'          => 'required|string|max:255',
+            'price'         => 'required|numeric|min:0',
+            'brand'         => 'required|string|max:100',
+            'warranty_type' => 'required|string',
+            
+            // PENTING: Sesuaikan dengan Enum di Database Anda (baru, bekas)
+            'condition'     => 'required|in:baru,bekas', 
+            
+            'stock'         => 'required|integer|min:1',
+            'description'   => 'required|string',
+            'main_image'    => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'additional_images' => 'array|max:4',
+            'additional_images.*' => 'image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        if ($validator->fails()) return response()->json(['errors' => $validator->errors()], 422);
+
+        try {
+            DB::beginTransaction();
+
+            // Upload Main Image
+            $mainImagePath = $request->file('main_image')->store('products', 'public');
+
+            // Create Product (TANPA SLUG)
+            $product = Product::create([
+                'user_id'       => Auth::id(),
+                'category_id'   => $request->category_id,
+                'name'          => $request->name,
+                'price'         => $request->price,
+                'brand'         => $request->brand,
+                'warranty_type' => $request->warranty_type,
+                'condition'     => $request->condition,
+                'stock'         => $request->stock,
+                'description'   => $request->description,
+                'main_image'    => $mainImagePath,
+            ]);
+
+            // Upload Additional Images
+            if ($request->hasFile('additional_images')) {
+                foreach ($request->file('additional_images') as $file) {
+                    $path = $file->store('products/details', 'public');
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_path' => $path
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Produk berhasil diupload', 'data' => $product], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Gagal upload: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function show($id)
     {
         // Hapus 'reviews.user' dari eager loading karena relasi user sudah tidak ada
         $product = Product::with(['images', 'seller', 'reviews', 'category'])->findOrFail($id);

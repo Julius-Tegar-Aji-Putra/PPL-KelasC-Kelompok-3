@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSearchParams, Link } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
-import Loader from '../components/Loader';
+import ProductCard from '../components/common/ProductCard';
+import Loader from '../components/common/Loader';
 
 const Products = () => {
   const [products, setProducts] = useState([]);

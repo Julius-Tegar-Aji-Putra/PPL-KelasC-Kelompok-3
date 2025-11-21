@@ -21,7 +21,6 @@ function PrivateRoute() {
 
         const userData = response.data;
 
-        // ✅ HANYA CEK TOKEN VALID, TIDAK CEK STATUS (sudah dicek di Login)
         setUser(userData);
         setIsAuthenticated(true);
 

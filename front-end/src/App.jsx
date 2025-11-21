@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from './components/common/Navbar';
+import Footer from './components/common/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -9,17 +9,20 @@ import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import PenjualDashboard from './pages/penjual/PenjualDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
-import PrivateRoute from './components/PrivateRoute';
+import PrivateRoute from './components/common/PrivateRoute';
+import ScrollToTop from './components/common/ScrollToTop';
 
 function App() {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  const isDashboardRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/penjual');
   
   return (
     <div className="flex flex-col min-h-screen">
-      {!isAdminRoute && <Navbar />}
+      <ScrollToTop />
 
-      <main className={isAdminRoute ? "" : "flex-grow container mx-auto px-32 py-4"}>
+      {!isDashboardRoute && <Navbar />}
+
+      <main className={isDashboardRoute ? "" : "flex-grow container mx-auto px-4 md:px-32 py-4"}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -36,7 +39,7 @@ function App() {
         </Routes>
       </main>
 
-      {!isAdminRoute && <Footer />}
+      {!isDashboardRoute && <Footer />}
     </div>
   );
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AdminSellerController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -64,6 +65,15 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/admin/sellers/{id}/approve', [AdminSellerController::class, 'approveSeller']);
     Route::post('/admin/sellers/{id}/reject', [AdminSellerController::class, 'rejectSeller']);
 
+});
+
+Route::middleware(['auth:sanctum', 'penjual'])->group(function () {
+    // List Produk Saya
+    Route::get('/seller/products', [ProductController::class, 'indexSeller']);
+    // Upload Produk
+    Route::post('/seller/products', [ProductController::class, 'store']);
+    // Detail Produk
+    Route::get('/seller/products/{id}', [ProductController::class, 'showSeller']);
 });
 
 // Load route auth default (register, login, logout)

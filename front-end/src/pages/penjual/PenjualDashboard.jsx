@@ -2,7 +2,7 @@ import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 function PenjualDashboard() {
-  const { user } = useOutletContext(); // ✅ Ambil user dari PrivateRoute
+  const { user } = useOutletContext();
 
   return (
     <div className="p-10">

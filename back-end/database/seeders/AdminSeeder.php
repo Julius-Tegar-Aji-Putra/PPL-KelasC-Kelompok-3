@@ -2,23 +2,22 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        User::create([
-            'nama' => 'Admin', 
-            'email' => 'admin@marketplace.com',
-            'password' => Hash::make('password123'), 
-            'role' => 'admin'
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@marketplace.com'],
+            [
+                'nama'     => 'Super Admin', // Ganti 'name' jadi 'nama'
+                'password' => Hash::make('password123'),
+                'role'     => 'admin',
+                'status'   => 'active',
+            ]
+        );
     }
 }

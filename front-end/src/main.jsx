@@ -16,7 +16,7 @@ import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import PenjualDashboard from './pages/penjual/PenjualDashboard.jsx'
 import './index.css'
 
-axios.defaults.baseURL = 'http://localhost:8000';
+// axios.defaults.baseURL = 'http://localhost:8000';
 
 const token = localStorage.getItem('auth_token');
 if (token) {

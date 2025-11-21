@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
-import Loader from '../components/Loader'; // Sesuaikan path-nya
+import Loader from './Loader';
 
 const ProductSection = () => {
   const [products, setProducts] = useState([]);

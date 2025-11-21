@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Star, MapPin, Package } from 'lucide-react';
+import Loader from '../components/common/Loader';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -10,6 +11,8 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0); 
+
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`/api/products/${id}`);
@@ -33,7 +36,7 @@ const ProductDetail = () => {
      }).format(price);
   };
 
-  if (loading) return <div className="py-20 text-center">Loading...</div>;
+  if (loading) return <Loader />;
   if (!product) return <div className="py-20 text-center">Produk tidak ditemukan</div>;
 
   const allImages = [product.main_image, ...product.detail_images];

@@ -1,7 +1,7 @@
 import React from 'react';
-import Hero from '../components/Hero';
-import CategorySection from '../components/CategorySection';
-import ProductSection from '../components/ProductSection';
+import Hero from '../components/common/Hero';
+import CategorySection from '../components/common/CategorySection';
+import ProductSection from '../components/common/ProductSection';
 
 function Home() {
   return (
