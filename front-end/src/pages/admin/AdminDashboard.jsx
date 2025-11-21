@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import ProfileDropdown from '../../components/ProfileDropdown';
-import Loader from '../../components/Loader';
+import ProfileDropdown from '../../components/common/ProfileDropdown';
+import Loader from '../../components/common/Loader';
 
 // --- Helper Components ---
 const StatusBadge = ({ status }) => {
