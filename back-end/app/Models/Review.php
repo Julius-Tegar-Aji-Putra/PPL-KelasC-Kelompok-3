@@ -2,19 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'product_id', 
-        'guest_name', 
-        'guest_email', 
-        'guest_phone', 
-        'rating', 
-        'comment', 
-        'province'
+        'product_id',
+        'reviewer_name',
+        'reviewer_email',
+        'reviewer_phone',
+        'province',
+        'rating',
+        'comment'
     ];
 
-    // Relasi ke User DIHAPUS karena pengisi adalah guest (tamu)
+    // Relasi ke Product
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

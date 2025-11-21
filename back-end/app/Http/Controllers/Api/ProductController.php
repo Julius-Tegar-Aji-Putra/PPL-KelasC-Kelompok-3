@@ -8,6 +8,9 @@ use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
 
 class ProductController extends Controller
 {   
@@ -49,7 +52,7 @@ class ProductController extends Controller
     {
         $products = Product::where('user_id', Auth::id())
             ->with('category:id,name')
-            ->select('id', 'category_id', 'name', 'price', 'stock', 'brand', 'condition', 'main_image', 'created_at')
+            ->select('id', 'category_id', 'name', 'price', 'stock', 'brand', 'condition', 'created_at')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -94,10 +97,24 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            // Upload Main Image
-            $mainImagePath = $request->file('main_image')->store('products', 'public');
+            // 1. SIAPKAN NAMA FILE CANTIK (Slug dari nama produk)
+            // Contoh: "Laptop Gaming Lenovo" -> "laptop-gaming-lenovo"
+            // Kita tambahkan time() sedikit di belakang biar unik kalau ada user upload nama barang sama persis
+            $slugName = Str::slug($request->name); 
+            $timestamp = time(); // Opsional: Biar ga ketimpa kalo ada barang namanya sama persis
 
-            // Create Product (TANPA SLUG)
+            // --- MAIN IMAGE ---
+            $mainFile = $request->file('main_image');
+            $mainExt  = $mainFile->getClientOriginalExtension();
+            
+            // Format: laptop-gaming-lenovo-173222.jpg
+            $mainName = $slugName . '-' . $timestamp . '.' . $mainExt;
+            
+            // Simpan ke folder 'products'
+            $mainImagePath = $mainFile->storeAs('products', $mainName, 'public');
+
+
+            // 2. CREATE PRODUCT
             $product = Product::create([
                 'user_id'       => Auth::id(),
                 'category_id'   => $request->category_id,
@@ -111,10 +128,20 @@ class ProductController extends Controller
                 'main_image'    => $mainImagePath,
             ]);
 
-            // Upload Additional Images
+
+            // 3. ADDITIONAL IMAGES (LOOPING INDEX)
             if ($request->hasFile('additional_images')) {
-                foreach ($request->file('additional_images') as $file) {
-                    $path = $file->store('products/details', 'public');
+                // Gunakan $index untuk penomoran (0, 1, 2...)
+                foreach ($request->file('additional_images') as $index => $file) {
+                    $ext = $file->getClientOriginalExtension();
+                    
+                    // Urutan dimulai dari 1, jadi ($index + 1)
+                    // Format: laptop-gaming-lenovo-1-173222.jpg
+                    $detailName = $slugName . '-' . ($index + 1) . '-' . $timestamp . '.' . $ext;
+
+                    // Simpan ke folder 'products/details'
+                    $path = $file->storeAs('products/details', $detailName, 'public');
+                    
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $path
@@ -127,14 +154,22 @@ class ProductController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Gagal upload: ' . $e->getMessage()], 500);
+                return response()->json([
+                'success' => false,
+                'message' => 'Server Error: ' . $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
         }
     }
 
     public function show($id)
     {
-        // Hapus 'reviews.user' dari eager loading karena relasi user sudah tidak ada
         $product = Product::with(['images', 'seller', 'reviews', 'category'])->findOrFail($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+        }
         
         $data = [
             'id' => $product->id,
@@ -155,8 +190,7 @@ class ProductController extends Controller
             ],
             'reviews' => $product->reviews->map(function($review) {
                 return [
-                    // Ambil nama langsung dari kolom guest_name
-                    'user' => $review->guest_name, 
+                    'user' => $review->reviewer_name, 
                     'rating' => $review->rating,
                     'comment' => $review->comment,
                     'province' => $review->province,

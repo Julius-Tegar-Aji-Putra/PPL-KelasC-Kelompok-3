@@ -4,66 +4,94 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule; // Penting buat validasi unik
+use App\Mail\ReviewThankYouMail;
 
 class ReviewController extends Controller
 {
     public function store(Request $request, $productId)
     {
-        // 1. Validasi Input
+        // 1. Cek Produk Ada dulu
+        $product = Product::find($productId);
+        if (!$product) {
+            return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+        }
+
+        // 2. Validasi Input & Uniqueness
         $validator = Validator::make($request->all(), [
-            'guest_name' => 'required|string|max:255',
-            // Email atau Phone harus diisi salah satu (required_without)
-            'guest_email' => 'required_without:guest_phone|nullable|email|max:255',
-            'guest_phone' => 'required_without:guest_email|nullable|string|max:20',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string',
-            'province' => 'required|string',
+            'reviewer_name'  => 'required|string|max:255',
+            'reviewer_phone' => [
+                'required',
+                'string',
+                'max:20',
+                // Cek: di tabel reviews, kolom reviewer_phone harus unik UNTUK product_id ini
+                Rule::unique('reviews')->where(function ($query) use ($productId) {
+                    return $query->where('product_id', $productId);
+                }),
+            ],
+            'reviewer_email' => [
+                'required',
+                'email',
+                'max:255',
+                // Cek: di tabel reviews, kolom reviewer_email harus unik UNTUK product_id ini
+                Rule::unique('reviews')->where(function ($query) use ($productId) {
+                    return $query->where('product_id', $productId);
+                }),
+            ],
+            'province'       => 'required|string',
+            'rating'         => 'required|integer|min:1|max:5',
+            'comment'        => 'required|string',
+        ], [
+            // Custom Error Messages biar user paham
+            'reviewer_email.unique' => 'Email ini sudah memberikan ulasan untuk produk ini.',
+            'reviewer_phone.unique' => 'Nomor HP ini sudah memberikan ulasan untuk produk ini.',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        // 2. Pengecekan Uniqueness Manual (Email atau No. Telp)
-        // "Cek pakai email atau notel" 
-        $email = $request->guest_email;
-        $phone = $request->guest_phone;
-
-        $existingReview = Review::where('product_id', $productId)
-            ->where(function ($query) use ($email, $phone) {
-                if ($email) {
-                    $query->where('guest_email', $email);
-                }
-                if ($phone) {
-                    // Jika user mengisi keduanya, kita cek salah satunya saja yg cocok (OR)
-                    // atau bisa dipisah querynya. Di sini menggunakan orWhere agar ketat.
-                    $query->orWhere('guest_phone', $phone);
-                }
-            })
-            ->first();
-
-        if ($existingReview) {
-            return response()->json([
-                'message' => 'Anda sudah memberikan review untuk produk ini sebelumnya (terdeteksi melalui Email atau No. HP).'
-            ], 409); // 409 Conflict
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // 3. Simpan Review
-        $review = Review::create([
-            'product_id' => $productId,
-            'guest_name' => $request->guest_name,
-            'guest_email' => $request->guest_email,
-            'guest_phone' => $request->guest_phone,
-            'rating' => $request->rating,
-            'comment' => $request->comment,
-            'province' => $request->province,
-        ]);
+        try {
+            $review = Review::create([
+                'product_id'     => $productId,
+                'reviewer_name'  => $request->reviewer_name,
+                'reviewer_email' => $request->reviewer_email,
+                'reviewer_phone' => $request->reviewer_phone,
+                'province'       => $request->province,
+                'rating'         => $request->rating,
+                'comment'        => $request->comment,
+            ]);
 
-        return response()->json([
-            'message' => 'Review berhasil ditambahkan', 
-            'data' => $review
-        ], 201);
+            // 4. Kirim Email Notifikasi (Pake Mail yang sudah kamu buat sebelumnya)
+            // Pastikan class ReviewThankYouMail sudah ada
+            try {
+                $emailData = [
+                    'name'         => $request->reviewer_name,
+                    'product_name' => $product->name,
+                    'rating'       => $request->rating,
+                    'comment'      => $request->comment
+                ];
+                Mail::to($request->reviewer_email)->send(new ReviewThankYouMail($emailData));
+            } catch (\Exception $e) {
+                // Log error email tapi biarkan review tersimpan
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Review berhasil ditambahkan. Cek email Anda untuk notifikasi.',
+                'data'    => $review
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Gagal menyimpan review: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Star, MapPin, Package } from 'lucide-react';
+import { MapPin, Package } from 'lucide-react';
 import Loader from '../components/common/Loader';
+import RatingStars from '../components/product/RatingStars';
+import ReviewForm from '../components/product/ReviewForm';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -10,23 +12,28 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/products/${id}`);
+      setProduct(response.data.data);
+      setSelectedImage(response.data.data.main_image);
+    } catch (error) {
+      console.error("Gagal mengambil detail produk:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0); 
-
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`/api/products/${id}`);
-        setProduct(response.data.data);
-        setSelectedImage(response.data.data.main_image);
-      } catch (error) {
-        console.error("Gagal mengambil detail produk:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProduct();
   }, [id]);
+
+  // Callback setelah review berhasil dikirim
+  const handleReviewSubmitted = () => {
+    fetchProduct(); // Refresh data produk untuk update review
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('id-ID', {
@@ -86,16 +93,10 @@ const ProductDetail = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-3">{product.name}</h1>
               
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star 
-                      key={star} 
-                      size={18} 
-                      className={star <= Math.round(averageRating) ? "fill-[#FFAD33] text-[#FFAD33]" : "fill-gray-300 text-gray-300"} 
-                    />
-                  ))}
-                </div>
-                <span className="text-gray-600">({product.total_sold})</span>
+                <RatingStars rating={Math.round(averageRating)} size={18} />
+                <span className="text-gray-600">({product.reviews.length} reviews)</span>
+                <span className="text-gray-400">|</span>
+                <span className="text-gray-600">{product.total_sold}</span>
                 <div className={`px-3 py-1 rounded text-xs font-semibold text-white ${
                   product.condition === 'baru' ? 'bg-[#00C24E]' : 'bg-[#DB4444]'
                 }`}>
@@ -170,15 +171,7 @@ const ProductDetail = () => {
                       <p className="text-sm text-gray-500">{review.province}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star 
-                            key={star} 
-                            size={16} 
-                            className={star <= review.rating ? "fill-[#FFAD33] text-[#FFAD33]" : "fill-gray-300 text-gray-300"} 
-                          />
-                        ))}
-                      </div>
+                      <RatingStars rating={review.rating} size={16} />
                       <span className="text-sm text-gray-500">{review.date}</span>
                     </div>
                   </div>
@@ -191,6 +184,9 @@ const ProductDetail = () => {
               <p className="text-gray-500">Belum ada review untuk produk ini.</p>
             </div>
           )}
+
+          {/* Form Submit Review */}
+          <ReviewForm productId={id} onReviewSubmitted={handleReviewSubmitted} />
         </div>
 
       </div>
