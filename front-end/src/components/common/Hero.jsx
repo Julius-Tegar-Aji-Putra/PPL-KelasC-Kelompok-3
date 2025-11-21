@@ -1,6 +1,6 @@
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
-import BannerIllustration from '../assets/images/Banner.svg';
+import BannerIllustration from '../../assets/images/Banner.svg';
 
 function Hero() {
   // 1. FUNGSI BARU DITAMBAHKAN DI SINI

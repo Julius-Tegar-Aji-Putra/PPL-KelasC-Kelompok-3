@@ -11,14 +11,19 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Pengunjung/Pembeli
-            $table->integer('rating'); // Bintang (1-5)
-            $table->text('comment'); // Tulisan review
-            $table->string('province'); // Tambahan provinsi sesuai notes
+            
+            $table->string('reviewer_name');  
+            $table->string('reviewer_email'); 
+            $table->string('reviewer_phone'); 
+            $table->string('province');      
+            
+            $table->integer('rating'); 
+            $table->text('comment');   
             $table->timestamps();
 
-            // Constraint: Satu user hanya boleh 1 review per produk
-            $table->unique(['product_id', 'user_id']);
+            $table->unique(['product_id', 'reviewer_email'], 'review_email_unique');
+            
+            $table->unique(['product_id', 'reviewer_phone'], 'review_phone_unique');
         });
     }
 

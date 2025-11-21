@@ -8,9 +8,13 @@ use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
 
 class ProductController extends Controller
-{
+{   
+    // Index melihat produk di katalog
     public function index(Request $request)
     {
         // Mulai Query Builder
@@ -43,65 +47,129 @@ class ProductController extends Controller
         return response()->json(['data' => $products]);
     }
 
-    public function store(Request $request)
+    // Index List Produk Penjual
+    public function indexSeller(Request $request)
     {
-        // Pastikan user adalah penjual yang aktif
-        if (Auth::user()->status !== 'active') {
-            return response()->json(['message' => 'Akun Anda belum aktif.'], 403);
-        }
+        $products = Product::where('user_id', Auth::id())
+            ->with('category:id,name')
+            ->select('id', 'category_id', 'name', 'price', 'stock', 'brand', 'condition', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:product_categories,id',
-            'brand' => 'required|string',
-            'warranty_type' => 'required|string',
-            'condition' => 'required|in:baru,bekas',
-            'stock' => 'required|integer',
-            'description' => 'required|string',
-            'main_image' => 'required|image|max:2048',
-            'detail_images.*' => 'image|max:2048' // Array gambar tambahan
-        ]);
-
-        if ($validator->fails()) return response()->json($validator->errors(), 422);
-
-        // Upload Main Image
-        $mainImagePath = $request->file('main_image')->store('public/products');
-        $mainImagePath = str_replace('public/', '', $mainImagePath);
-
-        // Simpan Produk
-        $product = Product::create([
-            'user_id' => Auth::id(),
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'price' => $request->price,
-            'brand' => $request->brand,
-            'warranty_type' => $request->warranty_type,
-            'condition' => $request->condition,
-            'stock' => $request->stock,
-            'description' => $request->description,
-            'main_image' => $mainImagePath,
-            'total_sold' => 0
-        ]);
-
-        // Upload Detail Images (jika ada)
-        if ($request->hasFile('detail_images')) {
-            foreach ($request->file('detail_images') as $image) {
-                $path = $image->store('public/products/details');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_path' => str_replace('public/', '', $path)
-                ]);
-            }
-        }
-
-        return response()->json(['message' => 'Produk berhasil ditambahkan', 'data' => $product], 201);
+        return response()->json(['success' => true, 'data' => $products]);
     }
 
-public function show($id)
+    // Detail produk yang ditunjukan ke seller saja
+    public function showSeller($id)
     {
-        // Hapus 'reviews.user' dari eager loading karena relasi user sudah tidak ada
+        $product = Product::where('user_id', Auth::id())
+            ->where('id', $id)
+            ->with(['category', 'images'])
+            ->first();
+
+        if (!$product) return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+
+        return response()->json(['success' => true, 'data' => $product]);
+    }    
+
+    // Upload produk untuk penjual
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'category_id'   => 'required|exists:product_categories,id',
+            'name'          => 'required|string|max:255',
+            'price'         => 'required|numeric|min:0',
+            'brand'         => 'required|string|max:100',
+            'warranty_type' => 'required|string',
+            
+            // PENTING: Sesuaikan dengan Enum di Database Anda (baru, bekas)
+            'condition'     => 'required|in:baru,bekas', 
+            
+            'stock'         => 'required|integer|min:1',
+            'description'   => 'required|string',
+            'main_image'    => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'additional_images' => 'array|max:4',
+            'additional_images.*' => 'image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        if ($validator->fails()) return response()->json(['errors' => $validator->errors()], 422);
+
+        try {
+            DB::beginTransaction();
+
+            // 1. SIAPKAN NAMA FILE CANTIK (Slug dari nama produk)
+            // Contoh: "Laptop Gaming Lenovo" -> "laptop-gaming-lenovo"
+            // Kita tambahkan time() sedikit di belakang biar unik kalau ada user upload nama barang sama persis
+            $slugName = Str::slug($request->name); 
+            $timestamp = time(); // Opsional: Biar ga ketimpa kalo ada barang namanya sama persis
+
+            // --- MAIN IMAGE ---
+            $mainFile = $request->file('main_image');
+            $mainExt  = $mainFile->getClientOriginalExtension();
+            
+            // Format: laptop-gaming-lenovo-173222.jpg
+            $mainName = $slugName . '-' . $timestamp . '.' . $mainExt;
+            
+            // Simpan ke folder 'products'
+            $mainImagePath = $mainFile->storeAs('products', $mainName, 'public');
+
+
+            // 2. CREATE PRODUCT
+            $product = Product::create([
+                'user_id'       => Auth::id(),
+                'category_id'   => $request->category_id,
+                'name'          => $request->name,
+                'price'         => $request->price,
+                'brand'         => $request->brand,
+                'warranty_type' => $request->warranty_type,
+                'condition'     => $request->condition,
+                'stock'         => $request->stock,
+                'description'   => $request->description,
+                'main_image'    => $mainImagePath,
+            ]);
+
+
+            // 3. ADDITIONAL IMAGES (LOOPING INDEX)
+            if ($request->hasFile('additional_images')) {
+                // Gunakan $index untuk penomoran (0, 1, 2...)
+                foreach ($request->file('additional_images') as $index => $file) {
+                    $ext = $file->getClientOriginalExtension();
+                    
+                    // Urutan dimulai dari 1, jadi ($index + 1)
+                    // Format: laptop-gaming-lenovo-1-173222.jpg
+                    $detailName = $slugName . '-' . ($index + 1) . '-' . $timestamp . '.' . $ext;
+
+                    // Simpan ke folder 'products/details'
+                    $path = $file->storeAs('products/details', $detailName, 'public');
+                    
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_path' => $path
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Produk berhasil diupload', 'data' => $product], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+                return response()->json([
+                'success' => false,
+                'message' => 'Server Error: ' . $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
+        }
+    }
+
+    public function show($id)
+    {
         $product = Product::with(['images', 'seller', 'reviews', 'category'])->findOrFail($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+        }
         
         $data = [
             'id' => $product->id,
@@ -122,8 +190,7 @@ public function show($id)
             ],
             'reviews' => $product->reviews->map(function($review) {
                 return [
-                    // Ambil nama langsung dari kolom guest_name
-                    'user' => $review->guest_name, 
+                    'user' => $review->reviewer_name, 
                     'rating' => $review->rating,
                     'comment' => $review->comment,
                     'province' => $review->province,
