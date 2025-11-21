@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import RegisterIllustration from '../assets/images/Register.svg';
 
-
 function Register() {
   const navigate = useNavigate();
   
@@ -103,7 +102,7 @@ function Register() {
     }
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrors({});
@@ -118,10 +117,8 @@ const handleSubmit = async (e) => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       
-      // 1. Tampilkan Pesan Sukses (Ambil message dari backend)
       alert(response.data.message || "Registrasi berhasil! Mohon cek email secara berkala untuk info aktivasi.");
 
-      // 2. Lempar ke Home (Bukan Dashboard)
       navigate('/'); 
 
     } catch (error) {
@@ -129,7 +126,7 @@ const handleSubmit = async (e) => {
         setErrors(error.response.data.errors || {});
       } else {
         console.error(error);
-        alert('❌ Terjadi kesalahan pada server.');
+        alert('Terjadi kesalahan pada server.');
       }
     } finally {
       setLoading(false);
@@ -150,8 +147,9 @@ const handleSubmit = async (e) => {
 
   return (
     <div className="w-full h-[calc(100vh-8rem)] flex justify-center items-center bg-white">
-      <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row max-w-6xl border border-gray-100 h-[92%]">
-        <div className="hidden md:flex w-full md:w-2/5 bg-[#CBE4E8] items-center justify-center p-10 relative">
+      <div className="w-full bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.08),0_0_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row max-w-6xl border border-gray-100 h-[92%]">
+        
+        <div className="hidden md:flex w-full md:w-2/5 bg-white items-center justify-center p-10 relative">
             <div className="text-center sticky top-10">
                 <img src={RegisterIllustration} alt="Register Illustration" className="w-full h-auto object-contain" />
             </div>
@@ -162,7 +160,7 @@ const handleSubmit = async (e) => {
             Create your Account
           </h2>
           <p className="text-gray-500 font-poppins mb-8">
-            Mulai berjualan dengan mudah di MartPlace.
+             Enter your details below
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-2">

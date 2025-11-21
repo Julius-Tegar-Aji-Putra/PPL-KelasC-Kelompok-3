@@ -3,6 +3,18 @@ import { FiArrowRight } from 'react-icons/fi';
 import BannerIllustration from '../assets/images/Banner.svg';
 
 function Hero() {
+  // 1. FUNGSI BARU DITAMBAHKAN DI SINI
+  const handleScroll = (e) => {
+    e.preventDefault(); // Mencegah link melompat kasar (default browser)
+    
+    // Mencari elemen dengan id "produk-kami" (yang sudah kita set di Home.jsx)
+    const element = document.getElementById('produk-kami');
+    
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' }); // Scroll halus
+    }
+  };
+
   return (
     <div className="bg-text-2 text-text rounded-lg h-[344px] relative overflow-hidden">
       <div className="flex justify-between items-center h-full px-12">
@@ -15,9 +27,11 @@ function Hero() {
             Buy and sell everything you need for campus life.
           </p>
           
+          {/* 2. BAGIAN INI DIUBAH (href & onClick) */}
           <a 
-            href="#" 
-            className="inline-flex items-center gap-2 font-poppins font-medium text-base text-primary hover:underline transition-all hover:gap-4"
+            href="#produk-kami" 
+            onClick={handleScroll}
+            className="cursor-pointer inline-flex items-center gap-2 font-poppins font-medium text-base text-primary hover:underline transition-all hover:gap-4"
           >
             Shop Now <FiArrowRight />
           </a>

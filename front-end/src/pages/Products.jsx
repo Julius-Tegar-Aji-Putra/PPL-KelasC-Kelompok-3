@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSearchParams, Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import Loader from '../components/Loader';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -39,7 +40,7 @@ const Products = () => {
     return category ? category.name : 'Products';
   };
 
-  if (loading) return <div className="py-20 text-center">Loading...</div>;
+  if (loading) return <Loader />;
 
   return (
     <div className="w-full py-10 min-h-screen">

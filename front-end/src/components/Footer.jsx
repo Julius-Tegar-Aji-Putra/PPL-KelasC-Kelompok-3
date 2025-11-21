@@ -17,12 +17,14 @@ function Footer() {
         <div className="flex flex-col md:flex-row justify-between gap-10">
           
           <div className="space-y-4 md:w-1/3 lg:w-[400px]">
-            <h3 className="text-2xl font-bold font-inter">CampusMarket</h3>
+            <h3 className="text-2xl font-bold font-inter">MartPlace</h3>
             <p className="font-poppins text-sm leading-relaxed">
-              CampusMarket is a digital marketplace focused on student needs. 
-              The platform provides buying, selling, and bargaining features 
-              to support student economic activities in a modern, practical, 
-              and user-friendly way.
+              MartPlace is a product catalog platform that enables 
+              verified sellers to showcase their inventory. Public 
+              visitors can search for products, as well as provide 
+              ratings and comments without registration. The system 
+              features email notifications, analytical dashboards, 
+              and automated reporting to monitor store performance.
             </p>
           </div>
 
@@ -33,7 +35,7 @@ function Footer() {
                 Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, 
                 Kota Semarang, Jawa Tengah 50275
               </p>
-              <p>martplace@gmail.com</p>
+              <p>martplace.ac@gmail.com</p>
               <p>+6285176909090</p>
             </div>
           </div>
