@@ -147,7 +147,7 @@ function Register() {
 
   return (
     <div className="w-full h-[calc(100vh-8rem)] flex justify-center items-center bg-white">
-      <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row max-w-6xl border border-gray-100 h-[92%]">
+      <div className="w-full bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.08),0_0_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row max-w-6xl border border-gray-100 h-[92%]">
         
         <div className="hidden md:flex w-full md:w-2/5 bg-white items-center justify-center p-10 relative">
             <div className="text-center sticky top-10">

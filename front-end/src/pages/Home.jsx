@@ -8,7 +8,10 @@ function Home() {
     <>
       <Hero /> 
       <CategorySection />
-      <ProductSection />
+      
+      <div id="produk-kami">
+        <ProductSection />
+      </div>
     </>
   );
 }

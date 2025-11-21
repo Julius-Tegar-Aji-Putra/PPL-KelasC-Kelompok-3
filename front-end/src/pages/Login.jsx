@@ -55,7 +55,7 @@ function Login() {
 
   return (
     <div className="w-full flex justify-center items-center py-12">
-      <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row max-w-5xl border border-gray-100">
+      <div className="w-full bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.08),0_0_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row max-w-5xl border border-gray-100">
         
         <div className="hidden md:flex w-full md:w-1/2 bg-white items-center justify-center p-10 relative">
           <div className="text-center">

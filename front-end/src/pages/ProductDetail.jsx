@@ -30,7 +30,7 @@ const ProductDetail = () => {
       style: 'currency',
       currency: 'IDR',
       minimumFractionDigits: 0,
-    }).format(price);
+     }).format(price);
   };
 
   if (loading) return <div className="py-20 text-center">Loading...</div>;
@@ -45,6 +45,7 @@ const ProductDetail = () => {
     <div className="w-full py-10">
       <div className="container mx-auto px-4 md:px-0">
         
+        {/* --- HEADER PRODUCT DETAILS (Referensi Style) --- */}
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex items-center gap-4">
             <div className="w-5 h-10 bg-[#DB4444] rounded-md"></div>
@@ -54,6 +55,7 @@ const ProductDetail = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           
+          {/* --- BAGIAN GAMBAR --- */}
           <div className="flex gap-4">
             <div className="flex flex-col gap-4">
               {allImages.map((img, index) => (
@@ -74,6 +76,7 @@ const ProductDetail = () => {
             </div>
           </div>
 
+          {/* --- BAGIAN INFORMASI PRODUK --- */}
           <div className="flex flex-col gap-6">
             
             <div>
@@ -144,10 +147,16 @@ const ProductDetail = () => {
         </div>
 
         <div className="mt-16">
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
-            <span className="text-gray-600">({product.reviews.length} Reviews)</span>
+          
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-5 h-10 bg-[#DB4444] rounded-md"></div>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-[#DB4444] font-bold text-lg">Customer Reviews</span>
+              <span className="text-gray-600 text-sm">({product.reviews.length} Reviews)</span>
+            </div>
           </div>
+
           {product.reviews.length > 0 ? (
             <div className="space-y-4">
               {product.reviews.map((review, index) => (
