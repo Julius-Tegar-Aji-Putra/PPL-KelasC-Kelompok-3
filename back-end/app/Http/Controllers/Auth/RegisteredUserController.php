@@ -26,7 +26,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
-            'nama_toko' => ['required', 'string', 'max:255'],
+            'nama_toko' => ['nullable', 'string', 'max:255', 'unique:users,nama_toko'],
             'deskripsi_singkat' => ['nullable', 'string'],
             'no_handphone' => ['required', 'string', 'max:15'],
             'alamat' => ['required', 'string'],

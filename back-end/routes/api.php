@@ -24,6 +24,9 @@ Route::get('/wilayah/villages', [WilayahController::class, 'getVillages']);
 
 // --- 2. Rute Public (Bisa diakses Pengunjung Tanpa Login) ---
 
+// 1. Search Suggestions (Autosuggest) 
+Route::get('/search/suggestions', [ProductController::class, 'searchSuggestions']);
+
 // Katalog Produk (List semua produk, bisa difilter nanti via query params)
 // Contoh akses: GET /api/products
 Route::get('/products', [ProductController::class, 'index']);
