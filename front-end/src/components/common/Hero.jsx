@@ -1,47 +1,46 @@
+//
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import BannerIllustration from '../../assets/images/Banner.svg';
 
 function Hero() {
-  // 1. FUNGSI BARU DITAMBAHKAN DI SINI
   const handleScroll = (e) => {
-    e.preventDefault(); // Mencegah link melompat kasar (default browser)
-    
-    // Mencari elemen dengan id "produk-kami" (yang sudah kita set di Home.jsx)
+    e.preventDefault(); 
     const element = document.getElementById('produk-kami');
-    
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' }); // Scroll halus
+      element.scrollIntoView({ behavior: 'smooth' }); 
     }
   };
 
   return (
     <div className="bg-text-2 text-text rounded-lg h-[344px] relative overflow-hidden">
       <div className="flex justify-between items-center h-full px-12">
-        <div className="space-y-6 text-left w-[380px]">
+        
+        {/* PERBAIKAN DI SINI: Ubah w-[400px] menjadi w-[500px] atau w-full md:w-3/5 */}
+        <div className="space-y-6 text-left w-full md:w-[500px] z-10">
+          
           <h1 className="text-5xl font-inter font-bold leading-tight">
-            Welcome to<br/>MartPlace
+            Selamat Datang di<br/>MartPlace
           </h1>
           
-          <p className="text-base font-poppins text-gray-300">
-            Buy and sell everything you need for campus life.
+          <p className="text-base font-poppins text-gray-300 max-w-[450px]">
+            Platform katalog kebutuhan mahasiswa.
           </p>
           
-          {/* 2. BAGIAN INI DIUBAH (href & onClick) */}
           <a 
             href="#produk-kami" 
             onClick={handleScroll}
             className="cursor-pointer inline-flex items-center gap-2 font-poppins font-medium text-base text-primary hover:underline transition-all hover:gap-4"
           >
-            Shop Now <FiArrowRight />
+            Belanja Sekarang <FiArrowRight />
           </a>
         </div>
 
-        <div className="hidden md:block"> 
+        <div className="hidden md:block absolute right-10 bottom-8"> 
           <img 
             src={BannerIllustration} 
             alt="MartPlace Illustration" 
-            className="rounded-lg w-[420px] h-[280px] object-contain"
+            className="w-[420px] h-[280px] object-contain"
           />
         </div>
       </div>

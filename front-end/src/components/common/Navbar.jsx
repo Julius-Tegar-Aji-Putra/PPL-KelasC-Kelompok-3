@@ -1,3 +1,4 @@
+//
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'; 
 import { Search, X } from 'lucide-react';
@@ -49,17 +50,14 @@ function Navbar() {
 
     try {
       setLoading(true);
-      console.log('Fetching suggestions for:', query);
       const response = await axios.get('/api/search/suggestions', {
         params: { query }
       });
-      console.log('Suggestions response:', response.data);
       const data = response.data || { products: [], stores: [] };
       setSuggestions(data);
       setShowSuggestions(true);
     } catch (error) {
       console.error('Error fetching suggestions:', error);
-      console.error('Error details:', error.response);
       setSuggestions({ products: [], stores: [] });
       setShowSuggestions(false);
     } finally {
@@ -109,7 +107,11 @@ function Navbar() {
   };
 
   return (
-    <header className="bg-primary shadow-sm border-b border-gray-200 h-24">
+    // PERUBAHAN DISINI: Tambahkan 'sticky top-0 z-50'
+    // sticky: Membuat elemen menempel
+    // top-0: Menempel di posisi paling atas (0px dari atas)
+    // z-50: Memastikan navbar berada di atas elemen lain (layer paling atas)
+    <header className="bg-primary shadow-sm border-b border-gray-200 h-24 sticky top-0 z-50">
       <div className="container mx-auto px-32 h-full">
         <div className={`flex items-center h-full ${isAuthPage ? 'justify-center' : 'justify-between'}`}>
           

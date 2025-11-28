@@ -1,8 +1,10 @@
+//
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; 
 import ProfileDropdown from '../../components/common/ProfileDropdown';
 import Loader from '../../components/common/Loader';
+import WelcomeAlert from '../../components/common/WelcomeAlert'; 
 
 // --- Helper Components ---
 const StatusBadge = ({ status }) => {
@@ -24,17 +26,31 @@ const AdminDashboard = () => {
     const [sellers, setSellers] = useState([]);
     const [selectedSeller, setSelectedSeller] = useState(null); 
     const [loading, setLoading] = useState(false);
+    
+    // State untuk Alert
+    const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
+    const [welcomeName, setWelcomeName] = useState('');
+
     const navigate = useNavigate();
+    const location = useLocation(); 
 
     // Base URL Constants
     const API_URL = 'http://localhost:8000/api'; 
     const STORAGE_URL = 'http://localhost:8000/storage';
 
-    // Auth Token
     const token = localStorage.getItem('auth_token');
     const authConfig = {
         headers: { Authorization: `Bearer ${token}` }
     };
+
+    // Effect untuk menangkap sinyal Login
+    useEffect(() => {
+        if (location.state?.showWelcome) {
+            setWelcomeName(location.state.userName || 'Admin');
+            setShowWelcomeAlert(true);
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     // Fetch Data
     const fetchPendingSellers = async () => {
@@ -48,7 +64,9 @@ const AdminDashboard = () => {
                 navigate('/login');
             }
         } finally {
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
         }
     };
 
@@ -109,11 +127,10 @@ const AdminDashboard = () => {
         </div>
     );
 
-    // --- Modal Detail (Updated Scrollbar) ---
+    // --- Modal Detail ---
     const SellerDetailModal = ({ seller, onClose }) => {
         if (!seller) return null;
 
-        // Komponen baris info
         const DetailRow = ({ label, value, isLong = false }) => (
             <div className="border-b border-gray-100 py-3 last:border-0">
                 <p className="text-xs font-bold text-gray-400 uppercase mb-1.5">{label}</p>
@@ -123,7 +140,6 @@ const AdminDashboard = () => {
             </div>
         );
 
-        // Header Section
         const SectionTitle = ({ title }) => (
             <div className="flex items-center gap-2 mb-3 mt-8 pb-2 border-b border-gray-200">
                 <div className="w-1 h-5 bg-secondary-2 rounded-full"></div>
@@ -135,7 +151,6 @@ const AdminDashboard = () => {
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
                 <div className="bg-white rounded-xl shadow-2xl w-full max-w-xl flex flex-col max-h-[90vh] overflow-hidden animate-fade-in-up">
                     
-                    {/* Header Modal */}
                     <div className="flex justify-between items-center px-8 py-6 border-b border-gray-200 bg-white">
                         <div>
                             <h2 className="text-2xl font-bold font-poppins text-text-2">Detail Pendaftar</h2>
@@ -149,10 +164,8 @@ const AdminDashboard = () => {
                         </button>
                     </div>
 
-                    {/* Body (Scrollable dengan custom-scrollbar) */}
                     <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                         
-                        {/* 1. Profil Utama */}
                         <div className="flex flex-col items-center text-center mb-8">
                             <div className="relative mb-4">
                                 <img 
@@ -167,10 +180,8 @@ const AdminDashboard = () => {
                             <StatusBadge status={seller.status || 'inactive'} />
                         </div>
 
-                        {/* 2. List Data */}
                         <div className="flex flex-col gap-2">
                             
-                            {/* Section: Kontak & Pribadi */}
                             <div>
                                 <SectionTitle title="Informasi Pribadi" />
                                 <div className="bg-gray-50 rounded-lg px-6 py-2 border border-gray-100">
@@ -179,7 +190,6 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
 
-                            {/* Section: Toko */}
                             <div>
                                 <SectionTitle title="Informasi Toko" />
                                 <div className="bg-gray-50 rounded-lg px-6 py-2 border border-gray-100">
@@ -188,7 +198,6 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
 
-                            {/* Section: Alamat */}
                             <div>
                                 <SectionTitle title="Alamat Lengkap" />
                                 <div className="bg-gray-50 rounded-lg px-6 py-2 border border-gray-100">
@@ -209,7 +218,6 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
 
-                            {/* Section: Dokumen */}
                             <div>
                                 <SectionTitle title="Dokumen KTP" />
                                 <div className="mt-4 border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50 flex justify-center">
@@ -240,7 +248,6 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Footer: Tombol Aksi */}
                     <div className="p-8 border-t border-gray-200 bg-white flex gap-4">
                         <button 
                             onClick={() => handleVerification(seller.id, 'rejected')}
@@ -264,11 +271,18 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="flex h-screen bg-primary font-poppins overflow-hidden">
+        <div className="flex h-screen bg-primary font-poppins overflow-hidden relative">
+            
+            {showWelcomeAlert && (
+                <WelcomeAlert 
+                    message={`Selamat datang kembali, Admin ${welcomeName}!`}
+                    onClose={() => setShowWelcomeAlert(false)}
+                />
+            )}
+
             <Sidebar />
             
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                {/* Navbar */}
                 <header className="bg-primary border-b border-gray-200 h-24 flex items-center px-8 flex-shrink-0">
                     <div className="flex-1"></div>
                     <div className="flex items-center gap-4">
@@ -281,75 +295,77 @@ const AdminDashboard = () => {
                 </header>
 
                 <main className="flex-1 overflow-y-auto bg-primary p-8">
-                    {activeMenu === 'verification' && (
-                        <div className="max-w-7xl mx-auto">
-                            <div className="mb-10">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-5 h-10 bg-red-500 rounded-md"></div>
-                                    <h2 className="text-4xl font-semibold font-poppins text-slate-900">Verifikasi Penjual</h2>
+                    {loading ? (
+                        <Loader />
+                    ) : (
+                        activeMenu === 'verification' && (
+                            <div className="max-w-7xl mx-auto">
+                                <div className="mb-10">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-5 h-10 bg-red-500 rounded-md"></div>
+                                        <h2 className="text-4xl font-semibold font-poppins text-slate-900">Verifikasi Penjual</h2>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead className="bg-secondary">
-                                            <tr>
-                                                <th className="px-6 py-4 text-left text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Penjual</th>
-                                                <th className="px-6 py-4 text-left text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Toko</th>
-                                                <th className="px-6 py-4 text-left text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Kontak</th>
-                                                <th className="px-6 py-4 text-center text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {loading && sellers.length === 0 ? (
-                                                <tr><td colSpan="4" className="px-6 py-12 text-center text-gray-500 font-poppins">Memuat data...</td></tr>
-                                            ) : sellers.length > 0 ? (
-                                                sellers.map((seller) => (
-                                                    <tr key={seller.id} className="hover:bg-secondary transition-colors">
-                                                        <td className="px-6 py-4">
-                                                            <div className="flex items-center">
-                                                                <img 
-                                                                    className="h-12 w-12 rounded-full object-cover border-2 border-gray-200" 
-                                                                    src={seller.foto ? `${STORAGE_URL}/${seller.foto}` : 'https://via.placeholder.com/50'} 
-                                                                    alt=""
-                                                                    onError={(e) => { e.target.src = 'https://via.placeholder.com/50'; }}
-                                                                />
-                                                                <div className="ml-4">
-                                                                    <div className="text-sm font-semibold font-poppins text-text-2">{seller.nama}</div>
-                                                                    <div className="text-xs font-poppins text-gray-500">{seller.email}</div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <div className="text-sm font-medium font-poppins text-text-2">{seller.nama_toko || '-'}</div>
-                                                            <div className="text-xs font-poppins text-gray-500">{seller.regency_name || '-'}</div>
-                                                        </td>
-                                                        <td className="px-6 py-4 text-sm font-poppins text-gray-600">
-                                                            {seller.no_handphone || '-'}
-                                                        </td>
-                                                        <td className="px-6 py-4 text-center">
-                                                            <button 
-                                                                onClick={() => setSelectedSeller(seller)}
-                                                                className="bg-secondary-2 hover:bg-red-600 text-white px-5 py-2 rounded-lg text-sm font-medium font-poppins shadow-md hover:shadow-lg transition-all"
-                                                            >
-                                                                Review
-                                                            </button>
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                                    <div className="overflow-x-auto">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                            <thead className="bg-secondary">
+                                                <tr>
+                                                    <th className="px-6 py-4 text-left text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Penjual</th>
+                                                    <th className="px-6 py-4 text-left text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Toko</th>
+                                                    <th className="px-6 py-4 text-left text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Kontak</th>
+                                                    <th className="px-6 py-4 text-center text-xs font-semibold font-poppins text-gray-700 uppercase tracking-wider">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                                {sellers.length === 0 ? (
+                                                    <tr>
+                                                        <td colSpan="4" className="px-6 py-12 text-center">
+                                                            <div className="text-gray-400 text-lg font-poppins">Tidak ada antrian verifikasi</div>
                                                         </td>
                                                     </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan="4" className="px-6 py-12 text-center">
-                                                        <div className="text-gray-400 text-lg font-poppins">Tidak ada antrian verifikasi</div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
+                                                ) : (
+                                                    sellers.map((seller) => (
+                                                        <tr key={seller.id} className="transition-colors"> {/* HAPUS hover:bg-secondary */}
+                                                            <td className="px-6 py-4">
+                                                                <div className="flex items-center">
+                                                                    <img 
+                                                                        className="h-12 w-12 rounded-full object-cover border-2 border-gray-200" 
+                                                                        src={seller.foto ? `${STORAGE_URL}/${seller.foto}` : 'https://via.placeholder.com/50'} 
+                                                                        alt=""
+                                                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/50'; }}
+                                                                    />
+                                                                    <div className="ml-4">
+                                                                        <div className="text-sm font-semibold font-poppins text-text-2">{seller.nama}</div>
+                                                                        <div className="text-xs font-poppins text-gray-500">{seller.email}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="text-sm font-medium font-poppins text-text-2">{seller.nama_toko || '-'}</div>
+                                                                <div className="text-xs font-poppins text-gray-500">{seller.regency_name || '-'}</div>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-sm font-poppins text-gray-600">
+                                                                {seller.no_handphone || '-'}
+                                                            </td>
+                                                            <td className="px-6 py-4 text-center">
+                                                                <button 
+                                                                    onClick={() => setSelectedSeller(seller)}
+                                                                    className="bg-secondary-2 hover:bg-red-600 text-white px-5 py-2 rounded-lg text-sm font-medium font-poppins shadow-md hover:shadow-lg transition-all"
+                                                                >
+                                                                    Review
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )
                     )}
                 </main>
             </div>

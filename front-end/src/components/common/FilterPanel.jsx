@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 
 const FilterPanel = ({ filters, onFilterChange, onClearFilters }) => {
   const [categories, setCategories] = useState([]);
@@ -72,8 +72,6 @@ const FilterPanel = ({ filters, onFilterChange, onClearFilters }) => {
     onFilterChange({ ...filters, [key]: value });
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => value !== null && value !== '');
-
   const FilterSection = ({ title, sectionKey, children }) => (
     <div className="border-b border-gray-200 pb-4">
       <button
@@ -98,20 +96,9 @@ const FilterPanel = ({ filters, onFilterChange, onClearFilters }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <Filter className="w-5 h-5 text-[#DB4444]" />
-          <h3 className="text-lg font-bold text-gray-900">Filter</h3>
-        </div>
-        {hasActiveFilters && (
-          <button
-            onClick={onClearFilters}
-            className="text-sm text-[#DB4444] hover:text-red-700 font-medium flex items-center gap-1"
-          >
-            <X className="w-4 h-4" />
-            Clear All
-          </button>
-        )}
+      <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
+        <Filter className="w-5 h-5 text-[#DB4444]" />
+        <h3 className="text-lg font-bold text-gray-900">Filter</h3>
       </div>
 
       <div className="space-y-6">

@@ -9,6 +9,8 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [regencies, setRegencies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     current_page: 1,
@@ -36,6 +38,7 @@ const Products = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchProvinces();
   }, []);
 
   useEffect(() => {
@@ -46,6 +49,12 @@ const Products = () => {
     fetchProducts();
   }, [filters]);
 
+  useEffect(() => {
+    if (filters.province_id) {
+      fetchRegencies(filters.province_id);
+    }
+  }, [filters.province_id]);
+
   const fetchCategories = async () => {
     try {
       const response = await axios.get('/api/categories');
@@ -53,6 +62,31 @@ const Products = () => {
       setCategories(Array.isArray(categoryData) ? categoryData : []);
     } catch (error) {
       console.error('Error fetching categories:', error);
+    }
+  };
+
+  const fetchProvinces = async () => {
+    try {
+      const response = await axios.get('/api/wilayah/provinces');
+      const provinceData = response.data?.data || [];
+      setProvinces(Array.isArray(provinceData) ? provinceData : []);
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+    }
+  };
+
+  const fetchRegencies = async (provinceCode) => {
+    if (!provinceCode) {
+      setRegencies([]);
+      return;
+    }
+    try {
+      const response = await axios.get(`/api/wilayah/regencies?province_id=${provinceCode}`);
+      const regencyData = response.data?.data || [];
+      setRegencies(Array.isArray(regencyData) ? regencyData : []);
+    } catch (error) {
+      console.error('Error fetching regencies:', error);
+      setRegencies([]);
     }
   };
 
@@ -131,7 +165,13 @@ const Products = () => {
   };
 
   const removeFilter = (filterKey) => {
-    const updatedFilters = { ...filters, [filterKey]: '', page: '1' };
+    let updatedFilters = { ...filters, [filterKey]: '', page: '1' };
+    
+    // If removing province, also remove regency
+    if (filterKey === 'province_id') {
+      updatedFilters.regency_id = '';
+    }
+    
     updateURLWithFilters(updatedFilters);
   };
 
@@ -155,11 +195,21 @@ const Products = () => {
     return 'Semua Produk';
   };
 
+  const getProvinceName = (code) => {
+    const province = provinces.find(p => p.code === code);
+    return province ? province.name : 'Provinsi dipilih';
+  };
+
+  const getRegencyName = (code) => {
+    const regency = regencies.find(r => r.code === code);
+    return regency ? regency.name : 'Kota/Kab dipilih';
+  };
+
   const ActiveFilterBadge = ({ label, value, onRemove }) => (
-    <div className="inline-flex items-center gap-2 bg-[#DB4444] text-white px-3 py-1 rounded-full text-sm">
-      <span>{label}: {value}</span>
-      <button onClick={onRemove} className="hover:bg-red-600 rounded-full p-0.5">
-        <X className="w-3 h-3" />
+    <div className="inline-flex items-center gap-1.5 bg-[#DB4444] text-white px-3 py-1.5 rounded-full text-sm">
+      <span className="leading-none">{label}: {value}</span>
+      <button onClick={onRemove} className="hover:bg-red-600 rounded-full p-0.5 inline-flex items-center justify-center">
+        <X className="w-3.5 h-3.5" />
       </button>
     </div>
   );
@@ -178,8 +228,17 @@ const Products = () => {
           <h2 className="text-4xl font-semibold text-slate-900">{getPageTitle()}</h2>
         </div>
 
+        {/* Active Filters Section */}
         {getActiveFiltersCount() > 0 && (
-          <div className="flex flex-wrap gap-2 mb-6">
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            <span className="text-sm font-semibold text-gray-700">Filter Aktif:</span>
+            {filters.category && (
+              <ActiveFilterBadge 
+                label="Kategori" 
+                value={categories.find(cat => cat.slug === filters.category)?.name || filters.category}
+                onRemove={() => removeFilter('category')}
+              />
+            )}
             {filters.condition && (
               <ActiveFilterBadge 
                 label="Kondisi" 
@@ -187,20 +246,35 @@ const Products = () => {
                 onRemove={() => removeFilter('condition')}
               />
             )}
+            {filters.province_id && (
+              <ActiveFilterBadge 
+                label="Provinsi" 
+                value={getProvinceName(filters.province_id)}
+                onRemove={() => removeFilter('province_id')}
+              />
+            )}
+            {filters.regency_id && (
+              <ActiveFilterBadge 
+                label="Kota/Kab" 
+                value={getRegencyName(filters.regency_id)}
+                onRemove={() => removeFilter('regency_id')}
+              />
+            )}
             {filters.sort && (
               <ActiveFilterBadge 
                 label="Urutan" 
                 value={
-                  filters.sort === 'price_asc' ? 'Termurah' : 
-                  filters.sort === 'price_desc' ? 'Termahal' : 'Terbaru'
-                } 
+                    filters.sort === 'price_asc' ? 'Termurah' : 
+                    filters.sort === 'price_desc' ? 'Termahal' : 'Terbaru'
+                  } 
                 onRemove={() => removeFilter('sort')}
               />
             )}
             <button
               onClick={handleClearFilters}
-              className="text-sm text-[#DB4444] hover:text-red-700 font-medium"
+              className="text-sm text-[#DB4444] hover:text-red-700 font-medium flex items-center gap-1"
             >
+              <X className="w-4 h-4" />
               Hapus Semua Filter
             </button>
           </div>
@@ -208,6 +282,7 @@ const Products = () => {
 
         <div className="flex gap-6">
           
+          {/* Filter Panel - Desktop Only */}
           <div className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-4">
               <FilterPanel 
@@ -218,12 +293,15 @@ const Products = () => {
             </div>
           </div>
 
+          {/* Products Grid */}
           <div className="flex-1">
             
+            {/* Products Count */}
             <div className="mb-4 text-sm text-gray-600">
               Menampilkan {products.length} dari {pagination.total} produk
             </div>
 
+            {/* Products Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {products.length > 0 ? (
                 products.map(product => (
@@ -237,6 +315,7 @@ const Products = () => {
               )}
             </div>
 
+            {/* Pagination */}
             {pagination.last_page > 1 && (
               <div className="mt-8 flex items-center justify-center gap-2">
                 <button

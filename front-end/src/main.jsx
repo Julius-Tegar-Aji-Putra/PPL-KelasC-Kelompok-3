@@ -6,7 +6,6 @@ import axios from 'axios'
 import App from './App.jsx'
 import './index.css'
 
-// ✅ Setup Axios Base Configuration
 axios.defaults.baseURL = 'http://localhost:8000';
 axios.defaults.headers.common['Accept'] = 'application/json';
 

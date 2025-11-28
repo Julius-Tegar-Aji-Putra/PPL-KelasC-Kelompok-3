@@ -32,7 +32,7 @@ const ProductCard = ({ product }) => {
         {/* Badge Kondisi (Pastikan API mengirim 'condition') */}
         <div className={`absolute top-3 left-3 px-3 py-1 rounded text-xs font-normal text-white 
           ${product.condition === 'baru' ? 'bg-[#00C24E]' : 'bg-[#DB4444]'}`}>
-          {product.condition === 'baru' ? 'NEW' : 'USED'}
+          {product.condition === 'baru' ? 'BARU' : 'BEKAS'}
         </div>
       </div>
 

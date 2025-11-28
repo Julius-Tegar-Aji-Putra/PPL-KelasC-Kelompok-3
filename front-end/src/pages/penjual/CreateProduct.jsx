@@ -1,13 +1,22 @@
+//
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Upload, X, ImagePlus } from 'lucide-react';
+import { ArrowLeft, Upload, X, ImagePlus, Save } from 'lucide-react';
+
+// 1. IMPORT KOMPONEN CUSTOM
+import CustomToast from '../../components/penjual/CustomToast';
+import ConfirmModal from '../../components/penjual/ConfirmModal';
 
 function CreateProduct() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     
+    // 2. STATE UNTUK UI CUSTOM
+    const [toast, setToast] = useState(null); // { type: 'success'|'error', message: '' }
+    const [showConfirm, setShowConfirm] = useState(false);
+
     // Form State
     const [formData, setFormData] = useState({
         category_id: '',
@@ -26,7 +35,7 @@ function CreateProduct() {
     const [additionalImages, setAdditionalImages] = useState([]);
     const [additionalPreviews, setAdditionalPreviews] = useState([]);
 
-    // Error State
+    // Error State (Validasi Form)
     const [errors, setErrors] = useState({});
 
     // Auth Token
@@ -43,12 +52,11 @@ function CreateProduct() {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('/api/categories');
-                // Handle different response structures
                 const categoryData = response.data?.data || response.data || [];
                 setCategories(Array.isArray(categoryData) ? categoryData : []);
             } catch (error) {
                 console.error('Gagal mengambil kategori', error);
-                setCategories([]); // Set empty array on error
+                setCategories([]);
             }
         };
         fetchCategories();
@@ -57,11 +65,7 @@ function CreateProduct() {
     // Handle Input Change
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-        // Clear error saat user mengetik
+        setFormData(prev => ({ ...prev, [name]: value }));
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: null }));
         }
@@ -71,8 +75,9 @@ function CreateProduct() {
     const handleMainImage = (e) => {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 2048000) { // 2MB
-                setErrors(prev => ({ ...prev, main_image: ['Ukuran file maksimal 2MB'] }));
+            if (file.size > 2048000) { 
+                // GANTI ALERT DENGAN TOAST
+                setToast({ type: 'error', message: 'Ukuran file maksimal 2MB' });
                 return;
             }
             setMainImage(file);
@@ -86,78 +91,95 @@ function CreateProduct() {
         const files = Array.from(e.target.files);
         
         if (additionalImages.length + files.length > 4) {
-            setErrors(prev => ({ ...prev, additional_images: ['Maksimal 4 gambar tambahan'] }));
+            // GANTI ALERT DENGAN TOAST
+            setToast({ type: 'error', message: 'Maksimal 4 gambar tambahan' });
             return;
         }
 
         const validFiles = files.filter(file => file.size <= 2048000);
         if (validFiles.length !== files.length) {
-            setErrors(prev => ({ ...prev, additional_images: ['Beberapa file melebihi 2MB'] }));
+            setToast({ type: 'error', message: 'Beberapa file melebihi 2MB dan diabaikan' });
         }
 
         setAdditionalImages(prev => [...prev, ...validFiles]);
         const newPreviews = validFiles.map(file => URL.createObjectURL(file));
         setAdditionalPreviews(prev => [...prev, ...newPreviews]);
-        setErrors(prev => ({ ...prev, additional_images: null }));
     };
 
-    // Remove Additional Image
     const removeAdditionalImage = (index) => {
         setAdditionalImages(prev => prev.filter((_, i) => i !== index));
         setAdditionalPreviews(prev => prev.filter((_, i) => i !== index));
     };
 
-    // Handle Submit
-    const handleSubmit = async (e) => {
+    // 3. UBAH LOGIKA SUBMIT: TRIGGER MODAL DULU
+    const handlePreSubmit = (e) => {
         e.preventDefault();
-        setLoading(true);
         setErrors({});
 
-        // Validasi manual
+        // Validasi Manual
+        let hasError = false;
         if (!mainImage) {
-            setErrors({ main_image: ['Gambar utama wajib diupload'] });
-            setLoading(false);
+            setErrors(prev => ({ ...prev, main_image: ['Gambar utama wajib diupload'] }));
+            hasError = true;
+        }
+        if (!formData.name) {
+            setErrors(prev => ({ ...prev, name: ['Nama produk wajib diisi'] }));
+            hasError = true;
+        }
+        // ... (Tambahkan validasi lain jika perlu)
+
+        if (hasError) {
+            setToast({ type: 'error', message: 'Mohon lengkapi data yang wajib diisi.' });
             return;
         }
 
+        // Jika lolos validasi, munculkan Modal Konfirmasi
+        setShowConfirm(true);
+    };
+
+    // 4. EKSEKUSI API SETELAH KONFIRMASI (DI DALAM MODAL)
+    const handleConfirmSubmit = async () => {
+        setLoading(true);
+        
         try {
             const formDataToSend = new FormData();
-            
-            // Append form fields
             Object.keys(formData).forEach(key => {
                 formDataToSend.append(key, formData[key]);
             });
-
-            // Append main image
             formDataToSend.append('main_image', mainImage);
-
-            // Append additional images
             additionalImages.forEach(image => {
                 formDataToSend.append('additional_images[]', image);
             });
 
             const response = await axios.post('/api/seller/products', formDataToSend, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    ...authConfig.headers,
                     'Content-Type': 'multipart/form-data',
-                    Accept: 'application/json'
                 }
             });
 
             if (response.data.success) {
-                alert('Produk berhasil ditambahkan!');
-                navigate('/penjual/products');
+                setShowConfirm(false); // Tutup modal
+                setToast({ type: 'success', message: 'Produk berhasil ditambahkan!' });
+                
+                // Delay redirect agar notifikasi terbaca
+                setTimeout(() => {
+                    navigate('/penjual/products');
+                }, 1500);
             }
         } catch (error) {
             console.error('Error upload produk:', error);
+            setShowConfirm(false); // Tutup modal biar user bisa edit lagi
+            
             if (error.response && error.response.data.errors) {
                 setErrors(error.response.data.errors);
+                setToast({ type: 'error', message: 'Periksa kembali inputan Anda.' });
             } else if (error.response && error.response.status === 401) {
                 localStorage.removeItem('auth_token');
                 localStorage.removeItem('user');
                 navigate('/login');
             } else {
-                alert('Gagal menambahkan produk. Silakan coba lagi.');
+                setToast({ type: 'error', message: 'Gagal menambahkan produk. Silakan coba lagi.' });
             }
         } finally {
             setLoading(false);
@@ -165,7 +187,26 @@ function CreateProduct() {
     };
 
     return (
-        <div className="font-poppins h-full flex flex-col overflow-y-auto">
+        <div className="font-poppins h-full flex flex-col overflow-y-auto relative">
+            
+            {/* 5. RENDER CUSTOM COMPONENTS DI SINI */}
+            {toast && (
+                <CustomToast 
+                    type={toast.type} 
+                    message={toast.message} 
+                    onClose={() => setToast(null)} 
+                />
+            )}
+
+            <ConfirmModal 
+                isOpen={showConfirm} 
+                onClose={() => setShowConfirm(false)} 
+                onConfirm={handleConfirmSubmit}
+                loading={loading}
+                title="Simpan Produk?"
+                message="Pastikan semua informasi produk sudah benar sebelum dipublikasikan ke etalase toko."
+            />
+
             <div className="flex-1 p-8">
                 <div className="max-w-5xl mx-auto">
                     
@@ -183,10 +224,10 @@ function CreateProduct() {
                         </div>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                    {/* Form - Ubah onSubmit menjadi handlePreSubmit */}
+                    <form onSubmit={handlePreSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
                         
-                        {/* Informasi Dasar */}
+                        {/* ... (BAGIAN INPUT FORM DI BAWAH INI SAMA PERSIS, TIDAK PERLU DIUBAH) ... */}
                         <div className="mb-8">
                             <h2 className="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-gray-200">
                                 Informasi Produk
@@ -207,7 +248,7 @@ function CreateProduct() {
                                             errors.name ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                         placeholder="Contoh: Laptop Gaming Lenovo Legion"
-                                        required
+                                        // required dihapus agar validasi manual handlePreSubmit yang menangani
                                     />
                                     {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name[0]}</p>}
                                 </div>
@@ -455,17 +496,8 @@ function CreateProduct() {
                                 disabled={loading}
                                 className="px-6 py-3 bg-secondary-2 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
-                                {loading ? (
-                                    <>
-                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                        <span>Mengunggah...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Upload className="w-4 h-4" />
-                                        <span>Tambah Produk</span>
-                                    </>
-                                )}
+                                <Save className="w-4 h-4" />
+                                <span>Simpan Produk</span>
                             </button>
                         </div>
                     </form>

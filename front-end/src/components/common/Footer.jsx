@@ -19,12 +19,12 @@ function Footer() {
           <div className="space-y-4 md:w-1/3 lg:w-[400px]">
             <h3 className="text-2xl font-bold font-inter">MartPlace</h3>
             <p className="font-poppins text-sm leading-relaxed">
-              MartPlace is a product catalog platform that enables 
-              verified sellers to showcase their inventory. Public 
-              visitors can search for products, as well as provide 
-              ratings and comments without registration. The system 
-              features email notifications, analytical dashboards, 
-              and automated reporting to monitor store performance.
+              MartPlace adalah platform katalog produk yang memungkinkan
+              penjual terverifikasi untuk menampilkan inventaris mereka.
+              Pengunjung umum dapat mencari produk serta memberikan rating
+              dan komentar tanpa perlu melakukan pendaftaran. Sistem ini
+              dilengkapi notifikasi email, dashboard analitik, dan laporan
+              otomatis untuk memantau performa toko.
             </p>
           </div>
 
