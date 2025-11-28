@@ -36,7 +36,7 @@ class ProductSeeder extends Seeder
                 'price'       => 25000000,
                 'stock'       => 5,
                 'brand'       => 'LENOVO',
-                'condition'   => 'Baru', // SESUAI ENUM DATABASE
+                'condition'   => 'Baru', 
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Laptop gaming ultra-slim dengan prosesor AMD Ryzen 9 dan grafis RTX 4060.',
                 'main_image'  => 'products/p1_main.jpg',
@@ -49,7 +49,7 @@ class ProductSeeder extends Seeder
                 'price'       => 850000,
                 'stock'       => 20,
                 'brand'       => 'Nike',
-                'condition'   => 'Bekas', // SESUAI ENUM DATABASE
+                'condition'   => 'Bekas', 
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Sepatu lari kondisi 95% mulus, baru dipakai 2 kali di indoor.',
                 'main_image'  => 'products/p2_main.jpg',
@@ -60,9 +60,9 @@ class ProductSeeder extends Seeder
                 'category_id' => $catElektronik->id,
                 'name'        => 'Kamera DSLR Canon EOS 800D Kit',
                 'price'       => 8500000,
-                'stock'       => 3,
+                'stock'       => 1,
                 'brand'       => 'Canon',
-                'condition'   => 'Bekas', // SESUAI ENUM DATABASE
+                'condition'   => 'Bekas', 
                 'warranty_type' => 'Garansi Distributor',
                 'description' => 'Kamera kondisi normal, karet kencang, tulisan jelas.',
                 'main_image'  => 'products/p3_main.jpg',

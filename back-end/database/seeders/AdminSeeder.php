@@ -13,7 +13,7 @@ class AdminSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@marketplace.com'],
             [
-                'nama'     => 'Super Admin', // Ganti 'name' jadi 'nama'
+                'nama'     => 'Admin', 
                 'password' => Hash::make('password123'),
                 'role'     => 'admin',
                 'status'   => 'active',
