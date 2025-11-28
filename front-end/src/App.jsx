@@ -1,3 +1,4 @@
+//
 import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
@@ -8,13 +9,19 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 
-// --- UPDATE IMPORT ---
+// --- SELLER IMPORTS ---
 import SellerLayout from './components/penjual/SellerLayout'; 
 import PenjualDashboard from './pages/penjual/PenjualDashboard';
 import ProdukManajemen from './pages/penjual/ProdukManajemen';
 import CreateProduct from './pages/penjual/CreateProduct';
 
-import AdminDashboard from './pages/admin/AdminDashboard';
+// --- ADMIN IMPORTS (BARU) ---
+import AdminLayout from './components/admin/AdminLayout'; // Layout baru
+import AdminOverview from './pages/admin/AdminOverview';   // Dashboard Overview
+import SellerVerification from './pages/admin/SellerVerification'; // Halaman Verifikasi
+import AdminReports from './pages/admin/AdminReports';
+import SellerReports from './pages/penjual/SellerReports';
+
 import PrivateRoute from './components/common/PrivateRoute';
 import ScrollToTop from './components/common/ScrollToTop';
 
@@ -22,17 +29,19 @@ function App() {
   const location = useLocation();
   
   // Cek apakah sedang di halaman dashboard (admin atau penjual)
+  // Logic ini menyembunyikan Navbar & Footer global saat di dashboard
   const isDashboardRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/penjual');
   
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />
 
-      {/* Navbar Global */}
+      {/* Navbar Global (Hanya muncul di halaman publik) */}
       {!isDashboardRoute && <Navbar />}
 
       <main className={isDashboardRoute ? "" : "flex-grow container mx-auto px-4 md:px-32 py-4"}>
         <Routes>
+          {/* --- PUBLIC ROUTES --- */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -42,25 +51,29 @@ function App() {
           {/* --- SELLER ROUTES --- */}
           <Route path="/penjual" element={<PrivateRoute />}>
             <Route element={<SellerLayout />}>
-               {/* Redirect default ke dashboard overview */}
                <Route index element={<Navigate to="/penjual/dashboard" replace />} />
-               
-               {/* Menu 1: Dashboard Overview */}
                <Route path="dashboard" element={<PenjualDashboard />} />
-               
-               {/* Menu 2: Produk Manajemen */}
                <Route path="products" element={<ProdukManajemen />} />
-               
-               {/* Menu 3: Create Product */}
                <Route path="products/create" element={<CreateProduct />} />
+               
+               {/* ROUTE BARU PENJUAL */}
+               <Route path="reports" element={<SellerReports />} />
             </Route>
           </Route>
 
           {/* --- ADMIN ROUTES --- */}
-          <Route element={<PrivateRoute />}>
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin" element={<PrivateRoute />}>
+            <Route element={<AdminLayout />}>
+               <Route index element={<Navigate to="/admin/dashboard" replace />} />
+               <Route path="dashboard" element={<AdminOverview />} />
+               <Route path="verification" element={<SellerVerification />} />
+               
+               {/* ROUTE BARU ADMIN */}
+               <Route path="reports" element={<AdminReports />} />
+            </Route>
           </Route>
 
+          {/* Fallback Route */}
           <Route path="*" element={<Home />} />
         </Routes>
       </main>

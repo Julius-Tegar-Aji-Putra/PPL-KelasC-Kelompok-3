@@ -39,8 +39,6 @@ class SellerSeeder extends Seeder
                 'no_hp' => '081355556666',
                 'alamat' => 'Jl. Pemuda No. 1',
                 'nik' => '3374010101010003',
-                // PERHATIAN: Schema Anda enum('active', 'inactive'), jadi 'pending' akan error.
-                // Saya ganti 'inactive' agar sesuai schema.
                 'status' => 'inactive', 
             ],
             [

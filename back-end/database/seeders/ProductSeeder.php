@@ -36,21 +36,21 @@ class ProductSeeder extends Seeder
                 'price'       => 25000000,
                 'stock'       => 5,
                 'brand'       => 'LENOVO',
-                'condition'   => 'baru', // SESUAI ENUM DATABASE
-                'warranty_type' => 'resmi',
+                'condition'   => 'Baru', 
+                'warranty_type' => 'Garansi Resmi',
                 'description' => 'Laptop gaming ultra-slim dengan prosesor AMD Ryzen 9 dan grafis RTX 4060.',
                 'main_image'  => 'products/p1_main.jpg',
                 'images'      => ['products/details/p1_d1.jpg', 'products/details/p1_d2.jpg', 'products/details/p1_d3.jpg']
             ],
-                        [
+            [
                 'user_id'     => $sellerRina->id,
                 'category_id' => $catFashionPria->id,
                 'name'        => 'Sepatu Sneakers Running Air Zoom',
                 'price'       => 850000,
                 'stock'       => 20,
                 'brand'       => 'Nike',
-                'condition'   => 'bekas', // SESUAI ENUM DATABASE
-                'warranty_type' => 'tidak ada',
+                'condition'   => 'Bekas', 
+                'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Sepatu lari kondisi 95% mulus, baru dipakai 2 kali di indoor.',
                 'main_image'  => 'products/p2_main.jpg',
                 'images'      => ['products/details/p2_d1.jpg', 'products/details/p2_d2.jpg', 'products/details/p2_d3.jpg']
@@ -60,10 +60,10 @@ class ProductSeeder extends Seeder
                 'category_id' => $catElektronik->id,
                 'name'        => 'Kamera DSLR Canon EOS 800D Kit',
                 'price'       => 8500000,
-                'stock'       => 3,
+                'stock'       => 1,
                 'brand'       => 'Canon',
-                'condition'   => 'bekas', // SESUAI ENUM DATABASE
-                'warranty_type' => 'distributor',
+                'condition'   => 'Bekas', 
+                'warranty_type' => 'Garansi Distributor',
                 'description' => 'Kamera kondisi normal, karet kencang, tulisan jelas.',
                 'main_image'  => 'products/p3_main.jpg',
                 'images'      => ['products/details/p3_d1.jpg', 'products/details/p3_d2.jpg', 'products/details/p3_d3.jpg']
@@ -75,8 +75,8 @@ class ProductSeeder extends Seeder
                 'price'       => 2500000,
                 'stock'       => 10,
                 'brand'       => 'Fossil',
-                'condition'   => 'baru', // SESUAI ENUM DATABASE
-                'warranty_type' => 'toko',
+                'condition'   => 'Baru', // SESUAI ENUM DATABASE
+                'warranty_type' => 'Garansi Toko',
                 'description' => 'Jam tangan kulit asli dengan desain minimalis dan elegan.',
                 'main_image'  => 'products/p4_main.jpg',
                 'images'      => ['products/details/p4_d1.jpg', 'products/details/p4_d2.jpg', 'products/details/p4_d3.jpg']

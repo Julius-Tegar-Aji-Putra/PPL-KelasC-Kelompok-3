@@ -1,8 +1,6 @@
-//
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-// Import Icon Panah (Chevron)
 import { MapPin, Store, ChevronLeft, ChevronRight } from 'lucide-react'; 
 import Loader from '../components/common/Loader';
 import RatingStars from '../components/product/RatingStars';
@@ -11,10 +9,7 @@ import ReviewForm from '../components/product/ReviewForm';
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  
-  // Menggunakan Index untuk navigasi (bukan URL langsung)
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
   const [loading, setLoading] = useState(true);
 
   const fetchProduct = async () => {
@@ -74,7 +69,7 @@ const ProductDetail = () => {
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex items-center gap-4">
             <div className="w-5 h-10 bg-secondary-2 rounded-md"></div>
-            <span className="text-secondary-2 font-bold text-lg">Product Details</span>
+            <span className="text-secondary-2 font-bold text-lg">Detail Produk</span>
           </div>
         </div>
 
@@ -150,13 +145,13 @@ const ProductDetail = () => {
                 <RatingStars rating={Math.round(averageRating)} size={18} />
                 <span className="text-gray-600">({product.reviews.length} reviews)</span>
                 <span className="text-gray-400">|</span>
-                <span className="text-gray-600">{product.total_sold} Sold</span>
+                <span className="text-gray-600">{product.total_sold}</span>
                 <div className={`px-3 py-1 rounded text-xs font-semibold text-white ${
                   product.condition === 'baru' ? 'bg-[#00C24E]' : 'bg-secondary-2'
                 }`}>
-                  {product.condition === 'baru' ? 'NEW' : 'USED'}
+                  {product.condition === 'baru' ? 'BARU' : 'BEKAS'}
                 </div>
-                <span className="text-green-600 font-medium">In Stock</span>
+                <span className="text-green-600 font-medium">Stok Tersedia</span>
               </div>
 
               <div className="text-3xl font-bold text-secondary-2 mb-4">
@@ -199,15 +194,15 @@ const ProductDetail = () => {
                   <p className="font-semibold text-gray-900">{product.brand}</p>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 mb-1">Warranty</p>
+                  <p className="text-sm text-gray-600 mb-1">Garansi</p>
                   <p className="font-semibold text-gray-900">{product.warranty_type}</p>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 mb-1">Condition</p>
+                  <p className="text-sm text-gray-600 mb-1">Kondisi</p>
                   <p className="font-semibold text-gray-900 capitalize">{product.condition}</p>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 mb-1">Stock</p>
+                  <p className="text-sm text-gray-600 mb-1">Stok</p>
                   <p className="font-semibold text-gray-900">{product.stock} units</p>
                 </div>
               </div>
