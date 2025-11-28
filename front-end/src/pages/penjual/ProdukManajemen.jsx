@@ -1,8 +1,9 @@
+//
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Plus, Package, Search, Eye } from 'lucide-react';
+import Loader from '../../components/common/Loader'; // 1. Import Loader
 
 // --- Helper Components ---
 const StockBadge = ({ stock }) => {
@@ -19,7 +20,6 @@ const StockBadge = ({ stock }) => {
 };
 
 // --- Main Component Definition ---
-// REVISI: Ganti nama fungsi export menjadi ProdukManajemen
 export default function ProdukManajemen() {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null); 
@@ -55,7 +55,10 @@ export default function ProdukManajemen() {
                 }
             }
         } finally {
-            setLoading(false);
+            // Sedikit delay agar transisi tidak terlalu kaget/flicker
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
         }
     };
 
@@ -71,8 +74,6 @@ export default function ProdukManajemen() {
             if (error.response) {
                 const status = error.response.status;
                 if (status === 401 || status === 403) {
-                    localStorage.removeItem('auth_token');
-                    localStorage.removeItem('user');
                     navigate('/login');
                 }
             }
@@ -96,6 +97,11 @@ export default function ProdukManajemen() {
             minimumFractionDigits: 0
         }).format(number);
     };
+
+    // 2. BLOCKING LOADER: Tampilkan Loader full screen jika sedang memuat data
+    if (loading) {
+        return <Loader />;
+    }
 
     // --- Modal Detail Produk ---
     const ProductDetailModal = ({ product, onClose }) => {
@@ -233,9 +239,11 @@ export default function ProdukManajemen() {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {loading ? (
-                                        <tr><td colSpan="6" className="px-6 py-12 text-center text-gray-500 font-poppins">Memuat data...</td></tr>
-                                    ) : filteredProducts.length === 0 ? (
+                                    {/* Logic Loading di dalam tabel dihapus, 
+                                        karena sudah di-handle oleh Blocking Loader di atas.
+                                        Langsung cek jika kosong atau ada isinya.
+                                    */}
+                                    {filteredProducts.length === 0 ? (
                                         <tr>
                                             <td colSpan="6" className="px-6 py-12 text-center">
                                                 <div className="flex flex-col items-center justify-center text-gray-400">

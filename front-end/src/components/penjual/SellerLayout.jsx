@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Package, LogOut, Menu, Home, LayoutDashboard } from 'lucide-react';
 import axios from 'axios';
+import Loader from '../common/Loader';
+import WelcomeAlert from '../common/WelcomeAlert';
 
 // Storage URL Constant
 const STORAGE_URL = 'http://localhost:8000/storage';
@@ -9,19 +11,39 @@ const STORAGE_URL = 'http://localhost:8000/storage';
 function SellerLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
+  const [welcomeName, setWelcomeName] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        localStorage.removeItem('user');
-      }
+    if (location.state?.showWelcome) {
+        setWelcomeName(location.state.userName || 'Seller');
+        setShowWelcomeAlert(true);
+        
+        window.history.replaceState({}, document.title);
     }
+  }, [location]);
+
+  useEffect(() => {
+    const checkUser = () => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          try {
+            setUser(JSON.parse(userData));
+          } catch (error) {
+            console.error('Error parsing user data:', error);
+            localStorage.removeItem('user');
+          }
+        }
+        
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+    };
+
+    checkUser();
   }, []);
 
   const handleLogout = () => {
@@ -31,7 +53,6 @@ function SellerLayout() {
     navigate('/login');
   };
 
-  // MENU SIDEBAR DIPERBARUI
   const menus = [
     { 
         name: 'Dashboard', 
@@ -40,56 +61,92 @@ function SellerLayout() {
     },
     { 
         name: 'Produk Manajemen', 
-        path: '/penjual/products', // URL diganti jadi /products biar rapi
+        path: '/penjual/products', 
         icon: <Package className="w-5 h-5" /> 
     },
   ];
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex h-screen w-full bg-gray-50 overflow-hidden font-poppins">
       
+      {/* 4. TAMPILKAN ALERT DISINI (Floating) */}
+      {showWelcomeAlert && (
+        <WelcomeAlert 
+            message={`Selamat datang kembali, ${welcomeName}!`}
+            onClose={() => setShowWelcomeAlert(false)}
+        />
+      )}
+
       {/* SIDEBAR */}
       <aside 
         className={`${
           isSidebarOpen ? 'w-64' : 'w-20'
-        } bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-full z-30`}
+        } bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col h-full z-30`}
       >
         <div className="h-24 flex items-center justify-center border-b border-gray-100">
-          <Link to="/" className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2">
-            {isSidebarOpen ? 'Seller Center' : 'SC'}
+          <Link to="/" className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden">
+            <span className={`transition-all duration-300 ${isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0'} overflow-hidden`}>
+                Penjual Dashboard
+            </span>
+            <span className={`transition-all duration-300 ${!isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0 hidden'}`}>
+                PD
+            </span>
           </Link>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-2">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden py-6 px-3 space-y-2 scrollbar-hide">
           {menus.map((menu) => (
             <Link
               key={menu.path}
               to={menu.path}
-              className={`flex items-center px-4 py-3.5 rounded-lg transition-colors ${
+              className={`flex items-center px-4 py-3.5 rounded-lg transition-colors group ${
                 location.pathname === menu.path
                   ? 'bg-red-50 text-secondary-2 font-semibold'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              {menu.icon}
-              {isSidebarOpen && <span className="ml-3 text-sm whitespace-nowrap">{menu.name}</span>}
+              <div className="min-w-[20px] flex items-center justify-center">
+                {menu.icon}
+              </div>
+              
+              <span 
+                className={`whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out
+                  ${isSidebarOpen 
+                    ? 'w-40 ml-3 opacity-100'
+                    : 'w-0 ml-0 opacity-0'
+                  }
+                `}
+              >
+                {menu.name}
+              </span>
             </Link>
           ))}
         </nav>
         
         <div className="p-4 border-t border-gray-100 space-y-2">
-             <Link to="/" className="flex items-center w-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <Home className="w-5 h-5" />
-                {isSidebarOpen && <span className="ml-3 whitespace-nowrap">Ke Home Page</span>}
-            </Link>
+          <Link 
+            to="/" 
+            className="flex items-center w-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors group"
+          >
+            <Home className="w-5 h-5 shrink-0" />
+            <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-3 opacity-100' : 'ml-0 w-0 opacity-0'}`}>
+              Ke Home Page
+            </span>
+          </Link>
 
-            <button 
-                onClick={handleLogout}
-                className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            >
-                <LogOut className="w-5 h-5" />
-                {isSidebarOpen && <span className="ml-3 whitespace-nowrap">Logout</span>}
-            </button>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group"
+          >
+            <LogOut className="w-5 h-5 shrink-0" />
+            <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-3 opacity-100' : 'ml-0 w-0 opacity-0'}`}>
+              Logout
+            </span>
+          </button>
         </div>
       </aside>
 
@@ -123,7 +180,6 @@ function SellerLayout() {
         </header>
 
         <main className="flex-1 overflow-y-auto bg-gray-50 relative">
-          {/* PENTING: context={{ user }} agar data user bisa diakses di PenjualDashboard */}
           <Outlet context={{ user }} /> 
         </main>
 

@@ -1,10 +1,13 @@
+//
 import { Navigate, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loader from './Loader'; // 1. Import Loader
 
 function PrivateRoute() {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading
   const [user, setUser] = useState(null);
+
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('auth_token');
@@ -20,13 +23,17 @@ function PrivateRoute() {
         });
 
         const userData = response.data;
-
         setUser(userData);
+        
+        // Simpan data user terbaru ke localStorage agar sinkron dengan SellerLayout
+        localStorage.setItem('user', JSON.stringify(userData));
+        
         setIsAuthenticated(true);
 
       } catch (error) {
         console.error("Auth check failed:", error);
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('user'); // Hapus user juga jika token invalid
         delete axios.defaults.headers.common['Authorization'];
         setIsAuthenticated(false);
       }
@@ -35,17 +42,12 @@ function PrivateRoute() {
     checkAuth();
   }, []);
 
+  // 2. GANTI TAMPILAN LOADING MANUAL DENGAN COMPONENT LOADER
   if (isAuthenticated === null) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-2 mx-auto mb-4"></div>
-          <p className="text-gray-600">Memeriksa status akun...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
+  // Kirim context user ke child route (Outlet)
   return isAuthenticated ? <Outlet context={{ user }} /> : <Navigate to="/login" replace />;
 }
 

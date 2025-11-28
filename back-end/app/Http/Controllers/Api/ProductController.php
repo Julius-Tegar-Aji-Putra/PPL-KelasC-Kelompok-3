@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,37 +15,151 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {   
-    // Index melihat produk di katalog
+/**
+     * 1. API UTAMA: FILTER & SEARCH BERTUMPUK (SRS-5 Poin 2, 3, 4, 5, 6)
+     * Endpoint: GET /api/products
+     * Params: search, category, condition, province_id, regency_id, store_id, min_price, max_price
+     */
     public function index(Request $request)
     {
-        // Mulai Query Builder
-        $query = Product::with(['seller', 'category']);
+        // 1. Query Builder (Sama seperti logika filter Anda sebelumnya)
+        $query = Product::with(['seller', 'category', 'reviews']);
 
-        // --- LOGIKA FILTER KATEGORI ---
-        // Jika ada parameter 'category' di URL (contoh: /api/products?category=phones)
-        if ($request->has('category') && $request->category != null) {
-            $slug = $request->category;
-            // Filter produk yang punya relasi kategori dengan slug tersebut
-            $query->whereHas('category', function($q) use ($slug) {
-                $q->where('slug', $slug);
+        // A. SEARCH
+        if ($request->filled('search')) {
+            $keyword = $request->search;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%");
             });
         }
 
-        // Eksekusi Query & Mapping Data
-        $products = $query->get()->map(function ($product) {
+        // B. FILTER KATEGORI
+        if ($request->filled('category')) {
+            $category = $request->category;
+            if (is_numeric($category)) {
+                $query->where('category_id', $category);
+            } else {
+                $query->whereHas('category', fn($q) => $q->where('slug', $category));
+            }
+        }
+
+        // C. FILTER KONDISI
+        if ($request->filled('condition') && in_array($request->condition, ['baru', 'bekas'])) {
+            $query->where('condition', $request->condition);
+        }
+
+        // D. FILTER TOKO SPESIFIK
+        if ($request->filled('store_id')) {
+            $query->where('user_id', $request->store_id);
+        }
+
+        // E. FILTER LOKASI (Hanya jika bukan filter toko)
+        if (!$request->filled('store_id') && ($request->filled('province_id') || $request->filled('regency_id'))) {
+            $query->whereHas('seller', function ($q) use ($request) {
+                if ($request->filled('regency_id')) {
+                    $q->where('regency_id', $request->regency_id);
+                } elseif ($request->filled('province_id')) {
+                    $q->where('province_id', $request->province_id);
+                }
+            });
+        }
+
+        // F. SORTING
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'price_asc': $query->orderBy('price', 'asc'); break;
+                case 'price_desc': $query->orderBy('price', 'desc'); break;
+                default: $query->orderBy('created_at', 'desc'); break;
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // 2. Eksekusi Pagination
+        $paginator = $query->paginate(12);
+
+        // 3. TRANSFORMASI DATA (KUNCI AGAR GAMBAR MUNCUL)
+        // Kita ubah collection di dalam paginator agar formatnya sesuai kebutuhan Frontend
+        $paginator->getCollection()->transform(function ($product) {
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
                 'condition' => $product->condition,
-                'main_image' => asset('storage/' . $product->main_image),
+                // Ganti asset() dengan url() agar lebih konsisten, tapi asset() juga oke
+                'main_image' => url('storage/' . $product->main_image), 
                 'seller_location' => $product->seller->regency_name ?? 'Lokasi Tidak Diketahui',
-                'total_sold' => $product->total_sold,
-                'rating' => $product->reviews()->avg('rating') ?? 0,
+                'total_sold' => $product->total_sold ?? 0,
+                'rating' => round($product->reviews->avg('rating') ?? 0, 1),
+                // Tambahan data jika perlu (opsional)
+                'category' => $product->category->name,
+                'store_name' => $product->seller->nama_toko,
             ];
         });
 
-        return response()->json(['data' => $products]);
+        return response()->json($paginator);
+    }
+
+    /**
+     * 2. API SEARCH SUGGESTIONS (SRS-5 Poin 1 & Autocomplete)
+     * Endpoint: GET /api/search/suggestions?query=lap
+     * Logic: Min 2 char, return Produk & Toko
+     */
+    public function searchSuggestions(Request $request)
+    {
+        $keyword = $request->query('query');
+
+        if (!$keyword || strlen($keyword) < 2) {
+            return response()->json(['products' => [], 'stores' => []]);
+        }
+
+        try {
+            // 1. Cari Produk
+            $products = Product::where('name', 'like', "%{$keyword}%")
+                ->select('id', 'name', 'main_image', 'price')
+                ->limit(7)
+                ->get()
+                ->map(function($p) {
+                    return [
+                        'id' => $p->id,
+                        'name' => $p->name,
+                        'type' => 'product',
+                        'image' => $p->main_image ? url('storage/' . $p->main_image) : null,
+                        'price' => $p->price
+                    ];
+                });
+
+            // 2. Cari Toko
+            // PERBAIKAN: Sesuaikan nama kolom dengan tabel users Anda
+            // foto_profil -> foto
+            $stores = User::where('role', 'penjual')
+                ->where('status', 'active')
+                ->where('nama_toko', 'like', "%{$keyword}%")
+                ->select('id', 'nama_toko', 'province_name', 'foto') // <-- Ganti foto_profil jadi foto
+                ->limit(3)
+                ->get()
+                ->map(function($s) {
+                    return [
+                        'id' => $s->id,
+                        'name' => $s->nama_toko,
+                        'type' => 'store',
+                        'location' => $s->province_name ?? 'Lokasi Tidak Diketahui',
+                        // Ganti $s->foto_profil menjadi $s->foto
+                        'image' => $s->foto ? url('storage/' . $s->foto) : null 
+                    ];
+                });
+
+            return response()->json([
+                'products' => $products,
+                'stores' => $stores
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Gagal memuat saran pencarian.',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // Index List Produk Penjual

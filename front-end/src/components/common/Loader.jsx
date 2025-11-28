@@ -1,8 +1,10 @@
+//
 import React from 'react';
 
 const Loader = () => {
   return (
-    <div className="flex justify-center items-center min-h-[50vh] w-full bg-white">
+    // UBAH min-h-[50vh] MENJADI min-h-screen AGAR TENGAH LAYAR
+    <div className="flex justify-center items-center min-h-screen w-full bg-white">
       
       <div className="flex items-center gap-1.5 h-[40px]">
         
