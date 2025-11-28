@@ -36,15 +36,17 @@ class ProductController extends Controller
         // B. FILTER KATEGORI
         if ($request->filled('category')) {
             $category = $request->category;
-            if (is_numeric($category)) {
-                $query->where('category_id', $category);
-            } else {
-                $query->whereHas('category', fn($q) => $q->where('slug', $category));
+            if ($category !== 'semua-kategori') { 
+                if (is_numeric($category)) {
+                    $query->where('category_id', $category);
+                } else {
+                    $query->whereHas('category', fn($q) => $q->where('slug', $category));
+                }
             }
         }
 
         // C. FILTER KONDISI
-        if ($request->filled('condition') && in_array($request->condition, ['baru', 'bekas'])) {
+        if ($request->filled('condition') && in_array($request->condition, ['Baru', 'Bekas'])) {
             $query->where('condition', $request->condition);
         }
 

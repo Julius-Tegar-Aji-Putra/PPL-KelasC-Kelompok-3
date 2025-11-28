@@ -10,8 +10,11 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        // Mengembalikan semua kategori (id, name, slug)
-        $categories = ProductCategory::select('id', 'name', 'slug')->get();
+        $categories = ProductCategory::select('id', 'name', 'slug')
+            ->orderByRaw("CASE WHEN slug = 'semua-kategori' THEN 0 ELSE 1 END")
+            ->orderBy('name', 'asc') 
+            ->get();
+            
         return response()->json(['data' => $categories]);
     }
 }
