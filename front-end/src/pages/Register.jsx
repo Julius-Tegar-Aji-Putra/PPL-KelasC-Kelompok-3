@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import RegisterIllustration from '../assets/images/Register.svg';
+import PasswordStrengthIndicator from "../components/validators/Registrasi/PasswordStrengthIndicator";
+import PasswordConfirmationIndicator from '../components/validators/Registrasi/PasswordConfirmationIndicator';
+import EmailValidator from '../components/validators/Registrasi/EmailValidator';
+import PhoneValidator from '../components/validators/Registrasi/PhoneValidator';
+import KTPValidator from "../components/validators/Registrasi/KTPValidator";
+import PhotoUploadValidator from "../components/validators/Registrasi/PhotoUploadValidator";
+import KTPUploadValidator from "../components/validators/Registrasi/KTPUploadValidator";
+
+
 
 function Register() {
   const navigate = useNavigate();
@@ -174,23 +183,46 @@ function Register() {
                 </div>
                 <div>
                   <label className={labelClass}>Email</label>
-                  <input type="email" name="email" onChange={handleChange} className={inputClass} placeholder="email@contoh.com" />
+                  <EmailValidator
+                    value={formData.email}
+                    onChange={(value) => setFormData({ ...formData, email: value })} // Tambah onChange
+                    placeholder="email@contoh.com"
+                    inputClass={inputClass}
+                  />
                   <ErrorMsg field="email" />
                 </div>
                 <div>
                   <label className={labelClass}>No. Handphone</label>
-                  <input type="tel" name="no_handphone" onChange={handleChange} className={inputClass} placeholder="08xxxxxxxxxx" />
+                  <PhoneValidator
+                    value={formData.no_handphone}
+                    onChange={(value) => setFormData({ ...formData, no_handphone: value })} // Tambah onChange
+                    placeholder="08xxxxxxxxxx"
+                    inputClass={inputClass}
+                  />
                   <ErrorMsg field="no_handphone" />
                 </div>
                 <div>
                   <label className={labelClass}>Password</label>
-                  <input type="password" name="password" onChange={handleChange} className={inputClass} placeholder="********" />
+                  <PasswordStrengthIndicator
+                    value={formData.password}
+                    onChange={(value) => setFormData({ ...formData, password: value })}
+                    placeholder="Enter password"
+                    inputClass={inputClass} 
+                  />
                   <ErrorMsg field="password" />
                 </div>
                 <div>
                   <label className={labelClass}>Konfirmasi Password</label>
-                  <input type="password" name="password_confirmation" onChange={handleChange} className={inputClass} placeholder="********" />
+                  <PasswordConfirmationIndicator
+                    value={formData.password_confirmation}
+                    password={formData.password}
+                    onChange={(value) => setFormData({ ...formData, password_confirmation: value })} // Tambah onChange untuk update state
+                    placeholder="********"
+                    inputClass={inputClass}
+                  />
+                  <ErrorMsg field="password_confirmation" />
                 </div>
+
               </div>
             </div>
 
@@ -266,17 +298,30 @@ function Register() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
                 <div className="md:col-span-2">
                     <label className={labelClass}>Nomor KTP</label>
-                    <input type="text" name="no_ktp" onChange={handleChange} className={inputClass} maxLength="16" placeholder="16 digit NIK" />
+                    <KTPValidator
+                      value={formData.no_ktp}
+                      onChange={(value) => setFormData({ ...formData, no_ktp: value })}
+                      placeholder="16 digit NIK"
+                      inputClass={inputClass}
+                    />
                     <ErrorMsg field="no_ktp" />
                 </div>
                 <div>
                   <label className={labelClass}>Foto Diri</label>
-                  <input type="file" name="foto" onChange={handleFileChange} className="mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-secondary-2 hover:file:bg-red-100" accept="image/*" />
+                  <PhotoUploadValidator
+                    onChange={(file) => setFoto(file)}
+                    label=""
+                    inputClass="mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-secondary-2 hover:file:bg-red-100"
+                  />
                   <ErrorMsg field="foto" />
                 </div>
                 <div>
                   <label className={labelClass}>Foto KTP</label>
-                  <input type="file" name="file_upload_ktp" onChange={handleFileChange} className="mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-secondary-2 hover:file:bg-red-100" accept="image/*" />
+                  <KTPUploadValidator
+                    onChange={(file) => setFileKtp(file)}
+                    label=""
+                    inputClass="mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-secondary-2 hover:file:bg-red-100"
+                  />
                   <ErrorMsg field="file_upload_ktp" />
                 </div>
               </div>
