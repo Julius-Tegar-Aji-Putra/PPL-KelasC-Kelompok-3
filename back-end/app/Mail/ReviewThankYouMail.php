@@ -12,15 +12,13 @@ class ReviewThankYouMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $data; // Variabel untuk menampung data dari Controller
+    public $data; 
 
-    // 1. Terima data saat kelas ini dipanggil
     public function __construct($data)
     {
         $this->data = $data;
     }
 
-    // 2. Set Subjek Email
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -28,11 +26,10 @@ class ReviewThankYouMail extends Mailable
         );
     }
 
-    // 3. Pilih View HTML yang akan dikirim
     public function content(): Content
     {
         return new Content(
-            view: 'emails.review_thankyou', // Kita akan buat file ini di Langkah 3
+            view: 'emails.review_thankyou', 
         );
     }
 }

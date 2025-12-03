@@ -6,7 +6,7 @@ import { ArrowLeft, Upload, X, ImagePlus, Save } from 'lucide-react';
 
 // 1. IMPORT KOMPONEN CUSTOM
 import CustomToast from '../../components/penjual/CustomToast';
-import ConfirmModal from '../../components/penjual/ConfirmModal';
+import ConfirmModal from '../../components/common/ConfirmModal';
 
 function CreateProduct() {
     const navigate = useNavigate();
@@ -349,8 +349,8 @@ function CreateProduct() {
                                         required
                                     >
                                         <option value="">Pilih Kondisi</option>
-                                        <option value="baru">Baru</option>
-                                        <option value="bekas">Bekas</option>
+                                        <option value="Baru">Baru</option>
+                                        <option value="Bekas">Bekas</option>
                                     </select>
                                     {errors.condition && <p className="text-red-500 text-xs mt-1">{errors.condition[0]}</p>}
                                 </div>
@@ -370,10 +370,10 @@ function CreateProduct() {
                                         required
                                     >
                                         <option value="">Pilih Jenis Garansi</option>
-                                        <option value="resmi">Garansi Resmi</option>
-                                        <option value="toko">Garansi Toko</option>
-                                        <option value="distributor">Garansi Distributor</option>
-                                        <option value="tidak_ada">Tidak Ada Garansi</option>
+                                        <option value="Garansi Resmi">Garansi Resmi</option>
+                                        <option value="Garansi Toko">Garansi Toko</option>
+                                        <option value="Garansi Distributor">Garansi Distributor</option>
+                                        <option value="Tidak Ada Garansi">Tidak Ada Garansi</option>
                                     </select>
                                     {errors.warranty_type && <p className="text-red-500 text-xs mt-1">{errors.warranty_type[0]}</p>}
                                 </div>

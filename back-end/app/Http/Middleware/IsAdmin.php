@@ -10,12 +10,10 @@ class IsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Cek apakah user login & role-nya admin
         if ($request->user() && $request->user()->role === 'admin') {
             return $next($request);
         }
 
-        // Jika bukan admin, berikan error Forbidden (403)
         return response()->json(['message' => 'Akses Ditolak. Hanya Admin yang boleh masuk.'], 403);
     }
 }

@@ -4,7 +4,6 @@ import { LayoutDashboard, UserCheck, Menu, LogOut, FileText } from 'lucide-react
 import axios from 'axios';
 import Loader from '../common/Loader';
 import WelcomeAlert from '../common/WelcomeAlert';
-import ProfileDropdown from '../common/ProfileDropdown';
 
 const STORAGE_URL = 'http://localhost:8000/storage';
 
@@ -77,10 +76,10 @@ const AdminLayout = () => {
         <div className="h-24 flex items-center justify-center border-b border-gray-100">
           <Link to="/" className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden">
             <span className={`transition-all duration-300 ${isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0'} overflow-hidden`}>
-                Admin Panel
+                Admin Dashboard
             </span>
             <span className={`transition-all duration-300 ${!isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0 hidden'}`}>
-                AP
+                AD
             </span>
           </Link>
         </div>
@@ -106,16 +105,14 @@ const AdminLayout = () => {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-gray-100 space-y-2">
+        <div className="px-3 py-3 border-t border-gray-100">
           <button 
             onClick={handleLogout}
-            className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group"
+            className="flex items-center px-4 py-3.5 rounded-lg transition-colors group text-red-600 hover:bg-red-50 w-full"
           >
-            <div className="min-w-[20px] flex items-center justify-center">
-                <LogOut className="w-5 h-5 shrink-0" />
-            </div>
-            <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-2 opacity-100 w-40' : 'ml-0 w-0 opacity-0'}`}>
-                Logout
+            <LogOut className="w-5 h-5" />
+            <span className={`whitespace-nowrap transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-3 opacity-100' : 'ml-0 opacity-0 w-0'}`}>
+                Keluar
             </span>
           </button>
         </div>
@@ -129,11 +126,10 @@ const AdminLayout = () => {
           </button>
 
           <div className="flex items-center gap-4">
-            <div className="text-right hidden md:block">
+            <div className="text-right">
               <p className="text-sm font-semibold font-poppins text-text-2">{user?.nama || 'Admin'}</p>
               <p className="text-xs text-gray-500 font-poppins">Administrator</p>
             </div>
-            <ProfileDropdown />
           </div>
         </header>
 

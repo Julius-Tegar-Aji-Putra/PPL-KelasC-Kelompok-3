@@ -5,8 +5,8 @@ import axios from 'axios'
 
 import App from './App.jsx'
 import './index.css'
-
-axios.defaults.baseURL = 'http://localhost:8000';
+const hostname = window.location.hostname;
+axios.defaults.baseURL = `http://${hostname}:8000`;
 axios.defaults.headers.common['Accept'] = 'application/json';
 
 const token = localStorage.getItem('auth_token');

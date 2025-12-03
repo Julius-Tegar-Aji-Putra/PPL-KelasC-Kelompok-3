@@ -144,8 +144,8 @@ const FilterPanel = ({ filters, onFilterChange, onClearFilters }) => {
               <input
                 type="radio"
                 name="condition"
-                value="baru"
-                checked={filters.condition === 'baru'}
+                value="Baru"
+                checked={filters.condition === 'Baru'}
                 onChange={(e) => handleFilterChange('condition', e.target.value)}
                 className="w-4 h-4 text-[#DB4444] focus:ring-[#DB4444]"
               />
@@ -155,8 +155,8 @@ const FilterPanel = ({ filters, onFilterChange, onClearFilters }) => {
               <input
                 type="radio"
                 name="condition"
-                value="bekas"
-                checked={filters.condition === 'bekas'}
+                value="Bekas"
+                checked={filters.condition === 'Bekas'}
                 onChange={(e) => handleFilterChange('condition', e.target.value)}
                 className="w-4 h-4 text-[#DB4444] focus:ring-[#DB4444]"
               />
