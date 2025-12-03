@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Review;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule; // Penting buat validasi unik
 use App\Mail\ReviewThankYouMail;
+use App\Jobs\SendEmailJob;
 
 class ReviewController extends Controller
 {
@@ -67,23 +67,20 @@ class ReviewController extends Controller
                 'comment'        => $request->comment,
             ]);
 
-            // 4. Kirim Email Notifikasi (Pake Mail yang sudah kamu buat sebelumnya)
-            // Pastikan class ReviewThankYouMail sudah ada
-            try {
-                $emailData = [
-                    'name'         => $request->reviewer_name,
-                    'product_name' => $product->name,
-                    'rating'       => $request->rating,
-                    'comment'      => $request->comment
-                ];
-                Mail::to($request->reviewer_email)->send(new ReviewThankYouMail($emailData));
-            } catch (\Exception $e) {
-                // Log error email tapi biarkan review tersimpan
-            }
+            // 4. Kirim Email via Queue 
+            // Kita pindahkan logika email keluar dari flow utama biar user ga nunggu
+            $emailData = [
+                'name'         => $request->reviewer_name,
+                'product_name' => $product->name,
+                'rating'       => $request->rating,
+                'comment'      => $request->comment
+            ];
+
+            SendEmailJob::dispatch($request->reviewer_email, new ReviewThankYouMail($emailData));
 
             return response()->json([
                 'success' => true,
-                'message' => 'Review berhasil ditambahkan. Cek email Anda untuk notifikasi.',
+                'message' => 'Review berhasil ditambahkan.', 
                 'data'    => $review
             ], 201);
 

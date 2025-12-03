@@ -7,7 +7,8 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AdminSellerController;
-
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,7 +68,12 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/admin/sellers/pending', [AdminSellerController::class, 'getPendingSellers']);
     Route::post('/admin/sellers/{id}/approve', [AdminSellerController::class, 'approveSeller']);
     Route::post('/admin/sellers/{id}/reject', [AdminSellerController::class, 'rejectSeller']);
-
+    // Dashbboard Admin
+    Route::get('/admin/dashboard/stats', [DashboardController::class, 'getAdminStats']);
+    // Laporan Admin
+    Route::get('/admin/reports/seller-status', [ReportController::class, 'reportSellersStatus']);
+    Route::get('/admin/reports/seller-location', [ReportController::class, 'reportSellersLocation']);
+    Route::get('/admin/reports/product-rating', [ReportController::class, 'reportPlatformProductsRating']);
 });
 
 Route::middleware(['auth:sanctum', 'penjual'])->group(function () {
@@ -77,6 +83,13 @@ Route::middleware(['auth:sanctum', 'penjual'])->group(function () {
     Route::post('/seller/products', [ProductController::class, 'store']);
     // Detail Produk
     Route::get('/seller/products/{id}', [ProductController::class, 'showSeller']);
+    // Dashboard Statistik
+    Route::get('/seller/dashboard/stats', [DashboardController::class, 'getSellerStats']);
+
+    // Laporan Penjual
+    Route::get('/seller/reports/stock', [ReportController::class, 'reportSellerStock']);
+    Route::get('/seller/reports/rating', [ReportController::class, 'reportSellerRating']);
+    Route::get('/seller/reports/low-stock', [ReportController::class, 'reportSellerLowStock']);
 });
 
 // Load route auth default (register, login, logout)

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\SellerApprovedMail;
 use App\Mail\SellerRejectedMail;
+use App\Jobs\SendEmailJob;
 
 class AdminSellerController extends Controller
 {
@@ -49,12 +49,7 @@ class AdminSellerController extends Controller
         $user->status = 'active';
         $user->save();
 
-        // Kirim email notifikasi
-        try {
-            Mail::to($user->email)->send(new SellerApprovedMail($user));
-        } catch (\Exception $e) {
-            // Log error email jika perlu, tapi jangan gagalkan proses approve
-        }
+        SendEmailJob::dispatch($user->email, new SellerApprovedMail($user));
 
         return response()->json([
             'success' => true,
@@ -65,15 +60,16 @@ class AdminSellerController extends Controller
     public function rejectSeller($id)
     {
         $user = User::findOrFail($id);
-        $user->status = 'rejected';
-        $user->save();
+        $emailData = [
+            'nama' => $user->nama,
+            'email' => $user->email,
+            'nama_toko' => $user->nama_toko
+        ];
 
         // Kirim email notifikasi
-        try {
-            Mail::to($user->email)->send(new SellerRejectedMail($user));
-        } catch (\Exception $e) {
-             // Log error email
-        }
+        SendEmailJob::dispatch($user->email, new SellerRejectedMail($emailData));
+
+        $user->delete();
 
         return response()->json([
             'success' => true,

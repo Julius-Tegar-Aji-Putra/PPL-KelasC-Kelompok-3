@@ -177,7 +177,11 @@ const Products = () => {
 
   const getActiveFiltersCount = () => {
     return Object.entries(filters).filter(([key, value]) => 
-      key !== 'search' && key !== 'page' && value && value !== ''
+      key !== 'search' && 
+      key !== 'page' && 
+      value && 
+      value !== '' && 
+      value !== 'semua-kategori' 
     ).length;
   };
 

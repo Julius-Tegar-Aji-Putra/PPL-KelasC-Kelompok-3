@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import Loader from '../../components/common/Loader';
+import axios from 'axios';
 import { 
   Store, 
   CheckCircle, 
@@ -35,37 +36,50 @@ function PenjualDashboard() {
     const fetchDashboardData = async () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        setStats({
-          totalProduk: 12,
-          totalStok: 450,
-          rataRataRating: 4.8,
-          
-          stockData: [
-            { name: 'HP Gaming', stok: 45 },
-            { name: 'Laptop Asus', stok: 20 },
-            { name: 'Mouse Logitech', stok: 85 },
-            { name: 'Keyboard Mech', stok: 30 },
-            { name: 'Headset RGB', stok: 55 },
-            { name: 'Monitor 24"', stok: 15 },
-          ],
+        const token = localStorage.getItem('auth_token'); 
 
-          ratingData: [
-            { name: 'HP Gaming', rating: 4.9 },
-            { name: 'Laptop Asus', rating: 4.7 },
-            { name: 'Mouse', rating: 4.5 },
-            { name: 'Keyboard', rating: 5.0 },
-            { name: 'Headset', rating: 4.2 },
-            { name: 'Monitor', rating: 4.8 },
-          ],
-
-          locationData: [
-            { name: 'Jawa Tengah', value: 45 },
-            { name: 'DKI Jakarta', value: 30 },
-            { name: 'Jawa Barat', value: 15 },
-            { name: 'Jawa Timur', value: 10 },
-          ]
+        const response = await axios.get('/api/seller/dashboard/stats', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
+
+        if(response.data.success) {
+            setStats(response.data.data);
+        }
+
+        setIsLoading(false);
+        
+        // setStats({
+        //   totalProduk: 12,
+        //   totalStok: 450,
+        //   rataRataRating: 4.8,
+          
+        //   stockData: [
+        //     { name: 'HP Gaming', stok: 45 },
+        //     { name: 'Laptop Asus', stok: 20 },
+        //     { name: 'Mouse Logitech', stok: 85 },
+        //     { name: 'Keyboard Mech', stok: 30 },
+        //     { name: 'Headset RGB', stok: 55 },
+        //     { name: 'Monitor 24"', stok: 15 },
+        //   ],
+
+        //   ratingData: [
+        //     { name: 'HP Gaming', rating: 4.9 },
+        //     { name: 'Laptop Asus', rating: 4.7 },
+        //     { name: 'Mouse', rating: 4.5 },
+        //     { name: 'Keyboard', rating: 5.0 },
+        //     { name: 'Headset', rating: 4.2 },
+        //     { name: 'Monitor', rating: 4.8 },
+        //   ],
+
+        //   locationData: [
+        //     { name: 'Jawa Tengah', value: 45 },
+        //     { name: 'DKI Jakarta', value: 30 },
+        //     { name: 'Jawa Barat', value: 15 },
+        //     { name: 'Jawa Timur', value: 10 },
+        //   ]
+        // });
         
         setIsLoading(false);
       } catch (error) {

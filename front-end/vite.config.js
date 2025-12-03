@@ -8,7 +8,8 @@ export default defineConfig({
     host: true, // Supaya bisa diakses network
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000', // Arahkan ke Laravel di komputer ini
+        // target: 'http://127.0.0.1:8000', // Arahkan ke Laravel di komputer ini
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },

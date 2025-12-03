@@ -105,30 +105,24 @@ const FilterPanel = ({ filters, onFilterChange, onClearFilters }) => {
         {/* Category Filter */}
         <FilterSection title="Kategori" sectionKey="category">
           <div className="space-y-2">
-            <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-              <input
-                type="radio"
-                name="category"
-                value=""
-                checked={!filters.category}
-                onChange={(e) => handleFilterChange('category', '')}
-                className="w-4 h-4 text-[#DB4444] focus:ring-[#DB4444]"
-              />
-              <span className="text-sm text-gray-700">Semua Kategori</span>
-            </label>
-            {categories.map(cat => (
-              <label key={cat.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                <input
-                  type="radio"
-                  name="category"
-                  value={cat.slug}
-                  checked={filters.category === cat.slug}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="w-4 h-4 text-[#DB4444] focus:ring-[#DB4444]"
-                />
-                <span className="text-sm text-gray-700 capitalize">{cat.name}</span>
-              </label>
-            ))}
+            {categories.map(cat => {
+              const isChecked = 
+                filters.category === cat.slug || 
+                ((!filters.category || filters.category === '') && cat.slug === 'semua-kategori');
+              return (
+                <label key={cat.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                  <input
+                    type="radio"
+                    name="category"
+                    value={cat.slug}
+                    checked={isChecked}
+                    onChange={(e) => handleFilterChange('category', e.target.value)}
+                    className="w-4 h-4 text-[#DB4444] focus:ring-[#DB4444]"
+                  />
+                  <span className="text-sm text-gray-700 capitalize">{cat.name}</span>
+                </label>
+              );
+            })}
           </div>
         </FilterSection>
 

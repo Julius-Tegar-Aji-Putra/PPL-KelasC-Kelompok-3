@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Package, LogOut, Menu, Home, LayoutDashboard } from 'lucide-react';
+import { Package, LogOut, Menu, Home, LayoutDashboard, ClipboardList } from 'lucide-react'; // Tambah ClipboardList
 import axios from 'axios';
 import Loader from '../common/Loader';
 import WelcomeAlert from '../common/WelcomeAlert';
@@ -64,6 +64,11 @@ function SellerLayout() {
         path: '/penjual/products', 
         icon: <Package className="w-5 h-5" /> 
     },
+    { 
+        name: 'Laporan Toko',
+        path : '/penjual/reports',
+        icon : <ClipboardList className="w-5 h-5" />
+    } 
   ];
 
   if (isLoading) {
