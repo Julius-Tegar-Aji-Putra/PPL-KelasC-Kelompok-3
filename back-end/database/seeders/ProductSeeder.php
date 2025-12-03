@@ -57,8 +57,8 @@ class ProductSeeder extends Seeder
                 'condition'   => 'Baru', 
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Laptop gaming ultra-slim dengan prosesor AMD Ryzen 9 dan grafis RTX 4060.',
-                'main_image'  => 'products/p1_main.jpg',
-                'images'      => ['products/details/p1_d1.jpg', 'products/details/p1_d2.jpg', 'products/details/p1_d3.jpg']
+                'main_image'  => 'products/main/1.jpg',
+                'images'      => ['products/details/1-1.jpg', 'products/details/1-2.jpg', 'products/details/1-3.jpg']
             ],
             [
                 'user_id'     => $sellerRina->id,
@@ -70,8 +70,8 @@ class ProductSeeder extends Seeder
                 'condition'   => 'Bekas', 
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Sepatu lari kondisi 95% mulus, baru dipakai 2 kali di indoor.',
-                'main_image'  => 'products/p2_main.jpg',
-                'images'      => ['products/details/p2_d1.jpg', 'products/details/p2_d2.jpg', 'products/details/p2_d3.jpg']
+                'main_image'  => 'products/main/2.jpg',
+                'images'      => ['products/details/2-1.jpg', 'products/details/2-2.jpg', 'products/details/2-3.jpg']
             ],
             [
                 'user_id'     => $sellerBudi->id,
@@ -83,8 +83,8 @@ class ProductSeeder extends Seeder
                 'condition'   => 'Bekas', 
                 'warranty_type' => 'Garansi Distributor',
                 'description' => 'Kamera kondisi normal, karet kencang, tulisan jelas.',
-                'main_image'  => 'products/p3_main.jpg',
-                'images'      => ['products/details/p3_d1.jpg', 'products/details/p3_d2.jpg', 'products/details/p3_d3.jpg']
+                'main_image'  => 'products/main/3.jpg',
+                'images'      => ['products/details/3-1.jpg', 'products/details/3-2.jpg', 'products/details/3-3.jpg']
             ],
             [
                 'user_id'     => $sellerRina->id,
@@ -96,8 +96,8 @@ class ProductSeeder extends Seeder
                 'condition'   => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Jam tangan kulit asli dengan desain minimalis dan elegan.',
-                'main_image'  => 'products/p4_main.jpg',
-                'images'      => ['products/details/p4_d1.jpg', 'products/details/p4_d2.jpg', 'products/details/p4_d3.jpg']
+                'main_image'  => 'products/main/4.jpg',
+                'images'      => ['products/details/4-1.jpg', 'products/details/4-2.jpg', 'products/details/4-3.jpg']
             ],
 
             // --- KATEGORI GADGET ---
@@ -112,8 +112,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Smartphone flagship dengan kamera nightography terbaik dan prosesor Snapdragon 8 Gen 2.',
-                'main_image' => 'products/p5_main.jpg',
-                'images' => ['products/details/p5_d1.jpg']
+                'main_image' => 'products/main/5.png',
+                'images' => ['products/details/5.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -125,8 +125,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Tablet powerful dengan chip M1, layar Liquid Retina, cocok untuk desain dan multitasking.',
-                'main_image' => 'products/p6_main.jpg',
-                'images' => ['products/details/p6_d1.jpg']
+                'main_image' => 'products/main/6.png',
+                'images' => ['products/details/6.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -138,8 +138,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'HP midrange juara dengan layar AMOLED 120Hz dan pengisian daya turbo 67W.',
-                'main_image' => 'products/p7_main.jpg',
-                'images' => ['products/details/p7_d1.jpg']
+                'main_image' => 'products/main/7.png',
+                'images' => ['products/details/7.png']
             ],
 
             // --- KATEGORI ELEKTRONIK --- 
@@ -154,8 +154,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Smart TV dengan resolusi 4K jernih, mendukung Netflix dan Youtube, bezel tipis.',
-                'main_image' => 'products/p8_main.jpg',
-                'images' => ['products/details/p8_d1.jpg']
+                'main_image' => 'products/main/8.png',
+                'images' => ['products/details/8.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -167,8 +167,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Distributor',
                 'description' => 'Speaker portable tahan air IP67 dengan suara bass yang nendang dan baterai awet.',
-                'main_image' => 'products/p9_main.jpg',
-                'images' => ['products/details/p9_d1.jpg']
+                'main_image' => 'products/main/9.png',
+                'images' => ['products/details/9.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -180,8 +180,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Penanak nasi digital dengan 8 fungsi memasak otomatis dan panci bakuhanseki anti lengket.',
-                'main_image' => 'products/p10_main.jpg',
-                'images' => ['products/details/p10_d1.jpg']
+                'main_image' => 'products/main/10.png',
+                'images' => ['products/details/10.png']
             ],
 
             // --- KATEGORI FASHION PRIA --- 
@@ -196,8 +196,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Kemeja flannel kondisi 90% mulus, ukuran L, warna masih pekat jarang dipakai.',
-                'main_image' => 'products/p11_main.jpg',
-                'images' => ['products/details/p11_d1.jpg']
+                'main_image' => 'products/main/11.png',
+                'images' => ['products/details/11.png']
             ],
             [
                 'user_id' => $sellerRina->id,
@@ -209,8 +209,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Jaket jeans klasik model trucker, bahan denim tebal dan awet, warna indigo.',
-                'main_image' => 'products/p12_main.jpg',
-                'images' => ['products/details/p12_d1.jpg']
+                'main_image' => 'products/main/12.png',
+                'images' => ['products/details/12.png']
             ],
 
             // --- KATEGORI FASHION WANITA ---
@@ -225,8 +225,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Dress motif bunga bahan rayon viscose adem, cocok untuk acara santai maupun semi-formal.',
-                'main_image' => 'products/p13_main.jpg',
-                'images' => ['products/details/p13_d1.jpg']
+                'main_image' => 'products/main/13.png',
+                'images' => ['products/details/13.png']
             ],
             [
                 'user_id' => $sellerRina->id,
@@ -238,8 +238,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Tas original kondisi preloved like new, lengkap dengan dustbag dan sertifikat.',
-                'main_image' => 'products/p14_main.jpg',
-                'images' => ['products/details/p14_d1.jpg']
+                'main_image' => 'products/main/14.png',
+                'images' => ['products/details/14.png']
             ],
             [
                 'user_id' => $sellerRina->id,
@@ -251,8 +251,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'High heels 5cm dengan desain elegan, nyaman dipakai seharian tidak membuat kaki sakit.',
-                'main_image' => 'products/p15_main.jpg',
-                'images' => ['products/details/p15_d1.jpg']
+                'main_image' => 'products/main/15.png',
+                'images' => ['products/details/15.png']
             ],
             [
                 'user_id' => $sellerRina->id,
@@ -264,8 +264,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Atasan batik cap motif parang modern, bahan katun prima halus dan menyerap keringat.',
-                'main_image' => 'products/p16_main.jpg',
-                'images' => ['products/details/p16_d1.jpg']
+                'main_image' => 'products/main/16.png',
+                'images' => ['products/details/16.png']
             ],
 
             // --- KATEGORI KECANTIKAN ---
@@ -280,8 +280,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Serum pencerah wajah, memudarkan noda hitam dan meratakan warna kulit dalam 14 hari.',
-                'main_image' => 'products/p17_main.jpg',
-                'images' => ['products/details/p17_d1.jpg']
+                'main_image' => 'products/main/17.png',
+                'images' => ['products/details/17.png']
             ],
             [
                 'user_id' => $sellerSiti->id,
@@ -293,8 +293,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Lipcream matte tahan lama hingga 16 jam, transferproof dan tidak membuat bibir kering.',
-                'main_image' => 'products/p18_main.jpg',
-                'images' => ['products/details/p18_d1.jpg']
+                'main_image' => 'products/main/18.png',
+                'images' => ['products/details/18.png']
             ],
             [
                 'user_id' => $sellerSiti->id,
@@ -306,8 +306,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Pelembab wajah viral untuk memperbaiki skin barrier yang rusak, tekstur gel ringan.',
-                'main_image' => 'products/p19_main.jpg',
-                'images' => ['products/details/p19_d1.jpg']
+                'main_image' => 'products/main/19.png',
+                'images' => ['products/details/19.png']
             ],
             [
                 'user_id' => $sellerSiti->id,
@@ -319,8 +319,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Parfum original sisa 80%, dijual karena ingin ganti varian lain. Box masih lengkap.',
-                'main_image' => 'products/p20_main.jpg',
-                'images' => ['products/details/p20_d1.jpg']
+                'main_image' => 'products/main/20.png',
+                'images' => ['products/details/20.png']
             ],
 
             // --- KATEGORI MAKANAN & MINUMAN ---
@@ -335,8 +335,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Kripik singkong dengan bumbu pedas level 10, renyah dan bikin ketagihan.',
-                'main_image' => 'products/p21_main.jpg',
-                'images' => ['products/details/p21_d1.jpg']
+                'main_image' => 'products/main/21.png',
+                'images' => ['products/details/21.png']
             ],
             [
                 'user_id' => $sellerYuli->id,
@@ -348,8 +348,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Biji kopi pilihan dari dataran tinggi Gayo, aroma kuat dengan notes fruity.',
-                'main_image' => 'products/p22_main.jpg',
-                'images' => ['products/details/p22_d1.jpg']
+                'main_image' => 'products/main/22.png',
+                'images' => ['products/details/22.png']
             ],
             [
                 'user_id' => $sellerYuli->id,
@@ -361,8 +361,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Kebab beku praktis tinggal dipanaskan, isian daging sapi melimpah dan keju.',
-                'main_image' => 'products/p23_main.jpg',
-                'images' => ['products/details/p23_d1.jpg']
+                'main_image' => 'products/main/23.png',
+                'images' => ['products/details/23.png']
             ],
             [
                 'user_id' => $sellerYuli->id,
@@ -374,8 +374,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Madu asli dari hutan tanpa campuran gula, baik untuk menjaga imunitas tubuh.',
-                'main_image' => 'products/p24_main.jpg',
-                'images' => ['products/details/p24_d1.jpg']
+                'main_image' => 'products/main/24.png',
+                'images' => ['products/details/24.png']
             ],
 
             // --- KATEGORI OTOMOTIF ---
@@ -390,8 +390,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Helm full face dengan desain aerodinamis, busa bisa dilepas, sudah standar SNI dan DOT.',
-                'main_image' => 'products/p25_main.jpg',
-                'images' => ['products/details/p25_d1.jpg']
+                'main_image' => 'products/main/25.png',
+                'images' => ['products/details/25.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -403,8 +403,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Distributor',
                 'description' => 'Oli mesin mobil sintetik untuk performa mesin lebih halus dan tarikan enteng.',
-                'main_image' => 'products/p26_main.jpg',
-                'images' => ['products/details/p26_d1.jpg']
+                'main_image' => 'products/main/26.png',
+                'images' => ['products/details/26.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -416,8 +416,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Sarung tangan riding bahan kulit sintetis premium, nyaman dan anti slip saat hujan.',
-                'main_image' => 'products/p27_main.jpg',
-                'images' => ['products/details/p27_d1.jpg']
+                'main_image' => 'products/main/27.png',
+                'images' => ['products/details/27.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -429,8 +429,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Karpet lantai mobil bahan karet tebal, mudah dibersihkan dan cocok untuk semua jenis mobil.',
-                'main_image' => 'products/p28_main.jpg',
-                'images' => ['products/details/p28_d1.jpg']
+                'main_image' => 'products/main/28.png',
+                'images' => ['products/details/28.png']
             ],
 
             // --- KATEGORI HOBI ---
@@ -445,8 +445,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Model kit Gundam skala 1/144 High Grade, detail presisi, perlu dirakit.',
-                'main_image' => 'products/p29_main.jpg',
-                'images' => ['products/details/p29_d1.jpg']
+                'main_image' => 'products/main/29.png',
+                'images' => ['products/details/29.png']
             ],
             [
                 'user_id' => $sellerAhmad->id,
@@ -458,8 +458,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Uang kertas kuno kondisi mulus tanpa lipatan, cocok untuk mahar atau koleksi numismatik.',
-                'main_image' => 'products/p30_main.jpg',
-                'images' => ['products/details/p30_d1.jpg']
+                'main_image' => 'products/main/30.png',
+                'images' => ['products/details/30.png']
             ],
             [
                 'user_id' => $sellerAhmad->id,
@@ -471,8 +471,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Mainan mobil diecast skala 1:64, blister mulus, varian warna langka.',
-                'main_image' => 'products/p31_main.jpg',
-                'images' => ['products/details/p31_d1.jpg']
+                'main_image' => 'products/main/31.png',
+                'images' => ['products/details/31.png']
             ],
             [
                 'user_id' => $sellerAhmad->id,
@@ -484,8 +484,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Album kondisi bagus, CD belum pernah diputar, lengkap photobook tapi tanpa photocard random.',
-                'main_image' => 'products/p32_main.jpg',
-                'images' => ['products/details/p32_d1.jpg']
+                'main_image' => 'products/main/32.png',
+                'images' => ['products/details/32.png']
             ],
 
             // --- KATEGORI BUKU & ATK ---
@@ -500,8 +500,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Novel terjemahan bahasa Indonesia, kondisi kertas agak menguning tapi halaman lengkap.',
-                'main_image' => 'products/p33_main.jpg',
-                'images' => ['products/details/p33_d1.jpg']
+                'main_image' => 'products/main/33.jpeg',
+                'images' => ['products/details/33.png']
             ],
             [
                 'user_id' => $sellerSara->id,
@@ -513,8 +513,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Satu set berisi pensil 2B, penghapus, penggaris, dan pulpen, cocok untuk ujian.',
-                'main_image' => 'products/p34_main.jpg',
-                'images' => ['products/details/p34_d1.jpg']
+                'main_image' => 'products/main/34.png',
+                'images' => ['products/details/34.png']
             ],
             [
                 'user_id' => $sellerSara->id,
@@ -526,8 +526,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Satu pack berisi 10 buku tulis kualitas kertas tebal tidak tembus tinta.',
-                'main_image' => 'products/p35_main.jpg',
-                'images' => ['products/details/p35_d1.jpg']
+                'main_image' => 'products/main/35.png',
+                'images' => ['products/details/35.png']
             ],
             [
                 'user_id' => $sellerSara->id,
@@ -539,8 +539,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Buku original segel plastik, karya sastra legendaris Indonesia tentang Minke.',
-                'main_image' => 'products/p36_main.jpg',
-                'images' => ['products/details/p36_d1.jpg']
+                'main_image' => 'products/main/36.jpg',
+                'images' => ['products/details/36.png']
             ],
 
             // --- KATEGORI GAMING ---
@@ -555,8 +555,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Mouse gaming kabel dengan sensor 25K DPI, berat bisa diatur, tombol macro programmable.',
-                'main_image' => 'products/p37_main.jpg',
-                'images' => ['products/details/p37_d1.jpg']
+                'main_image' => 'products/main/37.png',
+                'images' => ['products/details/37.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -568,8 +568,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Distributor',
                 'description' => 'Keyboard mechanical wireless 75%, switch gateron brown, kompatibel Mac dan Windows.',
-                'main_image' => 'products/p38_main.jpg',
-                'images' => ['products/details/p38_d1.jpg']
+                'main_image' => 'products/main/38.png',
+                'images' => ['products/details/38.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -581,8 +581,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Headset kondisi 95%, earpad baru diganti, mic jernih, suara surround mantap.',
-                'main_image' => 'products/p39_main.jpg',
-                'images' => ['products/details/p39_d1.jpg']
+                'main_image' => 'products/main/39.png',
+                'images' => ['products/details/39.png']
             ],
             [
                 'user_id' => $sellerBudi->id,
@@ -594,8 +594,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Stik PS5 original warna putih, fitur haptic feedback dan adaptive triggers.',
-                'main_image' => 'products/p40_main.jpg',
-                'images' => ['products/details/p40_d1.jpg']
+                'main_image' => 'products/main/40.png',
+                'images' => ['products/details/40.png']
             ],
 
             // --- KATEGORI KESEHATAN ---
@@ -610,8 +610,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Suplemen vitamin C untuk menjaga daya tahan tubuh, isi 60 tablet.',
-                'main_image' => 'products/p41_main.jpg',
-                'images' => ['products/details/p41_d1.jpg']
+                'main_image' => 'products/main/41.png',
+                'images' => ['products/details/41.png']
             ],
             [
                 'user_id' => $sellerSiti->id,
@@ -623,8 +623,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Masker kesehatan sekali pakai, menyaring debu dan virus, 1 box isi 50 pcs.',
-                'main_image' => 'products/p42_main.jpg',
-                'images' => ['products/details/p42_d1.jpg']
+                'main_image' => 'products/main/42.png',
+                'images' => ['products/details/42.png']
             ],
             [
                 'user_id' => $sellerSiti->id,
@@ -636,8 +636,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Alat pengukur suhu tubuh akurat dan cepat, ujung fleksibel aman untuk anak.',
-                'main_image' => 'products/p43_main.jpg',
-                'images' => ['products/details/p43_d1.jpg']
+                'main_image' => 'products/main/43.png',
+                'images' => ['products/details/43.png']
             ],
             [
                 'user_id' => $sellerSiti->id,
@@ -649,8 +649,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Distributor',
                 'description' => 'Timbangan pintar bisa konek ke HP untuk memantau BMI dan berat badan.',
-                'main_image' => 'products/p44_main.jpg',
-                'images' => ['products/details/p44_d1.jpg']
+                'main_image' => 'products/main/44.png',
+                'images' => ['products/details/44.png']
             ],
 
             // --- KATEGORI OLAHRAGA ---
@@ -665,8 +665,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Raket bulutangkis ringan tipe head heavy untuk smash power yang kuat, sudah terpasang senar.',
-                'main_image' => 'products/p45_main.jpg',
-                'images' => ['products/details/p45_d1.jpg']
+                'main_image' => 'products/main/45.png',
+                'images' => ['products/details/45.png']
             ],
             [
                 'user_id' => $sellerAhmad->id,
@@ -678,8 +678,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Bola basket size 7 standar IBL, bahan kulit komposit premium grip mantap.',
-                'main_image' => 'products/p46_main.jpg',
-                'images' => ['products/details/p46_d1.jpg']
+                'main_image' => 'products/main/46.png',
+                'images' => ['products/details/46.png']
             ],
             [
                 'user_id' => $sellerAhmad->id,
@@ -691,8 +691,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Yoga mat tebal anti slip, nyaman untuk senam lantai dan pilates.',
-                'main_image' => 'products/p47_main.jpg',
-                'images' => ['products/details/p47_d1.jpg']
+                'main_image' => 'products/main/47.png',
+                'images' => ['products/details/47.png']
             ],
             [
                 'user_id' => $sellerAhmad->id,
@@ -704,8 +704,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Baju bola original supporter version, bahan dryfit adem dipakai olahraga.',
-                'main_image' => 'products/p48_main.jpg',
-                'images' => ['products/details/p48_d1.jpg']
+                'main_image' => 'products/main/48.png',
+                'images' => ['products/details/48.png']
             ],
 
             // --- KATEGORI PERABOTAN ---
@@ -720,8 +720,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Garansi Toko',
                 'description' => 'Lampu meja dengan baterai rechargeable, cahaya bisa diatur, aman untuk mata.',
-                'main_image' => 'products/p49_main.jpg',
-                'images' => ['products/details/p49_d1.jpg']
+                'main_image' => 'products/main/49.png',
+                'images' => ['products/details/49.png']
             ],
             [
                 'user_id' => $sellerYuli->id,
@@ -733,8 +733,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Rak serbaguna 3 susun warna putih, mudah dirakit, desain scandinavian.',
-                'main_image' => 'products/p50_main.jpg',
-                'images' => ['products/details/p50_d1.jpg']
+                'main_image' => 'products/main/50.png',
+                'images' => ['products/details/50.png']
             ],
             [
                 'user_id' => $sellerYuli->id,
@@ -746,8 +746,8 @@ class ProductSeeder extends Seeder
                 'condition' => 'Baru',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Sprei ukuran 180x200 bahan microtex lembut, tidak luntur, motif bunga.',
-                'main_image' => 'products/p51_main.jpg',
-                'images' => ['products/details/p51_d1.jpg']
+                'main_image' => 'products/main/51.webp',
+                'images' => ['products/details/51.jpeg']
             ],
             [
                 'user_id' => $sellerYuli->id,
@@ -759,8 +759,24 @@ class ProductSeeder extends Seeder
                 'condition' => 'Bekas',
                 'warranty_type' => 'Tidak Ada Garansi',
                 'description' => 'Kursi kerja jaring, hidrolik masih naik turun lancar, roda aman, pemakaian 1 tahun.',
-                'main_image' => 'products/p52_main.jpg',
-                'images' => ['products/details/p52_d1.jpg']
+                'main_image' => 'products/main/52.png',
+                'images' => ['products/details/52.png']
+            ],
+
+            // --- PRODUK LAINNYA ---
+
+            [
+                'user_id'     => $sellerBudi->id, 
+                'category_id' => $catHobi->id,
+                'name'        => 'Julius Tegar Aji Putra',
+                'price'       => 10000,
+                'stock'       => 1,
+                'brand'       => 'TEGAR',
+                'condition'   => 'Bekas', 
+                'warranty_type' => 'Tidak Ada Garansi',
+                'description' => 'Asisten rumah serbaguna. Siap membantu segala pekerjaan rumah tangga dengan sigap dan cekatan.',
+                'main_image'  => 'products/main/53.png',
+                'images'      => ['products/details/53-1.png', 'products/details/53-2.png', 'products/details/53-3.png']
             ],
         ];
 
