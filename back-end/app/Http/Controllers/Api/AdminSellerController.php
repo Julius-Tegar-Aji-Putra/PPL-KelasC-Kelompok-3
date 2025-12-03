@@ -13,7 +13,6 @@ class AdminSellerController extends Controller
 {
     public function getPendingSellers()
     {
-        // PERBAIKAN: Menambahkan select field lengkap sesuai form Register
         $sellers = User::where('role', 'penjual')
             ->where('status', 'inactive')
             ->select(
@@ -49,7 +48,13 @@ class AdminSellerController extends Controller
         $user->status = 'active';
         $user->save();
 
-        SendEmailJob::dispatch($user->email, new SellerApprovedMail($user));
+        $emailData = [
+            'nama' => $user->nama,
+            'email' => $user->email,
+            'nama_toko' => $user->nama_toko,
+        ];
+
+        SendEmailJob::dispatch($emailData['email'], new SellerApprovedMail($emailData));
 
         return response()->json([
             'success' => true,
@@ -66,8 +71,7 @@ class AdminSellerController extends Controller
             'nama_toko' => $user->nama_toko
         ];
 
-        // Kirim email notifikasi
-        SendEmailJob::dispatch($user->email, new SellerRejectedMail($emailData));
+        SendEmailJob::dispatch($emailData['email'], new SellerRejectedMail($emailData));
 
         $user->delete();
 

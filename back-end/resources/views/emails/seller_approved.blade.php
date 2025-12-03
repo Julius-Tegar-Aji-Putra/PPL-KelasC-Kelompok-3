@@ -32,7 +32,7 @@
                             Selamat, toko Anda telah disetujui! 🎉
                         </h1>
                         <p style="margin:0 0 16px 0;font-size:14px;color:#555555;line-height:1.6;">
-                            Halo, {{ $data['name'] }}.<br>
+                            Halo, {{ $data['nama'] }}.<br>
                             Pengajuan toko Anda di <strong>MartPlace</strong> telah selesai kami verifikasi dan
                             sekarang <strong>berstatus Aktif</strong>. Anda sudah bisa mulai menambahkan produk
                             dan berjualan kepada mahasiswa.
@@ -49,11 +49,11 @@
                         <div style="border-radius:8px;border:1px solid #f0f0f0;padding:12px 14px;background:#fafafa;">
                             <div style="font-size:13px;color:#333;line-height:1.6;margin-bottom:4px;">
                                 <strong>Nama Toko:</strong>
-                                {{ $data['store_name'] }}
+                                {{ $data['nama_toko'] }}
                             </div>
                             <div style="font-size:13px;color:#333;line-height:1.6;margin-bottom:4px;">
                                 <strong>PIC / Penanggung Jawab:</strong>
-                                {{ $data['name'] }}
+                                {{ $data['nama'] }}
                             </div>
                             <div style="font-size:13px;color:#333;line-height:1.6;">
                                 <strong>Status:</strong>
