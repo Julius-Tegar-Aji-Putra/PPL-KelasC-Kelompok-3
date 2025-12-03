@@ -1,4 +1,3 @@
-//
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -150,11 +149,11 @@ const ProductDetail = () => {
                 <RatingStars rating={Math.round(averageRating)} size={18} />
                 <span className="text-gray-600">({product.reviews.length} reviews)</span>
                 <span className="text-gray-400">|</span>
-                <span className="text-gray-600">{product.total_sold} Sold</span>
+                <span className="text-gray-600">{product.total_sold} </span>
                 <div className={`px-3 py-1 rounded text-xs font-semibold text-white ${
                   product.condition === 'baru' ? 'bg-[#00C24E]' : 'bg-secondary-2'
                 }`}>
-                  {product.condition === 'baru' ? 'NEW' : 'USED'}
+                  {product.condition === 'baru' ? 'BARU' : 'BEKAS'}
                 </div>
                 <span className="text-green-600 font-medium">In Stock</span>
               </div>
