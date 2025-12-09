@@ -32,9 +32,9 @@
                             Pengajuan toko Anda belum dapat kami setujui
                         </h1>
                         <p style="margin:0 0 16px 0;font-size:14px;color:#555555;line-height:1.6;">
-                            Halo, {{ $data['name'] }}.<br>
+                            Halo, {{ $data['nama'] }}.<br>
                             Setelah proses verifikasi, saat ini pengajuan toko
-                            <strong>{{ $data['store_name'] }}</strong> di MartPlace
+                            <strong>{{ $data['nama_toko'] }}</strong> di MartPlace
                             belum dapat kami setujui.
                         </p>
                     </td>
@@ -49,11 +49,11 @@
                         <div style="border-radius:8px;border:1px solid #f0f0f0;padding:12px 14px;background:#fafafa;">
                             <div style="font-size:13px;color:#333;line-height:1.6;margin-bottom:4px;">
                                 <strong>Nama Toko:</strong>
-                                {{ $data['store_name'] }}
+                                {{ $data['nama_toko'] }}
                             </div>
                             <div style="font-size:13px;color:#333;line-height:1.6;margin-bottom:4px;">
                                 <strong>PIC / Penanggung Jawab:</strong>
-                                {{ $data['name'] }}
+                                {{ $data['nama'] }}
                             </div>
                             <div style="font-size:13px;color:#333;line-height:1.6;">
                                 <strong>Status:</strong>
@@ -67,11 +67,8 @@
                 <tr>
                     <td style="padding:0 24px 24px 24px;">
                         <div style="border-radius:8px;border:1px solid #fee2e2;background:#fef2f2;padding:12px 14px;">
-                            <div style="font-size:13px;color:#b91c1c;font-weight:600;margin-bottom:4px;">
-                                Alasan penolakan:
-                            </div>
                             <div style="font-size:13px;color:#7f1d1d;line-height:1.5;">
-                                {{ $data['reason'] ?? 'Silakan periksa kembali data dan dokumen pengajuan toko Anda.' }}
+                                {{ 'Silakan periksa kembali data dan dokumen pengajuan toko Anda.' }}
                             </div>
                         </div>
                     </td>
