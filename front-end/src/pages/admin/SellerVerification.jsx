@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/common/Loader';
+import ConfirmModal from '../../components/common/ConfirmModal';
 
 // Helper: Status Badge
 const StatusBadge = ({ status }) => {
@@ -126,8 +127,16 @@ const SellerVerification = () => {
     const [selectedSeller, setSelectedSeller] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
-    const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalConfig, setModalConfig] = useState({
+        type: '', 
+        sellerId: null,
+        sellerName: '',
+        title: '',
+        message: ''
+    });
 
+    const navigate = useNavigate();
     const API_URL = 'http://localhost:8000/api'; 
     const STORAGE_URL = 'http://localhost:8000/storage';
     const token = localStorage.getItem('auth_token');
@@ -150,19 +159,34 @@ const SellerVerification = () => {
         fetchPendingSellers();
     }, []);
 
-    const handleVerification = async (id, status) => {
-        if (!confirm(`Konfirmasi tindakan: ${status === 'approved' ? 'SETUJUI' : 'TOLAK'} penjual ini?`)) return;
+    const openConfirmationModal = (id, status) => {
+        const isApprove = status === 'approved';
+        
+        setModalConfig({
+            type: status, 
+            sellerId: id,
+            title: isApprove ? 'Konfirmasi Persetujuan' : 'Konfirmasi Penolakan',
+            message: isApprove 
+                ? 'Apakah Anda yakin ingin MENYETUJUI penjual ini? Penjual akan dapat mulai berjualan.'
+                : 'Apakah Anda yakin ingin MENOLAK pengajuan penjual ini? Penjual tidak akan dapat mengakses fitur toko.'
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleConfirmAction = async () => {
+        const { sellerId, type } = modalConfig;
+        setIsModalOpen(false);
 
         try {
             setActionLoading(true);
-            const endpoint = status === 'approved' 
-                ? `${API_URL}/admin/sellers/${id}/approve`
-                : `${API_URL}/admin/sellers/${id}/reject`;
+            const endpoint = type === 'approved' 
+                ? `${API_URL}/admin/sellers/${sellerId}/approve`
+                : `${API_URL}/admin/sellers/${sellerId}/reject`;
 
             await axios.post(endpoint, {}, authConfig);
-            alert(`Berhasil memproses data. Status: ${status}`);
+            
             setSelectedSeller(null); 
-            fetchPendingSellers(); 
+            fetchPendingSellers();   
         } catch (error) {
             console.error(`Error processing`, error);
             alert(`Gagal memproses data.`);
@@ -244,10 +268,21 @@ const SellerVerification = () => {
                 <SellerDetailModal 
                     seller={selectedSeller} 
                     onClose={() => setSelectedSeller(null)} 
-                    onVerify={handleVerification}
+                    onVerify={openConfirmationModal} 
                     loadingAction={actionLoading}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleConfirmAction}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                confirmText="Ya, Lanjutkan"
+                cancelText="Batal"
+                isDanger={modalConfig.type === 'rejected'}
+            />
         </div>
     );
 };

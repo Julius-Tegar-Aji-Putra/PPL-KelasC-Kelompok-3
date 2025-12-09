@@ -246,7 +246,7 @@ const Products = () => {
             {filters.condition && (
               <ActiveFilterBadge 
                 label="Kondisi" 
-                value={filters.condition === 'baru' ? 'Baru' : 'Bekas'} 
+                value={filters.condition === 'Baru' ? 'Baru' : 'Bekas'} 
                 onRemove={() => removeFilter('condition')}
               />
             )}

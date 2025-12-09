@@ -19,7 +19,6 @@ class Review extends Model
         'comment'
     ];
 
-    // Relasi ke Product
     public function product()
     {
         return $this->belongsTo(Product::class);

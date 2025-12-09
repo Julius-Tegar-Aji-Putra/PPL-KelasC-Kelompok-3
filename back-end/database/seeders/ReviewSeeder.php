@@ -108,7 +108,6 @@ class ReviewSeeder extends Seeder
                 Review::create([
                     'product_id'     => $productId,
                     'reviewer_name'  => $data['name'],
-                    // Trik agar email & hp unik: pakai index loop
                     'reviewer_email' => strtolower(str_replace(' ', '', $data['name'])) . $productId . $index . '@example.com',
                     'reviewer_phone' => '08123456' . $productId . $index,
                     'province'       => $data['province'],

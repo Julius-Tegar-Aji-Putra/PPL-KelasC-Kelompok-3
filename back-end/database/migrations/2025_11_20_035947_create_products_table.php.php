@@ -10,17 +10,17 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Relasi ke Penjual
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); 
             $table->foreignId('category_id')->constrained('product_categories');
             $table->string('name');
-            $table->bigInteger('price'); // Harga
-            $table->string('brand'); // Merek
-            $table->string('warranty_type'); // Tipe Garansi
-            $table->enum('condition', ['baru', 'bekas']); // Kondisi barang
+            $table->bigInteger('price'); 
+            $table->string('brand'); 
+            $table->enum('warranty_type', ['Garansi Resmi', 'Garansi Toko', 'Garansi Distributor', 'Tidak Ada Garansi']); 
+            $table->enum('condition', ['Baru', 'Bekas']); 
             $table->integer('stock');
             $table->text('description');
-            $table->string('main_image'); // 1 gambar untuk tampilan list
-            $table->integer('total_sold')->default(0); // Placeholder akumulasi sistem
+            $table->string('main_image'); 
+            $table->integer('total_sold')->default(0); 
             $table->timestamps();
         });
     }

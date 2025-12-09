@@ -11,10 +11,8 @@ class WilayahController extends Controller
 {
     protected $baseUrl = 'https://wilayah.id/api';
 
-    // Fungsi untuk mengambil data provinsi
     public function getProvinces()
     {
-        // cache selama 1 hari (24 * 60 * 60 detik) 
         $provinces = Cache::remember('provinces', 86400, function () {
             $response = Http::get($this->baseUrl . '/provinces.json');
             return $response->json();
@@ -22,7 +20,6 @@ class WilayahController extends Controller
         return response()->json($provinces);
     }
 
-    // Fungsi untuk mengambil data kabupaten/kota
     public function getRegencies(Request $request)
     {
         $provinceId = $request->query('province_id');
@@ -33,7 +30,6 @@ class WilayahController extends Controller
         return response()->json($regencies);
     }
 
-    // Fungsi untuk mengambil data kecamatan
     public function getDistricts(Request $request)
     {
         $regencyId = $request->query('regency_id');
@@ -44,7 +40,6 @@ class WilayahController extends Controller
         return response()->json($districts);
     }
 
-    // Fungsi untuk mengambil data kelurahan/desa
     public function getVillages(Request $request)
     {
         $districtId = $request->query('district_id');
