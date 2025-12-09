@@ -7,7 +7,7 @@ use App\Models\Review;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule; // Penting buat validasi unik
+use Illuminate\Validation\Rule; 
 use App\Mail\ReviewThankYouMail;
 use App\Jobs\SendEmailJob;
 
@@ -15,20 +15,17 @@ class ReviewController extends Controller
 {
     public function store(Request $request, $productId)
     {
-        // 1. Cek Produk Ada dulu
         $product = Product::find($productId);
         if (!$product) {
             return response()->json(['message' => 'Produk tidak ditemukan'], 404);
         }
 
-        // 2. Validasi Input & Uniqueness
         $validator = Validator::make($request->all(), [
             'reviewer_name'  => 'required|string|max:255',
             'reviewer_phone' => [
                 'required',
                 'string',
                 'max:20',
-                // Cek: di tabel reviews, kolom reviewer_phone harus unik UNTUK product_id ini
                 Rule::unique('reviews')->where(function ($query) use ($productId) {
                     return $query->where('product_id', $productId);
                 }),
@@ -37,7 +34,6 @@ class ReviewController extends Controller
                 'required',
                 'email',
                 'max:255',
-                // Cek: di tabel reviews, kolom reviewer_email harus unik UNTUK product_id ini
                 Rule::unique('reviews')->where(function ($query) use ($productId) {
                     return $query->where('product_id', $productId);
                 }),
@@ -46,7 +42,6 @@ class ReviewController extends Controller
             'rating'         => 'required|integer|min:1|max:5',
             'comment'        => 'required|string',
         ], [
-            // Custom Error Messages biar user paham
             'reviewer_email.unique' => 'Email ini sudah memberikan ulasan untuk produk ini.',
             'reviewer_phone.unique' => 'Nomor HP ini sudah memberikan ulasan untuk produk ini.',
         ]);
@@ -55,7 +50,6 @@ class ReviewController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // 3. Simpan Review
         try {
             $review = Review::create([
                 'product_id'     => $productId,
@@ -67,8 +61,6 @@ class ReviewController extends Controller
                 'comment'        => $request->comment,
             ]);
 
-            // 4. Kirim Email via Queue 
-            // Kita pindahkan logika email keluar dari flow utama biar user ga nunggu
             $emailData = [
                 'name'         => $request->reviewer_name,
                 'product_name' => $product->name,

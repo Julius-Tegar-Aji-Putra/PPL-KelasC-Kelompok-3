@@ -147,9 +147,9 @@ const ProductDetail = () => {
                 <span className="text-gray-400">|</span>
                 <span className="text-gray-600">{product.total_sold}</span>
                 <div className={`px-3 py-1 rounded text-xs font-semibold text-white ${
-                  product.condition === 'baru' ? 'bg-[#00C24E]' : 'bg-secondary-2'
+                  product.condition === 'Baru' ? 'bg-[#00C24E]' : 'bg-secondary-2'
                 }`}>
-                  {product.condition === 'baru' ? 'BARU' : 'BEKAS'}
+                  {product.condition === 'Baru' ? 'BARU' : 'BEKAS'}
                 </div>
                 <span className="text-green-600 font-medium">Stok Tersedia</span>
               </div>

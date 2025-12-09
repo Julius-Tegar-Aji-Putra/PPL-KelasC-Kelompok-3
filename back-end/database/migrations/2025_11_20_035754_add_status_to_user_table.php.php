@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Status default 'inactive' (false) sesuai permintaan: "pertama kali daftar pasti tidak aktif"
             $table->enum('status', ['active', 'inactive'])->default('inactive')->after('role'); 
         });
     }

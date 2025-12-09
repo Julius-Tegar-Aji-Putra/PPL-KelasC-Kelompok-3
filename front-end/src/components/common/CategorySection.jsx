@@ -1,14 +1,14 @@
 //
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react'; // Hapus useRef
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-// Import Icon Kategori & Icon Panah
+// Import Icon Kategori (Sama persis, tidak diubah)
 import { 
   Headphones, DeviceMobile, TShirt, Dress, HairDryer, ForkKnife, 
   Motorcycle, Palette, Book, GameController, FirstAidKit, Barbell, 
-  Armchair, SquaresFour,
-  CaretLeft, CaretRight // Icon untuk tombol panah
+  Armchair, SquaresFour 
+  // Hapus CaretLeft, CaretRight karena tidak dipakai lagi
 } from '@phosphor-icons/react';
 
 const CategorySection = () => {
@@ -16,24 +16,7 @@ const CategorySection = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     
-    // Ref untuk mengakses elemen scroll container
-    const scrollContainerRef = useRef(null);
-
-    // Fungsi Scroll ke Kiri
-    const scrollLeft = () => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-        }
-    };
-
-    // Fungsi Scroll ke Kanan
-    const scrollRight = () => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-        }
-    };
-
-    // Mapping Icon (Sama seperti sebelumnya)
+    // Mapping Icon (Sama persis, tidak diubah)
     const getCategoryIcon = (slugOrName) => {
         const key = slugOrName.toLowerCase();
         const iconProps = { size: 32, weight: "regular" }; 
@@ -84,59 +67,35 @@ const CategorySection = () => {
                     </div>
                     <div className="flex justify-between items-end">
                         <h2 className="text-4xl font-semibold text-slate-900">Telusuri Berdasarkan Kategori</h2>
-                        
-                        {/* Tombol Navigasi (Hanya muncul di Desktop / Layar Besar) */}
-                        <div className="hidden md:flex gap-2">
-                            <button 
-                                onClick={scrollLeft}
-                                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-secondary-2 hover:text-white transition-colors"
-                            >
-                                <CaretLeft size={20} weight="bold" />
-                            </button>
-                            <button 
-                                onClick={scrollRight}
-                                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-secondary-2 hover:text-white transition-colors"
-                            >
-                                <CaretRight size={20} weight="bold" />
-                            </button>
-                        </div>
                     </div>
                 </div>
 
-                {/* Wrapper Relative untuk menampung scroll container */}
-                <div className="relative group">
-                    
-                    {/* SCROLLABLE CONTAINER */}
-                    {/* ref={scrollContainerRef} dipasang di sini agar tombol bisa mengontrol div ini */}
-                    <div 
-                        ref={scrollContainerRef}
-                        className="flex flex-nowrap overflow-x-auto gap-8 pb-4 scroll-smooth scrollbar-hide"
-                    >
-                        {categories.map((category) => (
-                            <div 
-                                key={category.id}
-                                onClick={() => navigate(`/products?category=${category.slug}`)}
-                                className="
-                                    group/card 
-                                    border border-gray-300 rounded-md 
-                                    min-w-[170px] w-[170px] h-[145px] 
-                                    flex flex-col items-center justify-center gap-4 
-                                    cursor-pointer 
-                                    transition-all duration-300 
-                                    hover:bg-secondary-2 hover:border-secondary-2 hover:shadow-lg
-                                    flex-shrink-0
-                                "
-                            >
-                                <div className="text-slate-900 group-hover/card:text-white transition-colors duration-300">
-                                    {getCategoryIcon(category.slug || category.name)} 
-                                </div>
-                                
-                                <span className="text-slate-900 font-medium text-base group-hover/card:text-white transition-colors duration-300 capitalize text-center px-2 line-clamp-2">
-                                    {category.name}
-                                </span>
+                {/* --- BAGIAN UTAMA YANG DIUBAH --- */}
+                {/* Menggunakan GRID System, bukan Flex Scroll */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                    {categories.map((category) => (
+                        <div 
+                            key={category.id}
+                            onClick={() => navigate(`/products?category=${category.slug}`)}
+                            className="
+                                group/card 
+                                border border-gray-300 rounded-md 
+                                h-[145px] w-full  /* Ukuran mengikuti grid, bukan fix 170px */
+                                flex flex-col items-center justify-center gap-4 
+                                cursor-pointer 
+                                transition-all duration-300 
+                                hover:bg-secondary-2 hover:border-secondary-2 hover:shadow-lg
+                            "
+                        >
+                            <div className="text-slate-900 group-hover/card:text-white transition-colors duration-300">
+                                {getCategoryIcon(category.slug || category.name)} 
                             </div>
-                        ))}
-                    </div>
+                            
+                            <span className="text-slate-900 font-medium text-base group-hover/card:text-white transition-colors duration-300 capitalize text-center px-2 line-clamp-2">
+                                {category.name}
+                            </span>
+                        </div>
+                    ))}
                 </div>
 
             </div>

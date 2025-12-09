@@ -17,19 +17,12 @@ class SendEmailJob implements ShouldQueue
     protected $recipientEmail;
     protected $mailObject;
 
-    /**
-     * Create a new job instance.
-     * Menerima email tujuan dan Objek Mail (Mailable) apa saja.
-     */
     public function __construct($recipientEmail, Mailable $mailObject)
     {
         $this->recipientEmail = $recipientEmail;
         $this->mailObject = $mailObject;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         Mail::to($this->recipientEmail)->send($this->mailObject);

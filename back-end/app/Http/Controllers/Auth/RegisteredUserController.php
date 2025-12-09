@@ -7,46 +7,57 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        // 1. Definisikan Aturan (Rules)
+        $rules = [
             'nama' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-
             'nama_toko' => ['nullable', 'string', 'max:255', 'unique:users,nama_toko'],
             'deskripsi_singkat' => ['nullable', 'string'],
-            'no_handphone' => ['required', 'string', 'max:15'],
+            'no_handphone' => ['required', 'numeric', 'digits_between:10,15'], // Ubah jadi numeric agar lebih ketat
             'alamat' => ['required', 'string'],
-            'rt' => ['required', 'string', 'max:3'],
-            'rw' => ['required', 'string', 'max:3'],
-            'no_ktp' => ['required', 'string', 'size:16'],
+            'rt' => ['required', 'numeric', 'digits_between:1,3'],
+            'rw' => ['required', 'numeric', 'digits_between:1,3'],
+            'no_ktp' => ['required', 'numeric', 'digits:16'], // Wajib 16 digit angka
             'foto' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'file_upload_ktp' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-            'province_id' => ['required', 'string'],
-            'province_name' => ['required', 'string'],
-            'regency_id' => ['required', 'string'],
-            'regency_name' => ['required', 'string'],
-            'district_id' => ['required', 'string'],
-            'district_name' => ['required', 'string'],
-            'village_id' => ['required', 'string'],
-            'village_name' => ['required', 'string'],
-        ]);
+            'province_id' => ['required'],
+            'regency_id' => ['required'],
+            'district_id' => ['required'],
+            'village_id' => ['required'],
+        ];
+
+        // 2. Definisikan Pesan Bahasa Indonesia (Messages)
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'email' => 'Format email tidak valid.',
+            'unique' => ':attribute sudah terdaftar di sistem.',
+            'confirmed' => 'Konfirmasi password tidak cocok.',
+            'numeric' => ':attribute harus berupa angka.',
+            'digits' => ':attribute harus berisi :digits digit.',
+            'digits_between' => ':attribute harus antara :min sampai :max digit.',
+            'image' => 'File harus berupa gambar.',
+            'mimes' => 'Format file harus jpeg, png, atau jpg.',
+            'max' => [
+                'file' => 'Ukuran file maksimal 2MB.',
+                'string' => ':attribute maksimal :max karakter.',
+            ],
+            'size' => ':attribute harus berukuran :size karakter.',
+        ];
+
+        // 3. Buat Validator dengan Pesan Custom
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $path_foto = $request->file('foto')->store('foto_penjual', 'public');
@@ -79,12 +90,8 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // $token = $user->createToken('auth-token')->plainTextToken;
-
         return response()->json([
             'message' => 'Registrasi berhasil. Silakan tunggu verifikasi Admin untuk mengaktifkan akun Anda.',
-            // 'token' => $token,
-            // 'user' => $user
         ], 201);
     }
 }
