@@ -65,7 +65,7 @@ class ProductController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        $paginator = $query->paginate(12);
+        $paginator = $query->paginate(16);
 
         $paginator->getCollection()->transform(function ($product) {
             return [

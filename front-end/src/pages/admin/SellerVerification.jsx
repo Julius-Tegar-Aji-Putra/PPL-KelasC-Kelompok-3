@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/common/Loader';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import CustomToast from '../../components/common/CustomToast';
 
 // Helper: Status Badge
 const StatusBadge = ({ status }) => {
@@ -42,6 +44,7 @@ const SellerDetailModal = ({ seller, onClose, onVerify, loadingAction }) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4 animate-fade-in">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-xl flex flex-col max-h-[90vh] overflow-hidden">
+                {/* Header Modal */}
                 <div className="flex justify-between items-center px-8 py-6 border-b border-gray-200 bg-white">
                     <div>
                         <h2 className="text-2xl font-bold font-poppins text-text-2">Detail Pendaftar</h2>
@@ -53,6 +56,7 @@ const SellerDetailModal = ({ seller, onClose, onVerify, loadingAction }) => {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                    {/* Foto Profil & Status */}
                     <div className="flex flex-col items-center text-center mb-8">
                         <div className="relative mb-4">
                             <img 
@@ -68,6 +72,7 @@ const SellerDetailModal = ({ seller, onClose, onVerify, loadingAction }) => {
                     </div>
 
                     <div className="flex flex-col gap-2">
+                        {/* 1. Informasi Pribadi */}
                         <div>
                             <SectionTitle title="Informasi Pribadi" />
                             <div className="bg-gray-50 rounded-lg px-6 py-2 border border-gray-100">
@@ -75,13 +80,49 @@ const SellerDetailModal = ({ seller, onClose, onVerify, loadingAction }) => {
                                 <DetailRow label="NIK" value={seller.no_ktp} />
                             </div>
                         </div>
+
+                        {/* --- BAGIAN BARU: ALAMAT LENGKAP (Tambahkan Disini) --- */}
+                        <div>
+                            <SectionTitle title="Alamat Lengkap" />
+                            <div className="bg-gray-50 rounded-lg px-6 py-4 border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                                <div className="md:col-span-2 border-b border-gray-200 pb-2 mb-2 last:border-0">
+                                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">Alamat Jalan</p>
+                                    <p className="text-text-2 font-medium">{seller.alamat}</p>
+                                </div>
+                                <div className="border-b border-gray-200 pb-2 mb-2 md:border-b-0 md:pb-0 md:mb-0">
+                                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">RT / RW</p>
+                                    <p className="text-text-2 font-medium">{seller.rt} / {seller.rw}</p>
+                                </div>
+                                <div className="border-b border-gray-200 pb-2 mb-2 md:border-b-0 md:pb-0 md:mb-0">
+                                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">Desa / Kelurahan</p>
+                                    <p className="text-text-2 font-medium">{seller.village_name}</p>
+                                </div>
+                                <div className="border-b border-gray-200 pb-2 mb-2 md:border-b-0 md:pb-0 md:mb-0">
+                                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">Kecamatan</p>
+                                    <p className="text-text-2 font-medium">{seller.district_name}</p>
+                                </div>
+                                <div className="border-b border-gray-200 pb-2 mb-2 md:border-b-0 md:pb-0 md:mb-0">
+                                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">Kabupaten / Kota</p>
+                                    <p className="text-text-2 font-medium">{seller.regency_name}</p>
+                                </div>
+                                <div className="md:col-span-2 pt-2 md:border-t border-gray-200 mt-2">
+                                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">Provinsi</p>
+                                    <p className="text-text-2 font-medium">{seller.province_name}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {/* -------------------------------------------------------- */}
+
+                        {/* 2. Informasi Toko */}
                         <div>
                             <SectionTitle title="Informasi Toko" />
                             <div className="bg-gray-50 rounded-lg px-6 py-2 border border-gray-100">
                                 <DetailRow label="Nama Toko" value={seller.nama_toko} />
-                                <DetailRow label="Deskripsi Toko" value={seller.deskripsi_singkat} isLong={true} />
+                                <DetailRow label="Deskripsi Toko" value={seller.deskripsi_singkat}/>
                             </div>
                         </div>
+
+                        {/* 3. Dokumen KTP */}
                         <div>
                             <SectionTitle title="Dokumen KTP" />
                             <div className="mt-4 border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50 flex justify-center">
@@ -101,6 +142,7 @@ const SellerDetailModal = ({ seller, onClose, onVerify, loadingAction }) => {
                     </div>
                 </div>
 
+                {/* Footer Modal Buttons */}
                 <div className="p-8 border-t border-gray-200 bg-white flex gap-4">
                     <button 
                         onClick={() => onVerify(seller.id, 'rejected')}
@@ -136,6 +178,72 @@ const SellerVerification = () => {
         message: ''
     });
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5; 
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;    
+
+    const currentSellers = sellers.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(sellers.length / itemsPerPage);
+
+    const [toast, setToast] = useState(null);
+
+    const renderPagination = () => {
+        const buttons = [];
+        
+        buttons.push(
+            <button
+                key="prev"
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+                <ChevronLeft className="w-4 h-4 text-gray-600" />
+            </button>
+        );
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (
+                i === 1 ||
+                i === totalPages ||
+                (i >= currentPage - 1 && i <= currentPage + 1)
+            ) {
+                buttons.push(
+                    <button
+                        key={i}
+                        onClick={() => setCurrentPage(i)}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
+                            i === currentPage
+                                ? 'bg-secondary-2 text-white shadow-md border border-secondary-2'
+                                : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+                        }`}
+                    >
+                        {i}
+                    </button>
+                );
+            } else if (
+                i === currentPage - 2 ||
+                i === currentPage + 2
+            ) {
+                buttons.push(<span key={`dots-${i}`} className="px-2 text-gray-400">...</span>);
+            }
+        }
+        buttons.push(
+            <button
+                key="next"
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+                <ChevronRight className="w-4 h-4 text-gray-600" />
+            </button>
+        );
+
+        return buttons;
+    };
+
     const navigate = useNavigate();
     const API_URL = 'http://localhost:8000/api'; 
     const STORAGE_URL = 'http://localhost:8000/storage';
@@ -160,11 +268,15 @@ const SellerVerification = () => {
     }, []);
 
     const openConfirmationModal = (id, status) => {
+        const currentSeller = sellers.find(s => s.id === id);
+        const sellerName = currentSeller ? currentSeller.nama : '';
+
         const isApprove = status === 'approved';
         
         setModalConfig({
             type: status, 
             sellerId: id,
+            sellerName: sellerName, 
             title: isApprove ? 'Konfirmasi Persetujuan' : 'Konfirmasi Penolakan',
             message: isApprove 
                 ? 'Apakah Anda yakin ingin MENYETUJUI penjual ini? Penjual akan dapat mulai berjualan.'
@@ -174,7 +286,7 @@ const SellerVerification = () => {
     };
 
     const handleConfirmAction = async () => {
-        const { sellerId, type } = modalConfig;
+        const { sellerId, type, sellerName } = modalConfig; 
         setIsModalOpen(false);
 
         try {
@@ -185,20 +297,43 @@ const SellerVerification = () => {
 
             await axios.post(endpoint, {}, authConfig);
             
+            const message = type === 'approved' 
+                ? `Penjual ${sellerName || ''} berhasil disetujui.` 
+                : `Penjual ${sellerName || ''} berhasil ditolak.`;
+            
+            setToast({ message, type: 'success' });
+            
             setSelectedSeller(null); 
             fetchPendingSellers();   
         } catch (error) {
             console.error(`Error processing`, error);
-            alert(`Gagal memproses data.`);
+            
+            setToast({ 
+                message: "Gagal memproses data. Silakan coba lagi.", 
+                type: 'error' 
+            });
         } finally {
             setActionLoading(false);
         }
     };
 
-    if (loading) return <Loader />;
+    if (loading) {
+        return (
+            <div className="absolute inset-0 -m-8 flex items-center justify-center bg-white">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-7xl mx-auto">
+            {toast && (
+                <CustomToast 
+                    message={toast.message} 
+                    type={toast.type} 
+                    onClose={() => setToast(null)} 
+                />
+            )}
             <div className="mb-10">
                 <div className="flex items-center gap-4">
                     <div className="w-5 h-10 bg-red-500 rounded-md"></div>
@@ -218,14 +353,14 @@ const SellerVerification = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {sellers.length === 0 ? (
+                            {currentSellers.length === 0 ? (
                                 <tr>
                                     <td colSpan="4" className="px-6 py-12 text-center">
                                         <div className="text-gray-400 text-lg font-poppins">Tidak ada antrian verifikasi</div>
                                     </td>
                                 </tr>
                             ) : (
-                                sellers.map((seller) => (
+                                currentSellers.map((seller) => (
                                     <tr key={seller.id} className="transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center">
@@ -262,6 +397,17 @@ const SellerVerification = () => {
                         </tbody>
                     </table>
                 </div>
+                {sellers.length > 0 && (
+                    <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <span className="text-sm text-gray-500 font-poppins">
+                            Menampilkan {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, sellers.length)} dari {sellers.length} pendaftar
+                        </span>
+                        
+                        <div className="flex items-center gap-2">
+                            {renderPagination()}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {selectedSeller && (

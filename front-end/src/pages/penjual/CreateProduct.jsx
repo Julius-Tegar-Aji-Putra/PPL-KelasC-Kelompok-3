@@ -5,7 +5,7 @@ import axios from 'axios';
 import { ArrowLeft, Upload, X, ImagePlus, Save } from 'lucide-react';
 
 // 1. IMPORT KOMPONEN CUSTOM
-import CustomToast from '../../components/penjual/CustomToast';
+import CustomToast from '../../components/common/CustomToast';
 import ConfirmModal from '../../components/common/ConfirmModal';
 
 function CreateProduct() {
@@ -68,6 +68,43 @@ function CreateProduct() {
         setFormData(prev => ({ ...prev, [name]: value }));
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: null }));
+        }
+    };
+
+    // Handle validasi angka
+    const handleNumberInput = (e) => {
+        const { name, value } = e.target;
+        
+        let sanitizedValue = value.replace(/[^0-9]/g, '');
+
+        if (sanitizedValue === '0') {
+            sanitizedValue = '1';
+        }
+
+        if (sanitizedValue.length > 1 && sanitizedValue.startsWith('0')) {
+            sanitizedValue = sanitizedValue.replace(/^0+/, '');
+        }
+
+        setFormData(prev => ({ ...prev, [name]: sanitizedValue }));
+        
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: null }));
+        }
+    };
+
+    // Onkey Handler
+    const handleKeyDown = (e) => {
+        const allowedKeys = [
+            'Backspace', 'Delete', 'Tab', 'Enter', 
+            'ArrowLeft', 'ArrowRight', 'Home', 'End'
+        ];
+
+        const isNumber = /^[0-9]$/.test(e.key);
+
+        const isControlCmd = (e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase());
+
+        if (!isNumber && !allowedKeys.includes(e.key) && !isControlCmd) {
+            e.preventDefault();
         }
     };
 
@@ -303,7 +340,8 @@ function CreateProduct() {
                                         type="number"
                                         name="price"
                                         value={formData.price}
-                                        onChange={handleChange}
+                                        onChange={handleNumberInput}
+                                        onKeyDown={handleKeyDown}
                                         className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-2 ${
                                             errors.price ? 'border-red-500' : 'border-gray-300'
                                         }`}
@@ -323,7 +361,8 @@ function CreateProduct() {
                                         type="number"
                                         name="stock"
                                         value={formData.stock}
-                                        onChange={handleChange}
+                                        onChange={handleNumberInput}
+                                        onKeyDown={handleKeyDown}
                                         className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-2 ${
                                             errors.stock ? 'border-red-500' : 'border-gray-300'
                                         }`}

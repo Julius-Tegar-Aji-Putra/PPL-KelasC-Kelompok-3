@@ -67,24 +67,24 @@ const AdminOverview = () => {
     fetchAdminStats();
   }, []);
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <div className="absolute inset-0 -m-8 flex items-center justify-center bg-white">
+        <Loader />
+      </div>
+    );
+  }
 
-  // --- DATA PROCESSING ---
-  
-  // 1. Filter Kategori yang nilainya > 0 saja agar grafik rapi
   const cleanCategoryData = stats?.products_by_category?.filter(item => item.value > 0) || [];
 
-  // 2. Hitung Total Penjual dari array status
   const totalSellers = stats?.seller_status?.reduce((acc, curr) => acc + curr.value, 0) || 0;
 
-  // 3. Format Data Status untuk Pie Chart (Capitalize Label)
   const statusData = stats?.seller_status?.map(item => ({
     name: item.status.charAt(0).toUpperCase() + item.status.slice(1),
     value: item.value,
     color: STATUS_COLORS[item.status] || '#CBD5E0'
   })) || [];
 
-  // 4. Fungsi Format Label (Fashion Pria -> Fashion P.)
   const formatXAxisLabel = (name) => {
     if (typeof name !== 'string') return name;
     
@@ -116,10 +116,9 @@ const AdminOverview = () => {
         {/* Card 1: Total Penjual */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
+            <div className="p-3 bg-red-50 rounded-lg text-secondary-2">
               <Store size={24} />
             </div>
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Terdaftar</span>
           </div>
           <div>
             <h3 className="text-3xl font-bold text-slate-800">{totalSellers}</h3>
@@ -130,10 +129,9 @@ const AdminOverview = () => {
         {/* Card 2: Total Review */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-yellow-50 rounded-lg text-yellow-600">
+            <div className="p-3 bg-red-50 rounded-lg text-secondary-2">
               <MessageCircle size={24} />
             </div>
-            <span className="text-xs font-bold text-yellow-600 bg-yellow-50 px-2 py-1 rounded">Feedback</span>
           </div>
           <div>
             <h3 className="text-3xl font-bold text-slate-800">{stats?.review_activity?.total_reviews || 0}</h3>
@@ -144,10 +142,9 @@ const AdminOverview = () => {
         {/* Card 3: User Reviewer Unik */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-green-50 rounded-lg text-green-600">
+            <div className="p-3 bg-red-50 rounded-lg text-secondary-2">
               <Users size={24} />
             </div>
-            <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Aktif</span>
           </div>
           <div>
             <h3 className="text-3xl font-bold text-slate-800">{stats?.review_activity?.unique_reviewers || 0}</h3>
