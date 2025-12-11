@@ -125,10 +125,22 @@ function Register() {
         if (!formData.deskripsi_singkat) tempErrors.deskripsi_singkat = "Deskripsi toko wajib diisi.";
     }
 
-    // Step 3: Alamat
+// Step 3: Alamat
     if (currentStep === 3) {
         if (!formData.alamat) tempErrors.alamat = "Alamat wajib diisi.";
-        if (!formData.rt || !formData.rw) tempErrors.rt = "RT/RW wajib diisi.";
+
+        if (!formData.rt) {
+            tempErrors.rt = "RT wajib";
+        } else if (formData.rt.length !== 3) {
+            tempErrors.rt = "RT harus 3 digit";
+        }
+
+        if (!formData.rw) {
+            tempErrors.rw = "RW wajib";
+        } else if (formData.rw.length !== 3) {
+            tempErrors.rw = "RW harus 3 digit";
+        }
+
         if (!formData.province_id) tempErrors.province_id = "Provinsi wajib dipilih.";
         if (!formData.regency_id) tempErrors.regency_id = "Kabupaten wajib dipilih.";
         if (!formData.district_id) tempErrors.district_id = "Kecamatan wajib dipilih.";
@@ -402,13 +414,14 @@ function Register() {
                                         <div>
                                             <label className={labelClass}>RT</label>
                                             <input type="text" name="rt" value={formData.rt} onChange={handleChange} className={getInputClass('rt')} placeholder="001" maxLength="3" />
+                                            {errors.rt && <p className="text-red-500 text-xs mt-1">{errors.rt}</p>}
                                         </div>
                                         <div>
                                             <label className={labelClass}>RW</label>
                                             <input type="text" name="rw" value={formData.rw} onChange={handleChange} className={getInputClass('rw')} placeholder="005" maxLength="3" />
+                                            {errors.rw && <p className="text-red-500 text-xs mt-1">{errors.rw}</p>}
                                         </div>
                                     </div>
-                                    {(errors.rt || errors.rw) && <p className="text-red-500 text-xs mt-1">RT/RW Wajib diisi</p>}
                                 </div>
                             </div>
                         </div>

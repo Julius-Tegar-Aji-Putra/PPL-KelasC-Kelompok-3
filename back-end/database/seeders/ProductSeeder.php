@@ -58,7 +58,7 @@ class ProductSeeder extends Seeder
                 'warranty_type' => 'Garansi Resmi',
                 'description' => 'Laptop gaming ultra-slim dengan prosesor AMD Ryzen 9 dan grafis RTX 4060.',
                 'main_image'  => 'products/main/1.jpg',
-                'images'      => ['products/details/1-1.jpg', 'products/details/1-2.jpg', 'products/details/1-3.jpg']
+                'images'      => ['products/details/1-1.jpg', 'products/details/1-2.jpg', 'products/details/1-3.jpg'],
             ],
             [
                 'user_id'     => $sellerRina->id,
@@ -777,6 +777,7 @@ class ProductSeeder extends Seeder
                 'warranty_type' => $item['warranty_type'],
                 'description'   => $item['description'],
                 'main_image'    => $item['main_image'],
+                'total_sold'    => $item['total_sold'] ?? rand(0, 100)
             ]);
 
             if (isset($item['images'])) {
