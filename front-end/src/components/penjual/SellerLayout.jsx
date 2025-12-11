@@ -108,7 +108,7 @@ function SellerLayout() {
         } bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col h-full z-30`}
       >
         <div className="h-24 flex items-center justify-center border-b border-gray-100">
-          <Link to="/" className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden">
+          <Link to="/penjual/dashboard" className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden">
             <span className={`transition-all duration-300 ${isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0'} overflow-hidden`}>
                 Penjual Dashboard
             </span>

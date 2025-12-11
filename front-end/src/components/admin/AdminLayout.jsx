@@ -88,14 +88,17 @@ const AdminLayout = () => {
       {/* SIDEBAR */}
       <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col h-full z-30`}>
         <div className="h-24 flex items-center justify-center border-b border-gray-100">
-          <div className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden">
+          <Link 
+            to="/admin/dashboard" 
+            className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden hover:opacity-80 transition-opacity"
+          >
             <span className={`transition-all duration-300 ${isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0'} overflow-hidden`}>
                 Admin Dashboard
             </span>
             <span className={`transition-all duration-300 ${!isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0 hidden'}`}>
                 AD
             </span>
-          </div>
+          </Link>
         </div>
 
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-6 px-3 space-y-2 scrollbar-hide">
