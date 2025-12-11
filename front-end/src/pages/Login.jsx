@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import LoginIllustration from "../assets/images/Login.svg";
+import CustomToast from "../components/penjual/CustomToast";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,9 +12,24 @@ function Login() {
   
   const [errors, setErrors] = useState({}); 
   const [generalError, setGeneralError] = useState(null);
+  const [toast, setToast] = useState(null);
   
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Cek apakah ada state 'successMessage' yang dikirim dari navigasi
+    if (location.state?.showToast && location.state?.successMessage) {
+      setToast({
+        message: location.state.successMessage,
+        type: "success",
+      });
+
+      // Bersihkan history state agar toast tidak muncul lagi saat refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   // --- LOGIKA VALIDASI ---
   const validateForm = () => {
@@ -92,6 +108,15 @@ function Login() {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center py-12 bg-white relative">
+      {/* --- RENDER TOAST --- */}
+      {toast && (
+        <CustomToast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+      
       {/* Tombol Kembali ke Homepage */}
       <Link 
         to="/" 

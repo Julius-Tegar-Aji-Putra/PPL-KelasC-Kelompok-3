@@ -3,7 +3,9 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import RegisterIllustration from '../assets/images/Register.svg';
 // Ikon sederhana (bisa diganti dengan library icon Anda jika mau)
-import { Eye, EyeOff, Upload, CheckCircle, ArrowRight, ArrowLeft, X } from 'lucide-react'; 
+import { Eye, EyeOff, Upload, CheckCircle, ArrowRight, ArrowLeft, X } from 'lucide-react';
+import CustomToast from '../components/penjual/CustomToast';
+
 
 function Register() {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [toast, setToast] = useState(null);
 
   // State Data Form
   const [formData, setFormData] = useState({
@@ -197,16 +200,24 @@ function Register() {
       const response = await axios.post('/api/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      alert(response.data.message);
-      navigate('/login'); 
+      navigate('/login', { 
+        state: { 
+          successMessage: response.data.message, 
+          showToast: true 
+        } 
+      });
     } catch (error) {
       if (error.response && error.response.status === 422) {
         setErrors(error.response.data.errors);
-        // Jika error validasi backend, mungkin perlu mundur step. 
-        // Untuk sederhana, kita tampilkan alert dulu.
-        alert("Terdapat kesalahan data. Silakan cek kembali inputan Anda.");
+        setToast({ 
+            message: "Terdapat kesalahan data. Silakan cek kembali inputan berwarna merah.", 
+            type: 'error' 
+        });
       } else {
-        alert('Terjadi kesalahan pada server.');
+        setToast({ 
+            message: error.response?.data?.message || 'Terjadi kesalahan pada server.', 
+            type: 'error' 
+        });
       }
     } finally {
       setLoading(false);
@@ -222,6 +233,13 @@ function Register() {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center py-12 bg-white relative">
+      {toast && (
+        <CustomToast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(null)} 
+        />
+      )}
       {/* Tombol Kembali ke Homepage */}
       <Link 
         to="/" 

@@ -91,7 +91,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         return response()->json([
-            'message' => 'Registrasi berhasil. Silakan tunggu verifikasi Admin untuk mengaktifkan akun Anda.',
+            'message' => 'Registrasi berhasil. Silakan tunggu verifikasi Admin untuk mengaktifkan akun Anda. Cek secara berkala di dalam email yang anda daftarkan',
         ], 201);
     }
 }
