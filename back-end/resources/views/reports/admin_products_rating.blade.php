@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>{{ $title ?? 'Laporan Produk Berdasarkan Rating - MartPlace' }}</title>
     <style>
-        /* ---------- Reset & Layout A4 ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +12,7 @@
 
         @page {
             size: A4;
-            margin: 15mm 12mm 15mm 12mm; /* sedikit lebih lega kiri-kanan */
+            margin: 15mm 12mm 15mm 12mm; 
         }
 
         body {
@@ -21,14 +20,13 @@
             font-size: 10pt;
             color: #333;
             line-height: 1.5;
-            background: #f3f4f6; /* abu sangat muda di luar kartu */
+            background: #f3f4f6; 
         }
 
         .page {
             width: 100%;
         }
 
-        /* ---------- Kartu utama laporan ---------- */
         .page-inner {
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -36,7 +34,6 @@
             padding: 10mm 8mm 8mm 8mm;
         }
 
-        /* ---------- Header ala invoice ---------- */
         .header-table {
             width: 100%;
             border-collapse: collapse;
@@ -54,7 +51,7 @@
         }
 
         .brand span {
-            color: #ff4b4b; /* aksen MartPlace */
+            color: #ff4b4b; 
         }
 
         .report-meta {
@@ -75,7 +72,6 @@
             color: #6b7280;
         }
 
-        /* ---------- Info ringkas laporan ---------- */
         .summary-wrapper {
             margin-bottom: 6mm;
         }
@@ -118,7 +114,6 @@
             margin: 5mm 0 4mm 0;
         }
 
-        /* ---------- Tabel utama ---------- */
         table.report {
             width: 100%;
             border-collapse: collapse;
@@ -136,9 +131,9 @@
 
         table.report th,
         table.report td {
-            padding: 6pt 7pt;               /* sedikit lebih longgar */
+            padding: 6pt 7pt;             
             vertical-align: middle;
-            border: 1px solid #e5e7eb;      /* full grid: semua sisi */
+            border: 1px solid #e5e7eb;     
         }
 
         table.report th {
@@ -150,7 +145,7 @@
         }
 
         table.report tbody tr:nth-child(even) {
-            background: #f9fafb;           /* zebra yang sangat halus */
+            background: #f9fafb;          
         }
 
         .center {
@@ -170,7 +165,6 @@
             padding: 12pt 0;
         }
 
-        /* ---------- Footer ---------- */
         .footer {
             margin-top: 7mm;
             padding-top: 3mm;

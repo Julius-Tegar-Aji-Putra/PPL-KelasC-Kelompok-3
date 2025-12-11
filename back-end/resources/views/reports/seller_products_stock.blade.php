@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>{{ $title ?? 'Laporan Produk Toko - MartPlace' }}</title>
     <style>
-        /* ---------- Reset & Layout A4 ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -28,7 +27,6 @@
             width: 100%;
         }
 
-        /* ---------- Kartu utama laporan ---------- */
         .page-inner {
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -36,7 +34,6 @@
             padding: 10mm 8mm 8mm 8mm;
         }
 
-        /* ---------- Header ala invoice ---------- */
         .header-table {
             width: 100%;
             border-collapse: collapse;
@@ -75,7 +72,6 @@
             color: #6b7280;
         }
 
-        /* ---------- Info ringkas laporan ---------- */
         .summary-wrapper {
             margin-bottom: 6mm;
         }
@@ -118,7 +114,6 @@
             margin: 5mm 0 4mm 0;
         }
 
-        /* ---------- Tabel utama ---------- */
         table.report {
             width: 100%;
             border-collapse: collapse;
@@ -138,7 +133,7 @@
         table.report td {
             padding: 6pt 7pt;
             vertical-align: middle;
-            border: 1px solid #e5e7eb; /* full grid */
+            border: 1px solid #e5e7eb; 
         }
 
         table.report th {
@@ -170,7 +165,6 @@
             padding: 12pt 0;
         }
 
-        /* ---------- Footer ---------- */
         .footer {
             margin-top: 7mm;
             padding-top: 3mm;
@@ -187,12 +181,12 @@
 
         @php
             $titleText = $title ?? '';
-            $mode = 'stock'; // default SRS-12
+            $mode = 'stock'; 
 
             if (strpos($titleText, 'Segera Di Pesan') !== false || strpos($titleText, 'Segera Dipesan') !== false) {
-                $mode = 'restock'; // SRS-14
+                $mode = 'restock';
             } elseif (strpos($titleText, 'Berdasarkan Rating') !== false) {
-                $mode = 'rating'; // SRS-13
+                $mode = 'rating'; 
             }
         @endphp
 
@@ -225,11 +219,11 @@
             $note = 'Laporan ini menampilkan daftar produk milik toko Anda di MartPlace.';
 
             if ($mode === 'stock') {
-                $note = 'Data diurutkan berdasarkan stok produk (sesuai SRS-12).';
+                $note = 'Data diurutkan berdasarkan stok produk.';
             } elseif ($mode === 'rating') {
-                $note = 'Data diurutkan berdasarkan rating produk (sesuai SRS-13).';
+                $note = 'Data diurutkan berdasarkan rating produk.';
             } elseif ($mode === 'restock') {
-                $note = 'Menampilkan produk yang perlu segera dipesan; diurutkan berdasarkan kategori dan produk (sesuai SRS-14).';
+                $note = 'Menampilkan produk yang perlu segera dipesan; diurutkan berdasarkan kategori dan produk.';
             }
         @endphp
 
@@ -269,7 +263,6 @@
         <table class="report">
             <thead>
             @if($mode === 'restock')
-                {{-- SRS-14: No, Produk, Kategori, Harga, Stock --}}
                 <tr>
                     <th width="5%">No</th>
                     <th>Produk</th>
@@ -278,7 +271,6 @@
                     <th>Stock</th>
                 </tr>
             @elseif($mode === 'rating')
-                {{-- SRS-13: No, Produk, Kategori, Harga, Stock, Rating --}}
                 <tr>
                     <th width="5%">No</th>
                     <th>Produk</th>
@@ -288,7 +280,6 @@
                     <th>Rating</th>
                 </tr>
             @else
-                {{-- SRS-12: No, Produk, Kategori, Harga, Rating, Stock --}}
                 <tr>
                     <th width="5%">No</th>
                     <th>Produk</th>
@@ -314,18 +305,15 @@
                     </td>
 
                     @if($mode === 'restock')
-                        {{-- SRS-14: hanya sampai Stock --}}
                         <td class="center">{{ $stock }}</td>
 
                     @elseif($mode === 'rating')
-                        {{-- SRS-13: Stock dulu, baru Rating --}}
                         <td class="center">{{ $stock }}</td>
                         <td class="center">
                             {{ number_format((float) $rating, 1, ',', '') }}
                         </td>
 
                     @else
-                        {{-- SRS-12: Rating dulu, baru Stock --}}
                         <td class="center">
                             {{ number_format((float) $rating, 1, ',', '') }}
                         </td>

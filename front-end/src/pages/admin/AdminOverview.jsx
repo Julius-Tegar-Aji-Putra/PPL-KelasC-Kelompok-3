@@ -31,7 +31,16 @@ const AdminOverview = () => {
   const [loading, setLoading] = useState(true);
 
   // Warna Grafik Konsisten
-  const COLORS = ['#DB4444', '#F6AD55', '#48BB78', '#4299E1', '#9F7AEA'];
+  const COLORS = [
+    '#DB4444', '#4299E1', '#48BB78', '#F6AD55', '#9F7AEA', 
+    '#ED64A6', '#ECC94B', '#38B2AC', '#667EEA', '#ED8936', 
+    '#F56565', '#4FD1C5', '#D69E2E', '#9F7AEA', '#0BC5EA',
+    '#B83280', '#FC8181', '#68D391', '#63B3ED', '#F6E05E', 
+    '#76E4F7', '#F687B3', '#48BB78', '#F6AD55', '#4A5568', 
+    '#C53030', '#2B6CB0', '#2F855A', '#C05621', '#805AD5',
+    '#D53F8C', '#D69E2E', '#2C7A7B', '#5A67D8', '#DD6B20', 
+    '#E53E3E', '#319795', '#3182CE'                        
+  ];
   const STATUS_COLORS = { 'active': '#48BB78', 'inactive': '#A0AEC0' };
 
   useEffect(() => {

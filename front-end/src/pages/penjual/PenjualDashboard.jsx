@@ -47,40 +47,6 @@ function PenjualDashboard() {
         if(response.data.success) {
             setStats(response.data.data);
         }
-
-        setIsLoading(false);
-        
-        // setStats({
-        //   totalProduk: 12,
-        //   totalStok: 450,
-        //   rataRataRating: 4.8,
-          
-        //   stockData: [
-        //     { name: 'HP Gaming', stok: 45 },
-        //     { name: 'Laptop Asus', stok: 20 },
-        //     { name: 'Mouse Logitech', stok: 85 },
-        //     { name: 'Keyboard Mech', stok: 30 },
-        //     { name: 'Headset RGB', stok: 55 },
-        //     { name: 'Monitor 24"', stok: 15 },
-        //   ],
-
-        //   ratingData: [
-        //     { name: 'HP Gaming', rating: 4.9 },
-        //     { name: 'Laptop Asus', rating: 4.7 },
-        //     { name: 'Mouse', rating: 4.5 },
-        //     { name: 'Keyboard', rating: 5.0 },
-        //     { name: 'Headset', rating: 4.2 },
-        //     { name: 'Monitor', rating: 4.8 },
-        //   ],
-
-        //   locationData: [
-        //     { name: 'Jawa Tengah', value: 45 },
-        //     { name: 'DKI Jakarta', value: 30 },
-        //     { name: 'Jawa Barat', value: 15 },
-        //     { name: 'Jawa Timur', value: 10 },
-        //   ]
-        // });
-        
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -91,7 +57,16 @@ function PenjualDashboard() {
     fetchDashboardData();
   }, []);
 
-  const COLORS = ['#DB4444', '#F6AD55', '#48BB78', '#4299E1', '#9F7AEA'];
+  const COLORS = [
+    '#DB4444', '#4299E1', '#48BB78', '#F6AD55', '#9F7AEA', 
+    '#ED64A6', '#ECC94B', '#38B2AC', '#667EEA', '#ED8936', 
+    '#F56565', '#4FD1C5', '#D69E2E', '#9F7AEA', '#0BC5EA',
+    '#B83280', '#FC8181', '#68D391', '#63B3ED', '#F6E05E', 
+    '#76E4F7', '#F687B3', '#48BB78', '#F6AD55', '#4A5568', 
+    '#C53030', '#2B6CB0', '#2F855A', '#C05621', '#805AD5',
+    '#D53F8C', '#D69E2E', '#2C7A7B', '#5A67D8', '#DD6B20', 
+    '#E53E3E', '#319795', '#3182CE'                        
+  ];
 
   if (isLoading) {
     return <Loader />;
