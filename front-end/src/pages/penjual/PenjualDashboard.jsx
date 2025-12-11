@@ -10,7 +10,9 @@ import {
   XCircle, 
   Package, 
   Star, 
-  TrendingUp 
+  TrendingUp,
+  ChevronLeft,
+  ChevronRight 
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -30,6 +32,10 @@ function PenjualDashboard() {
   const { user } = useOutletContext();
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [productPage, setProductPage] = useState(1);
+  const [stockPage, setStockPage] = useState(1);
+  const [ratingPage, setRatingPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     // Simulasi fetch data dari API
@@ -89,6 +95,65 @@ function PenjualDashboard() {
         <XCircle size={16} /> DITOLAK
       </span>
     );
+  };
+
+  // --- LOGIKA GENERATOR TOMBOL HALAMAN ---
+  const renderPagination = (currentPage, totalPages, setPageFunc) => {
+    const buttons = [];
+    
+    // Tombol Previous (<)
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => setPageFunc(prev => Math.max(1, prev - 1))}
+        disabled={currentPage === 1}
+        className="p-1 rounded-md border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+    );
+
+    // Tombol Angka
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - 1 && i <= currentPage + 1)
+      ) {
+        buttons.push(
+          <button
+            key={i}
+            onClick={() => setPageFunc(i)}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              i === currentPage
+                ? 'bg-[#DB4444] text-white border border-[#DB4444]'
+                : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            {i}
+          </button>
+        );
+      } else if (
+        i === currentPage - 2 ||
+        i === currentPage + 2
+      ) {
+        buttons.push(<span key={`dots-${i}`} className="px-1 text-gray-400 text-xs">...</span>);
+      }
+    }
+
+    // Tombol Next (>)
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => setPageFunc(prev => Math.min(totalPages, prev + 1))}
+        disabled={currentPage === totalPages}
+        className="p-1 rounded-md border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    );
+
+    return buttons;
   };
 
   return (
@@ -158,61 +223,108 @@ function PenjualDashboard() {
             
             {/* GRAFIK 1: Stok per Produk */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-800">Stok per Produk</h3>
-                <p className="text-sm text-gray-400">Distribusi jumlah stok barang Anda</p>
-              </div>
-              <div className="h-72 w-full text-xs"> {/* Tinggi diperbesar sedikit agar label muat */}
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={stats?.stockData} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    {/* PERBAIKAN XAXIS: 
-                        - interval={0} memaksa semua label muncul 
-                        - angle={-25} memiringkan teks agar muat jika panjang
-                        - textAnchor="end" merapikan posisi teks miring
-                    */}
-                    <XAxis 
-                        dataKey="name" 
-                        axisLine={false} 
-                        tickLine={false} 
-                        tick={{fill: '#64748b', fontSize: 11}} 
-                        interval={0}
-                        angle={-25}
-                        textAnchor="end"
-                        height={60}
-                    />
-                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                    <Tooltip 
-                      cursor={{fill: '#f8fafc'}}
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    />
-                    <Bar dataKey="stok" fill="#DB4444" radius={[4, 4, 0, 0]} barSize={40} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {(() => {
+                const data = stats?.stockData || [];
+                const totalPages = Math.ceil(data.length / itemsPerPage);
+                // Potong data agar grafik tidak numpuk
+                const currentData = data.slice((stockPage - 1) * itemsPerPage, stockPage * itemsPerPage);
+
+                return (
+                  <>
+                    <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-800">Stok per Produk</h3>
+                        <p className="text-sm text-gray-400">Distribusi stok (Halaman {stockPage})</p>
+                      </div>
+                      
+                      {/* Tombol Halaman untuk Grafik Stok */}
+                      {totalPages > 1 && (
+                        <div className="flex items-center gap-1">
+                          {renderPagination(stockPage, totalPages, setStockPage)}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="h-72 w-full text-xs">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={currentData} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                          <XAxis 
+                              dataKey="name" 
+                              axisLine={false} 
+                              tickLine={false} 
+                              tick={{fill: '#64748b', fontSize: 12}} // Font sedikit diperbesar
+                              interval={0}
+                              height={40} // Tinggi dikurangi karena teks tegak
+                              // Fungsi pemotong teks otomatis:
+                              tickFormatter={(value) => {
+                                  const limit = 10; // Batas jumlah huruf
+                                  if (value.length > limit) return `${value.substring(0, limit)}...`;
+                                  return value;
+                              }}
+                          />
+                          <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                          <Tooltip 
+                            cursor={{fill: '#f8fafc'}}
+                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                          />
+                          <Bar dataKey="stok" fill="#DB4444" radius={[4, 4, 0, 0]} barSize={40} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
-            {/* GRAFIK 2: Performa Rating */}
+            {/* GRAFIK 2: Performa Rating (DENGAN PAGINATION) */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-800">Performa Rating Produk</h3>
-                <p className="text-sm text-gray-400">Nilai rata-rata ulasan per produk</p>
-              </div>
-              <div className="h-72 w-full text-xs">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart layout="vertical" data={stats?.ratingData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
-                    <XAxis type="number" domain={[0, 5]} hide />
-                    <YAxis dataKey="name" type="category" width={100} axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                    <Tooltip 
-                        cursor={{fill: '#f8fafc'}}
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    />
-                    {/* PERBAIKAN WARNA: fill="#DB4444" (Merah) */}
-                    <Bar dataKey="rating" fill="#DB4444" radius={[0, 4, 4, 0]} barSize={20} background={{ fill: '#f8fafc' }} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {(() => {
+                const data = stats?.ratingData || [];
+                const totalPages = Math.ceil(data.length / itemsPerPage);
+                // Potong data rating
+                const currentData = data.slice((ratingPage - 1) * itemsPerPage, ratingPage * itemsPerPage);
+
+                return (
+                  <>
+                    <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-800">Rating Produk</h3>
+                        <p className="text-sm text-gray-400">Rata-rata ulasan (Halaman {ratingPage})</p>
+                      </div>
+
+                      {/* Tombol Halaman untuk Grafik Rating */}
+                      {totalPages > 1 && (
+                        <div className="flex items-center gap-1">
+                          {renderPagination(ratingPage, totalPages, setRatingPage)}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="h-72 w-full text-xs">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart layout="vertical" data={currentData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
+                          <XAxis type="number" domain={[0, 5]} hide />
+                          <YAxis 
+                            dataKey="name" 
+                            type="category" 
+                            width={100} 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tick={{fill: '#64748b'}} 
+                          />
+                          <Tooltip 
+                            cursor={{fill: '#f8fafc'}}
+                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                          />
+                          <Bar dataKey="rating" fill="#DB4444" radius={[0, 4, 4, 0]} barSize={20} background={{ fill: '#f8fafc' }} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
             {/* GRAFIK 3: Demografi Pengunjung */}
@@ -246,7 +358,6 @@ function PenjualDashboard() {
                 </div>
               </div>
             </div>
-
           </div>
         </>
       ) : (
