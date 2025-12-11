@@ -30,7 +30,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, loading, title, message }) =
             disabled={loading}
             className="flex-1 py-2.5 px-4 rounded-lg bg-secondary-2 text-white font-semibold hover:bg-red-700 transition-colors shadow-lg shadow-red-100 disabled:opacity-70 flex justify-center items-center gap-2"
           >
-            {loading ? 'Memproses...' : 'Ya, Lanjutkan'}
+            {loading ? 'Memproses...' : 'Ya'}
           </button>
         </div>
 

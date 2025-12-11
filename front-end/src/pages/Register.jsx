@@ -5,6 +5,7 @@ import RegisterIllustration from '../assets/images/Register.svg';
 // Ikon sederhana (bisa diganti dengan library icon Anda jika mau)
 import { Eye, EyeOff, Upload, CheckCircle, ArrowRight, ArrowLeft, X } from 'lucide-react';
 import CustomToast from '../components/penjual/CustomToast';
+import ConfirmModal from '../components/common/ConfirmModal';
 
 
 function Register() {
@@ -17,6 +18,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [toast, setToast] = useState(null);
+  const [showExitModal, setShowExitModal] = useState(false);
 
   // State Data Form
   const [formData, setFormData] = useState({
@@ -224,6 +226,31 @@ function Register() {
     }
   };
 
+  const handleExitClick = (e) => {
+    e.preventDefault();
+    
+    // Cek apakah ada field utama yang sudah diisi
+    const isFormDirty = 
+        formData.nama !== '' || 
+        formData.email !== '' || 
+        formData.no_handphone !== '' ||
+        formData.nama_toko !== '' ||
+        foto !== null;
+
+    if (isFormDirty) {
+        // Jika sudah ada isi, munculkan modal konfirmasi
+        setShowExitModal(true);
+    } else {
+        // Jika masih kosong, langsung keluar
+        navigate('/');
+    }
+  };
+
+  const confirmExit = () => {
+    setShowExitModal(false);
+    navigate('/');
+  };
+
   // Styles
   const getInputClass = (fieldName) => `
     w-full px-0 py-3 border-b focus:outline-none transition-colors bg-transparent font-poppins text-gray-800 placeholder-gray-400
@@ -240,14 +267,26 @@ function Register() {
           onClose={() => setToast(null)} 
         />
       )}
+
+      <ConfirmModal 
+        isOpen={showExitModal}
+        onClose={() => setShowExitModal(false)}
+        onConfirm={confirmExit}
+        title="Batalkan Pendaftaran?"
+        message="Data yang Anda isi akan hilang jika Anda kembali ke beranda. Apakah Anda yakin?"
+        confirmText="Ya, Keluar"
+        cancelText="Batal"
+        variant="danger"
+      />
+
       {/* Tombol Kembali ke Homepage */}
-      <Link 
-        to="/" 
-        className="absolute top-6 left-6 flex items-center gap-2 text-gray-600 hover:text-secondary-2 font-medium transition-colors group z-50"
+      <button 
+        onClick={handleExitClick} 
+        className="absolute top-6 left-6 flex items-center gap-2 text-gray-600 hover:text-secondary-2 font-medium transition-colors group z-50 bg-transparent border-none cursor-pointer"
       >
         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
         <span>Kembali ke Beranda</span>
-      </Link>
+      </button>
       
       <div className="w-full bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.08),0_0_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row max-w-5xl border border-gray-100">
         

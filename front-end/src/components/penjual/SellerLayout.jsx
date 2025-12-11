@@ -119,32 +119,38 @@ function SellerLayout() {
         </div>
 
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-6 px-3 space-y-2 scrollbar-hide">
-          {menus.map((menu) => (
-            <Link
-              key={menu.path}
-              to={menu.path}
-              className={`flex items-center px-4 py-3.5 rounded-lg transition-colors group ${
-                location.pathname === menu.path
-                  ? 'bg-red-50 text-secondary-2 font-semibold'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <div className="min-w-[20px] flex items-center justify-center">
-                {menu.icon}
-              </div>
-              
-              <span 
-                className={`whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out
-                  ${isSidebarOpen 
-                    ? 'w-40 ml-3 opacity-100'
-                    : 'w-0 ml-0 opacity-0'
-                  }
-                `}
+          {menus.map((menu) => {
+            const isActive = location.pathname === menu.path || location.pathname.startsWith(`${menu.path}/`);
+            
+            return (
+              <Link
+                key={menu.path}
+                to={menu.path}
+                className={`flex items-center px-4 py-3.5 rounded-lg transition-colors group ${
+                  isActive 
+                    ? 'bg-red-50 text-secondary-2 font-semibold'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
               >
-                {menu.name}
-              </span>
-            </Link>
-          ))}
+                <div className="min-w-[20px] flex items-center justify-center">
+                  <div className={isActive ? 'text-secondary-2' : 'text-gray-500'}>
+                    {menu.icon}
+                  </div>
+                </div>
+                
+                <span 
+                  className={`whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out
+                    ${isSidebarOpen 
+                      ? 'w-40 ml-3 opacity-100'
+                      : 'w-0 ml-0 opacity-0'
+                    }
+                  `}
+                >
+                  {menu.name}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
         
         <div className="p-4 border-t border-gray-100 space-y-2">

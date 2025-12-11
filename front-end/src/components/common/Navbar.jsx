@@ -41,6 +41,17 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const searchParam = params.get('search');
+
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    } else {
+      setSearchQuery('');
+    }
+  }, [location.search, location.pathname]);
+
   const fetchSuggestions = async (query) => {
     if (!query.trim() || query.length < 2) {
       setSuggestions({ products: [], stores: [] });
