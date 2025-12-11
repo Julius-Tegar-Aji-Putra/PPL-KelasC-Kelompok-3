@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>{{ $title ?? 'Laporan Daftar Toko Berdasarkan Lokasi - MartPlace' }}</title>
     <style>
-        /* ---------- Reset & Layout A4 ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -28,7 +27,6 @@
             width: 100%;
         }
 
-        /* ---------- Kartu utama laporan ---------- */
         .page-inner {
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -36,7 +34,6 @@
             padding: 10mm 8mm 8mm 8mm;
         }
 
-        /* ---------- Header ala invoice ---------- */
         .header-table {
             width: 100%;
             border-collapse: collapse;
@@ -75,7 +72,6 @@
             color: #6b7280;
         }
 
-        /* ---------- Info ringkas laporan ---------- */
         .summary-wrapper {
             margin-bottom: 6mm;
         }
@@ -118,7 +114,6 @@
             margin: 5mm 0 4mm 0;
         }
 
-        /* ---------- Tabel utama ---------- */
         table.report {
             width: 100%;
             border-collapse: collapse;
@@ -138,7 +133,7 @@
         table.report td {
             padding: 6pt 7pt;
             vertical-align: middle;
-            border: 1px solid #e5e7eb; /* full grid: atas, bawah, kiri, kanan */
+            border: 1px solid #e5e7eb; 
         }
 
         table.report th {
@@ -164,7 +159,6 @@
             padding: 12pt 0;
         }
 
-        /* ---------- Footer ---------- */
         .footer {
             margin-top: 7mm;
             padding-top: 3mm;
@@ -216,7 +210,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="summary-label">Diproses oleh</td>
+                    <td class="summary-label">Dicetak oleh</td>
                     <td class="summary-value">{{ $processor ?? 'MartPlace System' }}</td>
                 </tr>
             </table>

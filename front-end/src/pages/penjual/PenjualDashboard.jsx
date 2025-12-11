@@ -10,7 +10,9 @@ import {
   XCircle, 
   Package, 
   Star, 
-  TrendingUp 
+  TrendingUp,
+  ChevronLeft,
+  ChevronRight 
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -30,6 +32,10 @@ function PenjualDashboard() {
   const { user } = useOutletContext();
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [productPage, setProductPage] = useState(1);
+  const [stockPage, setStockPage] = useState(1);
+  const [ratingPage, setRatingPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     // Simulasi fetch data dari API
@@ -47,40 +53,6 @@ function PenjualDashboard() {
         if(response.data.success) {
             setStats(response.data.data);
         }
-
-        setIsLoading(false);
-        
-        // setStats({
-        //   totalProduk: 12,
-        //   totalStok: 450,
-        //   rataRataRating: 4.8,
-          
-        //   stockData: [
-        //     { name: 'HP Gaming', stok: 45 },
-        //     { name: 'Laptop Asus', stok: 20 },
-        //     { name: 'Mouse Logitech', stok: 85 },
-        //     { name: 'Keyboard Mech', stok: 30 },
-        //     { name: 'Headset RGB', stok: 55 },
-        //     { name: 'Monitor 24"', stok: 15 },
-        //   ],
-
-        //   ratingData: [
-        //     { name: 'HP Gaming', rating: 4.9 },
-        //     { name: 'Laptop Asus', rating: 4.7 },
-        //     { name: 'Mouse', rating: 4.5 },
-        //     { name: 'Keyboard', rating: 5.0 },
-        //     { name: 'Headset', rating: 4.2 },
-        //     { name: 'Monitor', rating: 4.8 },
-        //   ],
-
-        //   locationData: [
-        //     { name: 'Jawa Tengah', value: 45 },
-        //     { name: 'DKI Jakarta', value: 30 },
-        //     { name: 'Jawa Barat', value: 15 },
-        //     { name: 'Jawa Timur', value: 10 },
-        //   ]
-        // });
-        
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -91,7 +63,16 @@ function PenjualDashboard() {
     fetchDashboardData();
   }, []);
 
-  const COLORS = ['#DB4444', '#F6AD55', '#48BB78', '#4299E1', '#9F7AEA'];
+  const COLORS = [
+    '#DB4444', '#4299E1', '#48BB78', '#F6AD55', '#9F7AEA', 
+    '#ED64A6', '#ECC94B', '#38B2AC', '#667EEA', '#ED8936', 
+    '#F56565', '#4FD1C5', '#D69E2E', '#9F7AEA', '#0BC5EA',
+    '#B83280', '#FC8181', '#68D391', '#63B3ED', '#F6E05E', 
+    '#76E4F7', '#F687B3', '#48BB78', '#F6AD55', '#4A5568', 
+    '#C53030', '#2B6CB0', '#2F855A', '#C05621', '#805AD5',
+    '#D53F8C', '#D69E2E', '#2C7A7B', '#5A67D8', '#DD6B20', 
+    '#E53E3E', '#319795', '#3182CE'                        
+  ];
 
   if (isLoading) {
     return <Loader />;
@@ -114,6 +95,65 @@ function PenjualDashboard() {
         <XCircle size={16} /> DITOLAK
       </span>
     );
+  };
+
+  // --- LOGIKA GENERATOR TOMBOL HALAMAN ---
+  const renderPagination = (currentPage, totalPages, setPageFunc) => {
+    const buttons = [];
+    
+    // Tombol Previous (<)
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => setPageFunc(prev => Math.max(1, prev - 1))}
+        disabled={currentPage === 1}
+        className="p-1 rounded-md border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+    );
+
+    // Tombol Angka
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - 1 && i <= currentPage + 1)
+      ) {
+        buttons.push(
+          <button
+            key={i}
+            onClick={() => setPageFunc(i)}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              i === currentPage
+                ? 'bg-[#DB4444] text-white border border-[#DB4444]'
+                : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            {i}
+          </button>
+        );
+      } else if (
+        i === currentPage - 2 ||
+        i === currentPage + 2
+      ) {
+        buttons.push(<span key={`dots-${i}`} className="px-1 text-gray-400 text-xs">...</span>);
+      }
+    }
+
+    // Tombol Next (>)
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => setPageFunc(prev => Math.min(totalPages, prev + 1))}
+        disabled={currentPage === totalPages}
+        className="p-1 rounded-md border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    );
+
+    return buttons;
   };
 
   return (
@@ -183,95 +223,180 @@ function PenjualDashboard() {
             
             {/* GRAFIK 1: Stok per Produk */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-800">Stok per Produk</h3>
-                <p className="text-sm text-gray-400">Distribusi jumlah stok barang Anda</p>
-              </div>
-              <div className="h-72 w-full text-xs"> {/* Tinggi diperbesar sedikit agar label muat */}
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={stats?.stockData} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    {/* PERBAIKAN XAXIS: 
-                        - interval={0} memaksa semua label muncul 
-                        - angle={-25} memiringkan teks agar muat jika panjang
-                        - textAnchor="end" merapikan posisi teks miring
-                    */}
-                    <XAxis 
-                        dataKey="name" 
-                        axisLine={false} 
-                        tickLine={false} 
-                        tick={{fill: '#64748b', fontSize: 11}} 
-                        interval={0}
-                        angle={-25}
-                        textAnchor="end"
-                        height={60}
-                    />
-                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                    <Tooltip 
-                      cursor={{fill: '#f8fafc'}}
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    />
-                    <Bar dataKey="stok" fill="#DB4444" radius={[4, 4, 0, 0]} barSize={40} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {(() => {
+                const data = stats?.stockData || [];
+                if (data.length === 0) {
+                return (
+                    <div className="h-full min-h-[300px] flex flex-col items-center justify-center text-gray-400">
+                      <div className="bg-gray-50 p-4 rounded-full mb-3">
+                        <Package size={32} className="opacity-50" />
+                      </div>
+                      <p className="font-medium text-sm">Belum ada produk yang ditambahkan</p>
+                    </div>
+                  );
+                }
+                const totalPages = Math.ceil(data.length / itemsPerPage);
+                // Potong data agar grafik tidak numpuk
+                const currentData = data.slice((stockPage - 1) * itemsPerPage, stockPage * itemsPerPage);
+
+                return (
+                  <>
+                    <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-800">Stok per Produk</h3>
+                        <p className="text-sm text-gray-400">Distribusi stok (Halaman {stockPage})</p>
+                      </div>
+                      
+                      {/* Tombol Halaman untuk Grafik Stok */}
+                      {totalPages > 1 && (
+                        <div className="flex items-center gap-1">
+                          {renderPagination(stockPage, totalPages, setStockPage)}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="h-72 w-full text-xs">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={currentData} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                          <XAxis 
+                              dataKey="name" 
+                              axisLine={false} 
+                              tickLine={false} 
+                              tick={{fill: '#64748b', fontSize: 12}} // Font sedikit diperbesar
+                              interval={0}
+                              height={40} // Tinggi dikurangi karena teks tegak
+                              // Fungsi pemotong teks otomatis:
+                              tickFormatter={(value) => {
+                                  const limit = 10; // Batas jumlah huruf
+                                  if (value.length > limit) return `${value.substring(0, limit)}...`;
+                                  return value;
+                              }}
+                          />
+                          <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                          <Tooltip 
+                            cursor={{fill: '#f8fafc'}}
+                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                          />
+                          <Bar dataKey="stok" fill="#DB4444" radius={[4, 4, 0, 0]} barSize={40} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
-            {/* GRAFIK 2: Performa Rating */}
+            {/* GRAFIK 2: Performa Rating (DENGAN PAGINATION) */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-800">Performa Rating Produk</h3>
-                <p className="text-sm text-gray-400">Nilai rata-rata ulasan per produk</p>
-              </div>
-              <div className="h-72 w-full text-xs">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart layout="vertical" data={stats?.ratingData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
-                    <XAxis type="number" domain={[0, 5]} hide />
-                    <YAxis dataKey="name" type="category" width={100} axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                    <Tooltip 
-                        cursor={{fill: '#f8fafc'}}
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    />
-                    {/* PERBAIKAN WARNA: fill="#DB4444" (Merah) */}
-                    <Bar dataKey="rating" fill="#DB4444" radius={[0, 4, 4, 0]} barSize={20} background={{ fill: '#f8fafc' }} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {(() => {
+                const data = stats?.ratingData || [];
+                if (data.length === 0) {
+                  return (
+                    <div className="h-full min-h-[300px] flex flex-col items-center justify-center text-gray-400">
+                      <div className="bg-gray-50 p-4 rounded-full mb-3">
+                        <Star size={32} className="opacity-50" />
+                      </div>
+                      <p className="font-medium text-sm">Belum ada ulasan masuk</p>
+                    </div>
+                  );
+                }
+                
+                const totalPages = Math.ceil(data.length / itemsPerPage);
+                const currentData = data.slice((ratingPage - 1) * itemsPerPage, ratingPage * itemsPerPage);
+
+                return (
+                  <>
+                    <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-800">Rating Produk</h3>
+                        <p className="text-sm text-gray-400">Rata-rata ulasan (Halaman {ratingPage})</p>
+                      </div>
+
+                      {/* Tombol Halaman untuk Grafik Rating */}
+                      {totalPages > 1 && (
+                        <div className="flex items-center gap-1">
+                          {renderPagination(ratingPage, totalPages, setRatingPage)}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="h-72 w-full text-xs">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart layout="vertical" data={currentData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
+                          <XAxis type="number" domain={[0, 5]} hide />
+                          <YAxis 
+                            dataKey="name" 
+                            type="category" 
+                            width={100} 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tick={{fill: '#64748b'}} 
+                          />
+                          <Tooltip 
+                            cursor={{fill: '#f8fafc'}}
+                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                          />
+                          <Bar dataKey="rating" fill="#DB4444" radius={[0, 4, 4, 0]} barSize={20} background={{ fill: '#f8fafc' }} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
-            {/* GRAFIK 3: Demografi Pembeli */}
+            {/* GRAFIK 3: Demografi Pengunjung */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
-              <div className="mb-6">
-                 <h3 className="text-lg font-bold text-slate-800">Demografi Pembeli</h3>
-                 <p className="text-sm text-gray-400">Asal provinsi pemberi rating/ulasan</p>
-              </div>
-              
-              <div className="flex items-center justify-center">
-                <div className="h-72 w-full md:w-3/4 text-xs"> 
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={stats?.locationData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={80}
-                        outerRadius={100}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {stats?.locationData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
-                      <Legend verticalAlign="bottom" height={36}/>
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
+              {(() => {
+                const data = stats?.locationData || [];
 
+                if (data.length === 0) {
+                  return (
+                    <div className="h-72 flex flex-col items-center justify-center text-gray-400">
+                      <div className="bg-gray-50 p-4 rounded-full mb-3">
+                        <CheckCircle size={32} className="opacity-50" />
+                      </div>
+                      <p className="font-medium text-sm">Belum ada data pengunjung</p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <>
+                    <div className="mb-6">
+                      <h3 className="text-lg font-bold text-slate-800">Demografi Pengunjung</h3>
+                      <p className="text-sm text-gray-400">Asal provinsi pemberi rating/ulasan</p>
+                    </div>
+                    
+                    <div className="flex items-center justify-center h-72">
+                      <div className="h-full w-full md:w-3/4 text-xs"> 
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={data}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={80}
+                              outerRadius={100}
+                              paddingAngle={5}
+                              dataKey="value"
+                            >
+                              {data.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
+                            <Legend verticalAlign="bottom" height={36}/>
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
           </div>
         </>
       ) : (

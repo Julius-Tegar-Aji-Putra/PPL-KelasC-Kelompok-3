@@ -24,8 +24,8 @@ class RegisteredUserController extends Controller
             'deskripsi_singkat' => ['nullable', 'string'],
             'no_handphone' => ['required', 'numeric', 'digits_between:10,15'], // Ubah jadi numeric agar lebih ketat
             'alamat' => ['required', 'string'],
-            'rt' => ['required', 'numeric', 'digits_between:1,3'],
-            'rw' => ['required', 'numeric', 'digits_between:1,3'],
+            'rt' => ['required', 'numeric', 'digits:3'], 
+            'rw' => ['required', 'numeric', 'digits:3'],
             'no_ktp' => ['required', 'numeric', 'digits:16'], // Wajib 16 digit angka
             'foto' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'file_upload_ktp' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
@@ -91,7 +91,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         return response()->json([
-            'message' => 'Registrasi berhasil. Silakan tunggu verifikasi Admin untuk mengaktifkan akun Anda.',
+            'message' => 'Registrasi berhasil. Silakan tunggu verifikasi Admin untuk mengaktifkan akun Anda. Cek secara berkala di dalam email yang anda daftarkan',
         ], 201);
     }
 }

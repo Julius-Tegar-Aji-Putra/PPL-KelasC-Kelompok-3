@@ -31,7 +31,16 @@ const AdminOverview = () => {
   const [loading, setLoading] = useState(true);
 
   // Warna Grafik Konsisten
-  const COLORS = ['#DB4444', '#F6AD55', '#48BB78', '#4299E1', '#9F7AEA'];
+  const COLORS = [
+    '#DB4444', '#4299E1', '#48BB78', '#F6AD55', '#9F7AEA', 
+    '#ED64A6', '#ECC94B', '#38B2AC', '#667EEA', '#ED8936', 
+    '#F56565', '#4FD1C5', '#D69E2E', '#9F7AEA', '#0BC5EA',
+    '#B83280', '#FC8181', '#68D391', '#63B3ED', '#F6E05E', 
+    '#76E4F7', '#F687B3', '#48BB78', '#F6AD55', '#4A5568', 
+    '#C53030', '#2B6CB0', '#2F855A', '#C05621', '#805AD5',
+    '#D53F8C', '#D69E2E', '#2C7A7B', '#5A67D8', '#DD6B20', 
+    '#E53E3E', '#319795', '#3182CE'                        
+  ];
   const STATUS_COLORS = { 'active': '#48BB78', 'inactive': '#A0AEC0' };
 
   useEffect(() => {
@@ -74,6 +83,23 @@ const AdminOverview = () => {
     value: item.value,
     color: STATUS_COLORS[item.status] || '#CBD5E0'
   })) || [];
+
+  // 4. Fungsi Format Label (Fashion Pria -> Fashion P.)
+  const formatXAxisLabel = (name) => {
+    if (typeof name !== 'string') return name;
+    
+    const words = name.split(' ');
+    
+    if (words.length > 1) {
+      return `${words[0]} ${words[1][0]}.`; 
+    }
+    
+    if (name.length > 10) {
+      return `${name.substring(0, 10)}...`;
+    }
+
+    return name;
+  };
 
   return (
     <div className="max-w-7xl mx-auto font-poppins pb-10">
@@ -145,7 +171,7 @@ const AdminOverview = () => {
                 <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={cleanCategoryData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} tickFormatter={formatXAxisLabel} interval={0} />
                     <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} allowDecimals={false} />
                     <Tooltip 
                     cursor={{fill: '#f8fafc'}}

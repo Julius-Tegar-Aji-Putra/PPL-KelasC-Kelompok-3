@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, UserCheck, Menu, LogOut, FileText } from 'lucide-react';
+import { LayoutDashboard, UserCheck, Menu, LogOut, FileText, User } from 'lucide-react';
 import axios from 'axios';
 import Loader from '../common/Loader';
 import WelcomeAlert from '../common/WelcomeAlert';
+import ConfirmModal from '../common/ConfirmModal';
 
 const STORAGE_URL = 'http://localhost:8000/storage';
 
@@ -15,7 +16,7 @@ const AdminLayout = () => {
   // State Alert
   const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
   const [welcomeName, setWelcomeName] = useState('');
-
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -49,6 +50,7 @@ const AdminLayout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
     delete axios.defaults.headers.common['Authorization'];
+    setShowLogoutModal(false);
     navigate('/login');
   };
   
@@ -71,10 +73,25 @@ const AdminLayout = () => {
         />
       )}
 
+      {/* Render Confirm Modal */}
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Konfirmasi Keluar"
+        message="Apakah Anda yakin ingin mengakhiri sesi Admin ini?"
+        confirmText="Ya, Keluar"
+        cancelText="Batal"
+        variant="danger"
+      />
+
       {/* SIDEBAR */}
       <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col h-full z-30`}>
         <div className="h-24 flex items-center justify-center border-b border-gray-100">
-          <Link to="/" className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden">
+          <Link 
+            to="/admin/dashboard" 
+            className="font-bold text-text-2 text-2xl font-inter whitespace-nowrap flex items-center gap-2 overflow-hidden hover:opacity-80 transition-opacity"
+          >
             <span className={`transition-all duration-300 ${isSidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0'} overflow-hidden`}>
                 Admin Dashboard
             </span>
@@ -107,7 +124,7 @@ const AdminLayout = () => {
 
         <div className="px-3 py-3 border-t border-gray-100">
           <button 
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="flex items-center px-4 py-3.5 rounded-lg transition-colors group text-red-600 hover:bg-red-50 w-full"
           >
             <LogOut className="w-5 h-5" />
@@ -129,6 +146,17 @@ const AdminLayout = () => {
             <div className="text-right">
               <p className="text-sm font-semibold font-poppins text-text-2">{user?.nama || 'Admin'}</p>
               <p className="text-xs text-gray-500 font-poppins">Administrator</p>
+            </div>
+            <div className="w-12 h-12 rounded-full bg-secondary-2 flex items-center justify-center text-white font-semibold overflow-hidden border-2 border-gray-200">
+              {user?.foto_profil ? (
+                <img 
+                  src={`${STORAGE_URL}/${user.foto_profil}`} 
+                  alt={user.nama}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-6 h-6" />
+              )}
             </div>
           </div>
         </header>

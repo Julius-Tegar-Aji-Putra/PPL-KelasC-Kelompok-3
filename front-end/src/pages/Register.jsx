@@ -3,7 +3,9 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import RegisterIllustration from '../assets/images/Register.svg';
 // Ikon sederhana (bisa diganti dengan library icon Anda jika mau)
-import { Eye, EyeOff, Upload, CheckCircle, ArrowRight, ArrowLeft, X } from 'lucide-react'; 
+import { Eye, EyeOff, Upload, CheckCircle, ArrowRight, ArrowLeft, X } from 'lucide-react';
+import CustomToast from '../components/penjual/CustomToast';
+
 
 function Register() {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [toast, setToast] = useState(null);
 
   // State Data Form
   const [formData, setFormData] = useState({
@@ -125,10 +128,22 @@ function Register() {
         if (!formData.deskripsi_singkat) tempErrors.deskripsi_singkat = "Deskripsi toko wajib diisi.";
     }
 
-    // Step 3: Alamat
+// Step 3: Alamat
     if (currentStep === 3) {
         if (!formData.alamat) tempErrors.alamat = "Alamat wajib diisi.";
-        if (!formData.rt || !formData.rw) tempErrors.rt = "RT/RW wajib diisi.";
+
+        if (!formData.rt) {
+            tempErrors.rt = "RT wajib";
+        } else if (formData.rt.length !== 3) {
+            tempErrors.rt = "RT harus 3 digit";
+        }
+
+        if (!formData.rw) {
+            tempErrors.rw = "RW wajib";
+        } else if (formData.rw.length !== 3) {
+            tempErrors.rw = "RW harus 3 digit";
+        }
+
         if (!formData.province_id) tempErrors.province_id = "Provinsi wajib dipilih.";
         if (!formData.regency_id) tempErrors.regency_id = "Kabupaten wajib dipilih.";
         if (!formData.district_id) tempErrors.district_id = "Kecamatan wajib dipilih.";
@@ -185,16 +200,24 @@ function Register() {
       const response = await axios.post('/api/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      alert(response.data.message);
-      navigate('/login'); 
+      navigate('/login', { 
+        state: { 
+          successMessage: response.data.message, 
+          showToast: true 
+        } 
+      });
     } catch (error) {
       if (error.response && error.response.status === 422) {
         setErrors(error.response.data.errors);
-        // Jika error validasi backend, mungkin perlu mundur step. 
-        // Untuk sederhana, kita tampilkan alert dulu.
-        alert("Terdapat kesalahan data. Silakan cek kembali inputan Anda.");
+        setToast({ 
+            message: "Terdapat kesalahan data. Silakan cek kembali inputan berwarna merah.", 
+            type: 'error' 
+        });
       } else {
-        alert('Terjadi kesalahan pada server.');
+        setToast({ 
+            message: error.response?.data?.message || 'Terjadi kesalahan pada server.', 
+            type: 'error' 
+        });
       }
     } finally {
       setLoading(false);
@@ -210,6 +233,13 @@ function Register() {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center py-12 bg-white relative">
+      {toast && (
+        <CustomToast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(null)} 
+        />
+      )}
       {/* Tombol Kembali ke Homepage */}
       <Link 
         to="/" 
@@ -402,13 +432,14 @@ function Register() {
                                         <div>
                                             <label className={labelClass}>RT</label>
                                             <input type="text" name="rt" value={formData.rt} onChange={handleChange} className={getInputClass('rt')} placeholder="001" maxLength="3" />
+                                            {errors.rt && <p className="text-red-500 text-xs mt-1">{errors.rt}</p>}
                                         </div>
                                         <div>
                                             <label className={labelClass}>RW</label>
                                             <input type="text" name="rw" value={formData.rw} onChange={handleChange} className={getInputClass('rw')} placeholder="005" maxLength="3" />
+                                            {errors.rw && <p className="text-red-500 text-xs mt-1">{errors.rw}</p>}
                                         </div>
                                     </div>
-                                    {(errors.rt || errors.rw) && <p className="text-red-500 text-xs mt-1">RT/RW Wajib diisi</p>}
                                 </div>
                             </div>
                         </div>
