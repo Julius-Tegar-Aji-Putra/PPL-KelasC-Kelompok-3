@@ -4,6 +4,7 @@ import { Package, LogOut, Menu, Home, LayoutDashboard, ClipboardList } from 'luc
 import axios from 'axios';
 import Loader from '../common/Loader';
 import WelcomeAlert from '../common/WelcomeAlert';
+import ConfirmModal from '../common/ConfirmModal';
 
 // Storage URL Constant
 const STORAGE_URL = 'http://localhost:8000/storage';
@@ -14,6 +15,7 @@ function SellerLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
   const [welcomeName, setWelcomeName] = useState('');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -50,6 +52,7 @@ function SellerLayout() {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
     delete axios.defaults.headers.common['Authorization'];
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
@@ -85,6 +88,18 @@ function SellerLayout() {
             onClose={() => setShowWelcomeAlert(false)}
         />
       )}
+
+      {/* Render Confirm Modal */}
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Konfirmasi Keluar"
+        message="Apakah Anda yakin ingin keluar dari akun ini?"
+        confirmText="Ya, Keluar"
+        cancelText="Batal"
+        variant="danger"
+      />
 
       {/* SIDEBAR */}
       <aside 
@@ -144,7 +159,7 @@ function SellerLayout() {
           </Link>
 
           <button 
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group"
           >
             <LogOut className="w-5 h-5 shrink-0" />

@@ -4,6 +4,7 @@ import { LayoutDashboard, UserCheck, Menu, LogOut, FileText, User } from 'lucide
 import axios from 'axios';
 import Loader from '../common/Loader';
 import WelcomeAlert from '../common/WelcomeAlert';
+import ConfirmModal from '../common/ConfirmModal';
 
 const STORAGE_URL = 'http://localhost:8000/storage';
 
@@ -15,7 +16,7 @@ const AdminLayout = () => {
   // State Alert
   const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
   const [welcomeName, setWelcomeName] = useState('');
-
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -49,6 +50,7 @@ const AdminLayout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
     delete axios.defaults.headers.common['Authorization'];
+    setShowLogoutModal(false);
     navigate('/login');
   };
   
@@ -70,6 +72,18 @@ const AdminLayout = () => {
             onClose={() => setShowWelcomeAlert(false)}
         />
       )}
+
+      {/* Render Confirm Modal */}
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Konfirmasi Keluar"
+        message="Apakah Anda yakin ingin mengakhiri sesi Admin ini?"
+        confirmText="Ya, Keluar"
+        cancelText="Batal"
+        variant="danger"
+      />
 
       {/* SIDEBAR */}
       <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col h-full z-30`}>
@@ -107,7 +121,7 @@ const AdminLayout = () => {
 
         <div className="px-3 py-3 border-t border-gray-100">
           <button 
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="flex items-center px-4 py-3.5 rounded-lg transition-colors group text-red-600 hover:bg-red-50 w-full"
           >
             <LogOut className="w-5 h-5" />
