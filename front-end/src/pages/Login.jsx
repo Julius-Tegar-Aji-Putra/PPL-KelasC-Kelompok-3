@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import LoginIllustration from "../assets/images/Login.svg";
 
 function Login() {
@@ -91,7 +91,16 @@ function Login() {
   };
 
   return (
-    <div className="w-full flex justify-center items-center py-12">
+    <div className="w-full min-h-screen flex justify-center items-center py-12 bg-white relative">
+      {/* Tombol Kembali ke Homepage */}
+      <Link 
+        to="/" 
+        className="absolute top-6 left-6 flex items-center gap-2 text-gray-600 hover:text-secondary-2 font-medium transition-colors group"
+      >
+        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        <span>Kembali ke Beranda</span>
+      </Link>
+      
       <div className="w-full bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.08),0_0_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row max-w-5xl border border-gray-100">
         
         {/* Gambar Ilustrasi */}
@@ -196,6 +205,7 @@ function Login() {
           </div>
         </div>
       </div>
+      
     </div>
   );
 }

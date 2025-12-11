@@ -28,18 +28,19 @@ import ScrollToTop from './components/common/ScrollToTop';
 function App() {
   const location = useLocation();
   
-  // Cek apakah sedang di halaman dashboard (admin atau penjual)
-  // Logic ini menyembunyikan Navbar & Footer global saat di dashboard
+  // Cek apakah sedang di halaman dashboard (admin atau penjual) atau auth pages
+  // Logic ini menyembunyikan Navbar & Footer global saat di dashboard atau login/register
   const isDashboardRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/penjual');
+  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
   
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />
 
-      {/* Navbar Global (Hanya muncul di halaman publik) */}
-      {!isDashboardRoute && <Navbar />}
+      {/* Navbar Global (Hanya muncul di halaman publik, tidak di auth) */}
+      {!isDashboardRoute && !isAuthRoute && <Navbar />}
 
-      <main className={isDashboardRoute ? "" : "flex-grow container mx-auto px-4 md:px-32 py-4"}>
+      <main className={isDashboardRoute || isAuthRoute ? "" : "flex-grow container mx-auto px-4 md:px-32 py-4"}>
         <Routes>
           {/* --- PUBLIC ROUTES --- */}
           <Route path="/" element={<Home />} />
