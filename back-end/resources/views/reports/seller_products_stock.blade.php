@@ -223,7 +223,7 @@
             } elseif ($mode === 'rating') {
                 $note = 'Data diurutkan berdasarkan rating produk.';
             } elseif ($mode === 'restock') {
-                $note = 'Menampilkan produk yang perlu segera dipesan; diurutkan berdasarkan kategori dan produk.';
+                $note = 'Menampilkan produk yang perlu segera dipesan, diurutkan berdasarkan kategori dan produk.';
             }
         @endphp
 
@@ -247,7 +247,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="summary-label">Diproses oleh</td>
+                    <td class="summary-label">Dicetak oleh</td>
                     <td class="summary-value">{{ $processor ?? 'MartPlace System' }}</td>
                 </tr>
             </table>

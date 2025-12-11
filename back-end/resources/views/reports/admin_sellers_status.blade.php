@@ -222,7 +222,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="summary-label">Diproses oleh</td>
+                    <td class="summary-label">Dicetak oleh</td>
                     <td class="summary-value">{{ $processor ?? 'MartPlace System' }}</td>
                 </tr>
             </table>

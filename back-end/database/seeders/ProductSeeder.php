@@ -762,22 +762,6 @@ class ProductSeeder extends Seeder
                 'main_image' => 'products/main/52.png',
                 'images' => ['products/details/52.png']
             ],
-
-            // --- PRODUK LAINNYA ---
-
-            [
-                'user_id'     => $sellerBudi->id, 
-                'category_id' => $catHobi->id,
-                'name'        => 'Julius Tegar Aji Putra',
-                'price'       => 10000,
-                'stock'       => 1,
-                'brand'       => 'TEGAR',
-                'condition'   => 'Bekas', 
-                'warranty_type' => 'Tidak Ada Garansi',
-                'description' => 'Asisten rumah serbaguna. Siap membantu segala pekerjaan rumah tangga dengan sigap dan cekatan.',
-                'main_image'  => 'products/main/53.png',
-                'images'      => ['products/details/53-1.png', 'products/details/53-2.png', 'products/details/53-3.png']
-            ],
         ];
 
         // 4. Eksekusi Insert

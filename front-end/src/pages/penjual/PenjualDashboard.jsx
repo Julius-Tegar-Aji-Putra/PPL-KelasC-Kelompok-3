@@ -215,10 +215,10 @@ function PenjualDashboard() {
               </div>
             </div>
 
-            {/* GRAFIK 3: Demografi Pembeli */}
+            {/* GRAFIK 3: Demografi Pengunjung */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
               <div className="mb-6">
-                 <h3 className="text-lg font-bold text-slate-800">Demografi Pembeli</h3>
+                 <h3 className="text-lg font-bold text-slate-800">Demografi Pengunjung</h3>
                  <p className="text-sm text-gray-400">Asal provinsi pemberi rating/ulasan</p>
               </div>
               
