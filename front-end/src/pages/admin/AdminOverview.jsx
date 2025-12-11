@@ -84,6 +84,23 @@ const AdminOverview = () => {
     color: STATUS_COLORS[item.status] || '#CBD5E0'
   })) || [];
 
+  // 4. Fungsi Format Label (Fashion Pria -> Fashion P.)
+  const formatXAxisLabel = (name) => {
+    if (typeof name !== 'string') return name;
+    
+    const words = name.split(' ');
+    
+    if (words.length > 1) {
+      return `${words[0]} ${words[1][0]}.`; 
+    }
+    
+    if (name.length > 10) {
+      return `${name.substring(0, 10)}...`;
+    }
+
+    return name;
+  };
+
   return (
     <div className="max-w-7xl mx-auto font-poppins pb-10">
       
@@ -154,7 +171,7 @@ const AdminOverview = () => {
                 <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={cleanCategoryData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} tickFormatter={formatXAxisLabel} interval={0} />
                     <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} allowDecimals={false} />
                     <Tooltip 
                     cursor={{fill: '#f8fafc'}}
