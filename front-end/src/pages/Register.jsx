@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import RegisterIllustration from '../assets/images/Register.svg';
 // Ikon sederhana (bisa diganti dengan library icon Anda jika mau)
 import { Eye, EyeOff, Upload, CheckCircle, ArrowRight, ArrowLeft, X } from 'lucide-react';
-import CustomToast from '../components/penjual/CustomToast';
+import CustomToast from '../components/common/CustomToast';
 import ConfirmModal from '../components/common/ConfirmModal';
 
 

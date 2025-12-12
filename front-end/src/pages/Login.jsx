@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import LoginIllustration from "../assets/images/Login.svg";
-import CustomToast from "../components/penjual/CustomToast";
+import CustomToast from "../components/common/CustomToast";
 
 function Login() {
   const [email, setEmail] = useState("");
